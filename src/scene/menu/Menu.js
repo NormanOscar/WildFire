@@ -60,6 +60,7 @@ class Menu extends rune.scene.Scene {
     m_updateInput() {
         if (this.keyboard.justPressed("up") || this.gamepads.get(0).stickLeft.y < 0) {
             if (this.m_menu.up()) {
+                
             }
         }
         

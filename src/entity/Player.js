@@ -6,7 +6,7 @@ class Player extends rune.display.Sprite {
         this.speed = 5;
         this.m_animation = null;
         this.m_gamepad = null;
-        this.m_score = null;
+        this.m_score = 0;
         this.bullets = new Array();
         this.direction = 'down';
     }

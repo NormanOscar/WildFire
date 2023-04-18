@@ -1,4 +1,4 @@
-class Bullet extends rune.display.Sprite {
+class Bullet extends rune.display.Graphic {
     constructor(x, y, playerID, direction) {
         super(x, y, 9, 5, "bullet" + playerID);
         this.direction = direction;
@@ -41,7 +41,7 @@ class Bullet extends rune.display.Sprite {
         this.moveBullet();
         console.log(this.x + ' ' + this.y);
         //this.stage.map.back.hitTestAndSeparateObject(this);
-        if (this.x < 64 || this.x > 896 || this.y < 64 || this.y > 576 ) {
+        if (this.x < 64 || this.x > 928 || this.y < 64 || this.y > 608 ) {
             this.dispose();
         };
     }

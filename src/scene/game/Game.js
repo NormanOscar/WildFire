@@ -21,8 +21,9 @@ class Game extends rune.scene.Scene {
     constructor(nr) {
         super();
 
-        this.m_nrOfPlayers = nr || 2;
+        this.m_nrOfPlayers = nr || 1;
         this.m_players = new Array();
+        this.m_enemies = new Array();
         this.trees = new Array();
     }
 
@@ -36,9 +37,9 @@ class Game extends rune.scene.Scene {
         super.init();
 
         for (let i = 0; i < this.m_nrOfPlayers; i++) {
-            var player = new Player(480, 304, i);
+            var player = new Player(480, 320, i);
             if (i == 1) {
-                var player = new Player(544, 304, i);
+                var player = new Player(544, 320, i);
             }
 
             this.m_players.push(player);
@@ -46,25 +47,24 @@ class Game extends rune.scene.Scene {
             this.cameras.getCameraAt(0).targets.add(player);
         }
         
-        /* for (let i = 0; i < 30; i++) {
-            let rand1 = Math.floor(Math.random()*832) + 64;
-            let rand2 = Math.floor(Math.random()*512) + 64;
+        for (let i = 0; i < 30; i++) {
+            let rand1 = Math.floor(Math.random()*800) + 64;
+            let rand2 = Math.floor(Math.random()*480) + 64;
 
             var tree = new Obstacle(rand1, rand2);
             this.trees.push(tree);
             this.stage.addChild(tree);
-        } */
+        }
 
-        var enemy = new Enemy(this.getEnemySpawnPoints(0).x,this.getEnemySpawnPoints(0).y,0);
-        var enemy1 = new Enemy(this.getEnemySpawnPoints(1).x,this.getEnemySpawnPoints(1).y,1);
-        var enemy2 = new Enemy(this.getEnemySpawnPoints(2).x,this.getEnemySpawnPoints(2).y,2);
-
+        for (let i = 0; i < 4; i++) {
+            var enemy = new Enemy(this.getEnemySpawnPoints(i).x,this.getEnemySpawnPoints(i).y,i);
+            this.stage.addChild(enemy);
+            this.m_enemies.push(enemy);
+        }
 
         this.stage.map.load('map');
-        this.stage.addChild(enemy);
-        this.stage.addChild(enemy1);
-        this.stage.addChild(enemy2);
-        this.cameras.getCameraAt(0).bounderies = new rune.geom.Rectangle(0, 0, 960, 640);
+        console.log(this.stage.map);
+        this.cameras.getCameraAt(0).bounderies = new rune.geom.Rectangle(0, 0, 992, 672);
     }
 
     /**
@@ -78,16 +78,26 @@ class Game extends rune.scene.Scene {
     update(step) {
         super.update(step);
 
-        /* for (let i = 0; i < this.trees.length; i++) {
+        for (let i = 0; i < this.m_players[0].bullets.length; i++) {
+            for (let j = 0; j < this.m_enemies.length; j++) {
+                this.m_players[0].bullets[i].hitTestObject(this.m_enemies[j], function() {
+                    this.m_players[0].bullets[i].dispose();
+                    this.m_players[0].m_score += 10;
+                    this.m_enemies[j].dispose();
+                },this);
+            }
+        }
+        
+        for (let i = 0; i < this.trees.length; i++) {
             if(this.m_players[0].hitTestObject(this.trees[i])) {
                 console.log('Ouch!');
             }
             
-            if(this.m_players[1].hitTestObject(this.trees[i])) {
+            /* if(this.m_players[1].hitTestObject(this.trees[i])) {
                 console.log("Fuck!");
-            }
+            } */
         }
-        if(this.m_players[0].hitTestObject(this.m_players[1])) {
+        /* if(this.m_players[0].hitTestObject(this.m_players[1])) {
             console.log("OUT OF THE WAY!");
         } */
     }
@@ -95,16 +105,20 @@ class Game extends rune.scene.Scene {
     getEnemySpawnPoints(id) {
         var spawnPoints = [
             {
-                x: 656,
-                y: 76
+                x: 512,
+                y: 64
             },
             {
-                x: 848,
-                y: 304
+                x: 896,
+                y: 320
             },
             {
-                x: 656,
-                y: 528
+                x: 512,
+                y: 576
+            },
+            {
+                x: 64,
+                y: 320
             }
         ]
         return spawnPoints[id];

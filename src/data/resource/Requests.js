@@ -47,6 +47,7 @@ wildfire.data.Requests.prototype.m_construct = function() {
 	this.add("bullet0", "./../asset/png/bullet0.png");
 	this.add("bullet1", "./../asset/png/bullet1.png");
 	this.add("enemy", "./../asset/png/enemy.png");
+	this.add("enemy1", "./../asset/png/enemy1.png");
 	this.add("player0", "./../asset/png/player0.png");
 	this.add("player1", "./../asset/png/player1.png");
 	this.add("tileset", "./../asset/png/tileset.png");
