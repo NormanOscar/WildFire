@@ -30,15 +30,7 @@
     "front": [],
     "tiles": [
         {
-            "value": 1,
-            "collision": "0x1111"
-        },
-        {
             "value": 2,
-            "collision": "0x1111"
-        },
-        {
-            "value": 3,
             "collision": "0x1111"
         },
         {
@@ -50,31 +42,7 @@
             "collision": "0x1111"
         },
         {
-            "value": 6,
-            "collision": "0x1111"
-        },
-        {
-            "value": 7,
-            "collision": "0x1111"
-        },
-        {
-            "value": 8,
-            "collision": "0x1111"
-        },
-        {
-            "value": 9,
-            "collision": "0x1111"
-        },
-        {
-            "value": 10,
-            "collision": "0x1111"
-        },
-        {
             "value": 11,
-            "collision": "0x1111"
-        },
-        {
-            "value": 12,
             "collision": "0x1111"
         }
     ]

@@ -39,7 +39,6 @@ class Bullet extends rune.display.Graphic {
     update(step) {
         super.update(step);
         this.moveBullet();
-        console.log(this.x + ' ' + this.y);
         //this.stage.map.back.hitTestAndSeparateObject(this);
         if (this.x < 64 || this.x > 928 || this.y < 64 || this.y > 608 ) {
             this.dispose();

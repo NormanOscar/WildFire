@@ -6,7 +6,6 @@ class Player extends rune.display.Sprite {
         this.speed = 5;
         this.m_animation = null;
         this.m_gamepad = null;
-        this.m_score = 0;
         this.bullets = new Array();
         this.direction = 'down';
     }
@@ -30,20 +29,43 @@ class Player extends rune.display.Sprite {
     }
 
     updateInput() {
-        this.updateGamepad();
-        this.updateKeyboard();
+        this.m_gamepad = this.gamepads.get(this.playerID);
+        if (this.m_gamepad.connected) {
+            this.updateGamepad();
+        } else {
+            this.updateKeyboard();
+        }
     }
 
     updateGamepad() {
-        this.m_gamepad = this.gamepads.get(this.playerID);
-        if (this.m_gamepad.connected) {
-            if (this.m_gamepad.stickLeft) {
-                this.x += this.m_gamepad.stickLeft.x * this.speed;
-                this.y += this.m_gamepad.stickLeft.y * this.speed;
+        if (this.m_gamepad.stickLeft) {
+            this.x += this.m_gamepad.stickLeft.x * this.speed;
+            this.y += this.m_gamepad.stickLeft.y * this.speed;
+
+            if (this.m_gamepad.stickLeftRight) {
+                this.direction = 'right';
+                this.animation.gotoAndPlay('run_side');
+                this.flippedX = false;
             }
-            if (this.m_gamepad.justPressed(1)) {
-                this.shoot();
+            else if (this.m_gamepad.stickLeftDown) {
+                this.direction = 'down';
+                this.animation.gotoAndPlay('run_down');
             }
+            else if (this.m_gamepad.stickLeftLeft) {
+                this.direction = 'left';
+                this.animation.gotoAndPlay('run_side');
+                this.flippedX = true;
+            }
+            else if (this.m_gamepad.stickLeftUp) {
+                this.direction = 'up';
+                this.animation.gotoAndPlay('run_up');
+            }
+            else {
+                this.playIdleAnimation();
+            }
+        }
+        if (this.m_gamepad.justPressed(0)) {
+            this.shoot();
         }
     }
 
@@ -74,22 +96,26 @@ class Player extends rune.display.Sprite {
             this.animation.gotoAndPlay('run_down');
         }
         else {
-            switch (this.direction) {
-                case 'right':
-                    this.animation.gotoAndPlay('idle_side');
-                    this.flippedX = false;
-                    break;
-                case 'left':
-                    this.animation.gotoAndPlay('idle_side');
-                    this.flippedX = true;
-                    break;
-                case 'up':
-                    this.animation.gotoAndPlay('idle_up');
-                    break;
-                case 'down':
-                    this.animation.gotoAndPlay('idle_down')
-                    break;
-            }
+            this.playIdleAnimation();
+        }
+    }
+    
+    playIdleAnimation() {
+        switch (this.direction) {
+            case 'right':
+                this.animation.gotoAndPlay('idle_side');
+                this.flippedX = false;
+                break;
+            case 'left':
+                this.animation.gotoAndPlay('idle_side');
+                this.flippedX = true;
+                break;
+            case 'up':
+                this.animation.gotoAndPlay('idle_up');
+                break;
+            case 'down':
+                this.animation.gotoAndPlay('idle_down')
+                break;
         }
     }
 
