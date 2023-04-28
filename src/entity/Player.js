@@ -8,32 +8,63 @@ class Player extends rune.display.Sprite {
         this.m_gamepad = null;
         this.bullets = new Array();
         this.direction = 'down';
+        this.can_move = true;
+        this.status = 'alive';
+        this.deathSound = null;
+        this.shootSound = null;
+        this.bulletCoordinates = [
+            {
+                x: null,
+                y: null
+            },
+            {
+                x: null,
+                y: null
+            }
+        ]
+        this.shootID = 0;
     }
     
     init() {
         super.init();
+        this.setSounds();
         this.animateCharacter();
         this.setHitbox();
+    }
+
+    setSounds() {
+        this.deathSound = this.application.sounds.sound.get("player_die", true);
+        this.shootSound = this.playerID == 0 ? this.application.sounds.sound.get("gun_shoot", false) : this.application.sounds.sound.get("water_shoot", false);
     }
     
     setHitbox() {
         this.hitbox.debug = true;
         this.hitbox.debugColor = 'blue';
-        this.hitbox.set(4, 2, 23, 26);
+        this.hitbox.set(6, 4, 19, 24);
     }
 
     update(step) {
         super.update(step);
         this.updateInput();
         this.stage.map.back.hitTestAndSeparateObject(this);
+        //this.checkOOB();
+    }
+
+    checkOOB() {
+        if (this.left == 0 || this.top == 0 || this.bottom == 762 || this.right == 992) {
+            this.can_move = false;
+        }
+
     }
 
     updateInput() {
-        this.m_gamepad = this.gamepads.get(this.playerID);
-        if (this.m_gamepad.connected) {
-            this.updateGamepad();
-        } else {
-            this.updateKeyboard();
+        if (this.can_move) {
+            this.m_gamepad = this.gamepads.get(this.playerID);
+            if (this.m_gamepad.connected) {
+                this.updateGamepad();
+            } else {
+                this.updateKeyboard();
+            }
         }
     }
 
@@ -66,12 +97,14 @@ class Player extends rune.display.Sprite {
         }
         if (this.m_gamepad.justPressed(0)) {
             this.shoot();
+            this.shootSound.play();
         }
     }
 
     updateKeyboard() {
         if (this.keyboard.justPressed(this.getKeyboardControls(this.playerID).shoot)) {
             this.shoot();
+            this.shootSound.play();
         }
         if (this.keyboard.pressed(this.getKeyboardControls(this.playerID).right)) {
             this.direction = 'right';
@@ -120,9 +153,35 @@ class Player extends rune.display.Sprite {
     }
 
     shoot() {
-        var x = this.x + (this.width / 2 - 5);
-        var y = this.y + (this.height / 2 - 2);
-        var bullet = new Bullet(x, y, this.playerID, this.direction);
+        this.shootID == 0 ? this.shootID = 1 : this.shootID = 0;
+
+        switch (this.direction) {
+            case 'right':
+                this.bulletCoordinates[0].x = this.x + this.width - 5;
+                this.bulletCoordinates[0].y = this.y + this.height - 10;
+                this.bulletCoordinates[1].x = this.x + this.width - 5;
+                this.bulletCoordinates[1].y = this.y + this.height - 10;
+                break;
+            case 'left':  
+                this.bulletCoordinates[0].x = this.x;
+                this.bulletCoordinates[0].y = this.y + this.height - 10;
+                this.bulletCoordinates[1].x = this.x;
+                this.bulletCoordinates[1].y = this.y + this.height - 10;
+                break;
+            case 'up':
+                this.bulletCoordinates[0].x = this.x + this.width - 10;
+                this.bulletCoordinates[0].y = this.y + this.height / 2;
+                this.bulletCoordinates[1].x = this.x;
+                this.bulletCoordinates[1].y = this.y + this.height / 2;
+                break;
+            case 'down':
+                this.bulletCoordinates[0].x = this.x + this.width - 10;
+                this.bulletCoordinates[0].y = this.y + this.height - 5;
+                this.bulletCoordinates[1].x = this.x;
+                this.bulletCoordinates[1].y = this.y + this.height - 2;
+                break;
+        }
+        var bullet = new Bullet(this.bulletCoordinates[this.shootID].x, this.bulletCoordinates[this.shootID].y, this.playerID, this.direction);
 
         this.stage.addChild(bullet);
         this.bullets.push(bullet);
@@ -145,14 +204,16 @@ class Player extends rune.display.Sprite {
                 right: 'd',
                 down: 's',
                 left: 'a',
-                shoot: 'SPACE'
+                shoot: 'SPACE',
+                shootSecond: 'ENTER'
             },
             {
                 up: 'up',
                 right: 'right',
                 down: 'down',
                 left: 'left',
-                shoot: 'ENTER'
+                shoot: 'ENTER',
+                shootSecond: 'SPACE'
             }
         ]
         return controls[id];

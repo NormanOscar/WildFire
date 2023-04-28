@@ -3,6 +3,10 @@ class Bullet extends rune.display.Graphic {
         super(x, y, 9, 5, "bullet" + playerID);
         this.direction = direction;
         this.speed = 8;
+        this.initPos = {
+            x: x,
+            y: y
+        };
         this.coordinates = {
             x: 0,
             y: 0
@@ -40,7 +44,14 @@ class Bullet extends rune.display.Graphic {
         super.update(step);
         this.moveBullet();
         //this.stage.map.back.hitTestAndSeparateObject(this);
+
+        // If bullet hit edge of map, delete bullet
         if (this.x < 64 || this.x > 928 || this.y < 64 || this.y > 608 ) {
+            this.dispose();
+        };
+
+        // If travelled 5 or 3 tiles, delete bullet
+        if (Math.abs((this.x - this.initPos.x)/32) >= 5 || Math.abs((this.y - this.initPos.y)/32) >= 3) {
             this.dispose();
         };
     }

@@ -25,7 +25,7 @@ wildfire.system.Main = function() {
         developer: "se.normanoscar",
         app: "wildfire",
         build: "1.0.0",
-        scene: Game,
+        scene: Menu,
         resources: wildfire.data.Requests,
         useGamepads:true,
         useKeyboard:true,

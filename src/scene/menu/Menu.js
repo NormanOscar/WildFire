@@ -23,6 +23,7 @@ class Menu extends rune.scene.Scene {
 
         this.m_menu = null;
         this.m_sound = null;
+        this.m_music = null;
     }
 
     /**
@@ -33,8 +34,13 @@ class Menu extends rune.scene.Scene {
      */
     init() {
         super.init();
-        //this.m_initTitle();
+        this.m_initSound();
+        this.m_initMusic();
+        this.m_initBackground();
+        this.m_initTitle();
         this.m_initMenu();
+        this.m_initSingleHs();
+        this.m_initMultiHs();
     }
 
     /**
@@ -47,29 +53,42 @@ class Menu extends rune.scene.Scene {
      */
     update(step) {
         super.update(step);
-
         this.m_updateInput();
     }
 
+    m_initSound() {
+        this.m_sound = this.application.sounds.sound.get("menu_select", true);
+    }
+    m_initMusic() {
+        this.m_music = this.application.sounds.music.get("menu_music", true);
+        this.m_music.loop = true;
+        this.m_music.play();
+    }
+
+    m_initBackground() {
+        var m_background = new rune.display.Sprite(0, 0, 400, 225, "menu_background");
+        this.stage.addChild(m_background);
+    }
+
     m_initTitle() {
-        /* var m_title = new rune.text.BitmapField('Wildfire');
-        m_title.center = this.cameras.getCameraAt(0).viewport.center;
-        this.stage.addChild(m_title); */
+        var m_title = new rune.display.Graphic(this.cameras.getCameraAt(0).width / 2 - 116, 20, 232, 51, "title");
+        this.stage.addChild(m_title);
     }
 
     m_updateInput() {
-        if (this.keyboard.justPressed("up") || this.gamepads.get(0).stickLeft.y < 0) {
+        if (this.keyboard.justPressed("w") || this.gamepads.get(0).stickLeft.y < 0) {
             if (this.m_menu.up()) {
-                
+                this.m_sound.play();
             }
         }
         
-        if (this.keyboard.justPressed("down") || this.gamepads.get(0).stickLeft.y > 0) {
+        if (this.keyboard.justPressed("s") || this.gamepads.get(0).stickLeft.y > 0) {
             if (this.m_menu.down()) {
+                this.m_sound.play();
             }
         }
         
-        if (this.keyboard.justPressed("ENTER") || this.gamepads.justPressed(1)) {
+        if (this.keyboard.justPressed("SPACE") || this.gamepads.justPressed(0)) {
             this.m_menu.select();
         }
     }
@@ -79,7 +98,9 @@ class Menu extends rune.scene.Scene {
         this.m_menu.onSelect(this.m_onMenuSelect, this);
         this.m_menu.add("Single Player");
         this.m_menu.add("Multiplayer");
-        this.m_menu.center = this.cameras.getCameraAt(0).viewport.center;
+        this.m_menu.add("How to play");
+        this.m_menu.x = (this.cameras.getCameraAt(0).width / 2) - (this.m_menu.width / 2);
+        this.m_menu.y = 90;
         this.stage.addChild(this.m_menu);
     }
 
@@ -87,12 +108,21 @@ class Menu extends rune.scene.Scene {
         switch (element.text) {
             case "Single Player":
                 this.application.scenes.load( [new Game(1)] );
-                break;
-                
+                break;   
             case "Multiplayer":
                 this.application.scenes.load( [new Game(2)] );
                 break;
+            case "How to play":
+                this.application.scenes.load( [new How_to_play()] );
+                break;
         }
+    }
+
+    m_initSingleHs() {
+
+    }
+    m_initMultiHs() {
+
     }
 
     /**
