@@ -1,5 +1,5 @@
 class Player extends rune.display.Sprite {
-    constructor(x, y, playerID) {
+    constructor(x, y, playerID, area) {
         super(x, y, 32, 32, "player" + playerID);
         this.playerID = playerID;
 
@@ -23,6 +23,7 @@ class Player extends rune.display.Sprite {
             }
         ]
         this.shootID = 0;
+        this.area = area;
     }
     
     init() {
@@ -35,6 +36,7 @@ class Player extends rune.display.Sprite {
     setSounds() {
         this.deathSound = this.application.sounds.sound.get("player_die", true);
         this.shootSound = this.playerID == 0 ? this.application.sounds.sound.get("gun_shoot", false) : this.application.sounds.sound.get("water_shoot", false);
+        this.shootSound.volume = 2;
     }
     
     setHitbox() {
@@ -46,15 +48,52 @@ class Player extends rune.display.Sprite {
     update(step) {
         super.update(step);
         this.updateInput();
-        this.stage.map.back.hitTestAndSeparateObject(this);
-        //this.checkOOB();
-    }
+        this.stage.map.back.hitTestAndSeparate(this);
 
-    checkOOB() {
-        if (this.left == 0 || this.top == 0 || this.bottom == 762 || this.right == 992) {
+        this.checkHouseHit();
+
+        if (this.status == 'dead') {
+            this.animation.gotoAndPlay('dead');
             this.can_move = false;
+        } else {
+            this.can_move = true;
         }
 
+        if (this.area.m_nrOfPlayers == 2) {
+            if (this.area.m_players[0].status == 'dead' || this.area.m_players[1].status == 'dead') {
+                this.checkRevive();
+            }
+        }
+    }
+
+    checkRevive() {
+        if (this.playerID == 0) {
+            if (this.hitTest(this.area.m_players[1]) && (this.gamepads.get(this.playerID).justPressed(4) || this.keyboard.justPressed(this.getKeyboardControls(this.playerID).revive))) {
+                this.area.m_players[1].can_move = true;
+                this.area.m_players[1].status = 'alive';
+                console.log(this);
+                this.area.cameras.getCameraAt(0).targets.add(this.area.m_players[1]);
+                console.log('revived');
+            }
+            
+        } else {
+            if (this.hitTest(this.area.m_players[0]) && (this.gamepads.get(this.playerID).justPressed(4) || this.keyboard.justPressed(this.getKeyboardControls(this.playerID).revive))) {
+                
+                this.area.m_players[0].can_move = true;
+                this.area.m_players[0].status = 'alive';
+                this.area.cameras.getCameraAt(0).targets.add(this.area.m_players[0]);
+                console.log('revived');
+            }
+        }
+    }
+
+    checkHouseHit() {
+            for (let i = 0; i < this.area.houses.length; i++) {
+                this.hitTestAndSeparate(this.area.houses[i], function() {
+                    console.log('ouch!');
+                });
+            }
+            
     }
 
     updateInput() {
@@ -99,9 +138,22 @@ class Player extends rune.display.Sprite {
             this.shoot();
             this.shootSound.play();
         }
+        if (this.area.m_nrOfPlayers == 1) {
+            if (this.m_gamepad.justPressed(1)) {
+                this.shootSecond();
+                this.shootSound.play();
+            }   
+        }
     }
 
     updateKeyboard() {
+        if (this.area.m_nrOfPlayers == 1) {
+            if (this.keyboard.justPressed(this.getKeyboardControls(0).shootSecond)) {
+                this.shootSecond();
+                this.shootSound.play();
+            }   
+        }
+
         if (this.keyboard.justPressed(this.getKeyboardControls(this.playerID).shoot)) {
             this.shoot();
             this.shootSound.play();
@@ -155,6 +207,24 @@ class Player extends rune.display.Sprite {
     shoot() {
         this.shootID == 0 ? this.shootID = 1 : this.shootID = 0;
 
+        this.changeBulletDirection();
+        var bullet = new Bullet(this.bulletCoordinates[this.shootID].x, this.bulletCoordinates[this.shootID].y, this.playerID, this.direction);
+
+        this.stage.addChild(bullet);
+        this.bullets.push(bullet);
+    }
+
+    shootSecond() {
+        this.shootID == 0 ? this.shootID = 1 : this.shootID = 0;
+
+        this.changeBulletDirection();
+        var bullet = new Bullet(this.bulletCoordinates[this.shootID].x, this.bulletCoordinates[this.shootID].y, 1, this.direction);
+
+        this.stage.addChild(bullet);
+        this.bullets.push(bullet);
+    }
+
+    changeBulletDirection() {
         switch (this.direction) {
             case 'right':
                 this.bulletCoordinates[0].x = this.x + this.width - 5;
@@ -170,9 +240,9 @@ class Player extends rune.display.Sprite {
                 break;
             case 'up':
                 this.bulletCoordinates[0].x = this.x + this.width - 10;
-                this.bulletCoordinates[0].y = this.y + this.height / 2;
+                this.bulletCoordinates[0].y = this.y + this.height / 2 - 4;
                 this.bulletCoordinates[1].x = this.x;
-                this.bulletCoordinates[1].y = this.y + this.height / 2;
+                this.bulletCoordinates[1].y = this.y + this.height / 2 - 4;
                 break;
             case 'down':
                 this.bulletCoordinates[0].x = this.x + this.width - 10;
@@ -181,10 +251,6 @@ class Player extends rune.display.Sprite {
                 this.bulletCoordinates[1].y = this.y + this.height - 2;
                 break;
         }
-        var bullet = new Bullet(this.bulletCoordinates[this.shootID].x, this.bulletCoordinates[this.shootID].y, this.playerID, this.direction);
-
-        this.stage.addChild(bullet);
-        this.bullets.push(bullet);
     }
 
     animateCharacter() {
@@ -194,6 +260,7 @@ class Player extends rune.display.Sprite {
         this.animation.create('run_up', [12,13,14,15], 8, true);
         this.animation.create('idle_side', [16,17], 4, true);
         this.animation.create('run_side', [20,21,22,23], 8, true);
+        this.animation.create('dead', [24], 1, false);
         this.animation.play('idle_down');
     }
 
@@ -204,6 +271,7 @@ class Player extends rune.display.Sprite {
                 right: 'd',
                 down: 's',
                 left: 'a',
+                revive: 'r',
                 shoot: 'SPACE',
                 shootSecond: 'ENTER'
             },
@@ -212,8 +280,8 @@ class Player extends rune.display.Sprite {
                 right: 'right',
                 down: 'down',
                 left: 'left',
+                revive: 'p',
                 shoot: 'ENTER',
-                shootSecond: 'SPACE'
             }
         ]
         return controls[id];

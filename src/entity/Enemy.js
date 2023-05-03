@@ -17,14 +17,14 @@ class Enemy extends rune.display.Sprite {
         super.init();
         this.initSounds();
         this.hitbox.debug = true;
-        this.hitbox.debugColor = 'blue';
+        this.hitbox.debugColor = 'red';
         this.hitbox.set(7, 7, 16, 16);
 
         this.initTimer();
     }
 
     initSounds() {
-        this.deathSound = this.applicaiton.sounds.sound.get("enemy_die", false);
+        this.deathSound = this.application.sounds.sound.get("enemy_die", false);
     }
 
     initTimer() {

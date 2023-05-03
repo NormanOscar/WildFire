@@ -58,9 +58,11 @@ class Menu extends rune.scene.Scene {
 
     m_initSound() {
         this.m_sound = this.application.sounds.sound.get("menu_select", true);
+        this.m_sound.volume = 0.2;
     }
     m_initMusic() {
         this.m_music = this.application.sounds.music.get("menu_music", true);
+        this.m_music.volume = 0.1;
         this.m_music.loop = true;
         this.m_music.play();
     }
@@ -76,19 +78,19 @@ class Menu extends rune.scene.Scene {
     }
 
     m_updateInput() {
-        if (this.keyboard.justPressed("w") || this.gamepads.get(0).stickLeft.y < 0) {
+        if (this.keyboard.justPressed("w") || /* this.gamepads.get(0).stickLeft.y < 0 */ this.gamepads.get(0).justPressed(12)) {
             if (this.m_menu.up()) {
                 this.m_sound.play();
             }
         }
         
-        if (this.keyboard.justPressed("s") || this.gamepads.get(0).stickLeft.y > 0) {
+        if (this.keyboard.justPressed("s") || /* this.gamepads.get(0).stickLeft.y > 0 */ this.gamepads.get(0).justPressed(13)) {
             if (this.m_menu.down()) {
                 this.m_sound.play();
             }
         }
         
-        if (this.keyboard.justPressed("SPACE") || this.gamepads.justPressed(0)) {
+        if (this.keyboard.justPressed("SPACE") || this.gamepads.justPressed(1)) {
             this.m_menu.select();
         }
     }

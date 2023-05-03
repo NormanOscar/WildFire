@@ -1,8 +1,9 @@
 class Bullet extends rune.display.Graphic {
-    constructor(x, y, playerID, direction) {
-        super(x, y, 9, 5, "bullet" + playerID);
+    constructor(x, y, id, direction) {
+        super(x, y, 9, 5, "bullet" + id);
+        this.id = id;
         this.direction = direction;
-        this.speed = 8;
+        this.speed = 10;
         this.initPos = {
             x: x,
             y: y
@@ -21,29 +22,35 @@ class Bullet extends rune.display.Graphic {
                 this.rotation = 0;
                 this.coordinates.x = this.speed;
                 this.coordinates.y = 0;
+                this.hitbox.set(0,0,8,4)
                 break;
             case 'left':
                 this.rotation = 180;
                 this.coordinates.x = -this.speed;
                 this.coordinates.y = 0;
+                this.hitbox.set(0,0,8,4)
                 break;
             case 'up':
                 this.rotation = 270;
                 this.coordinates.x = 0;
                 this.coordinates.y = -this.speed;
+                this.hitbox.set(2,0,4,6)
                 break;
             case 'down':
                 this.rotation = 90;
                 this.coordinates.x = 0;
                 this.coordinates.y = this.speed;
+                this.hitbox.set(2,0,4,6)
                 break;
         }
+
+        this.hitbox.debugColor = 'pink';
+        this.hitbox.debug = true;
     }
 
     update(step) {
         super.update(step);
         this.moveBullet();
-        //this.stage.map.back.hitTestAndSeparateObject(this);
 
         // If bullet hit edge of map, delete bullet
         if (this.x < 64 || this.x > 928 || this.y < 64 || this.y > 608 ) {

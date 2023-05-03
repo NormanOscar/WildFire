@@ -56,6 +56,10 @@ wildfire.data.Requests.prototype.m_construct = function() {
 	this.add("enemy", "./../asset/png/enemy.png");
 	this.add("enemy1", "./../asset/png/enemy1.png");
 	this.add("fire", "./../asset/png/fire.png");
+	this.add("gameOver", "./../asset/png/gameOver.png");
+	this.add("house0", "./../asset/png/house0.png");
+	this.add("house1", "./../asset/png/house1.png");
+	this.add("house2", "./../asset/png/house2.png");
 	this.add("menu_background", "./../asset/png/menu_background.png");
 	this.add("miniMap_frame", "./../asset/png/miniMap_frame.png");
 	this.add("player0", "./../asset/png/player0.png");
@@ -64,6 +68,7 @@ wildfire.data.Requests.prototype.m_construct = function() {
 	this.add("title", "./../asset/png/title.png");
 	this.add("tree", "./../asset/png/tree.png");
 	this.add("game_music", "./../asset/wav/game_music.wav");
+	this.add("gun_shoot_wav", "./../asset/wav/gun_shoot_wav.wav");
 	this.add("menu_select", "./../asset/wav/menu_select.wav");
 	this.add("player_die_alternative", "./../asset/wav/player_die_alternative.wav");
 };

@@ -1,16 +1,19 @@
 class Fire extends rune.display.Graphic {
     constructor(x, y) {
         super(x, y, 32, 32, "fire");
-        this.hitSound = null;
+        this.deathSound = null;
     }
 
     init() {
         super.init();
         this.initSounds();
+
+        this.hitbox.debug = true;
+        this.hitbox.debugColor = 'purple';
     }
 
     initSounds() {
-        this.hitSound = this.application.sounds.sound.get("put_out_fire", false);
+        this.deathSound = this.application.sounds.sound.get("put_out_fire", false);
     }
 
     update(step) {

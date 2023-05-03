@@ -64,18 +64,7 @@
         this.stage.addChild(m_title);
     }
 
-    m_updateInput() {
-        if (this.keyboard.justPressed("w") || this.gamepads.get(0).stickLeft.y < 0) {
-            if (this.m_menu.up()) {
-
-            }
-        }
-        
-        if (this.keyboard.justPressed("s") || this.gamepads.get(0).stickLeft.y > 0) {
-            if (this.m_menu.down()) {
-            }
-        }
-        
+    m_updateInput() {        
         if (this.keyboard.justPressed("SPACE") || this.gamepads.justPressed(1)) {
             this.m_menu.select();
         }
