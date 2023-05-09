@@ -1,7 +1,3 @@
-//------------------------------------------------------------------------------
-// Constructor scope
-//------------------------------------------------------------------------------
-
 /**
  * Creates a new object.
  *
@@ -17,28 +13,35 @@ class Game extends rune.scene.Scene {
 
     /**
      * Calls the constructor method of the super class.
+     * 
+     * @param {number} nr Number of players
+     * 
+     * @returns {undefined}
      */
-    constructor(nr) {
+    constructor(nr, menuMusic) {
         super();
 
-        this.m_nrOfPlayers = nr || 2;
+        menuMusic.stop();
+        this.m_nrOfPlayers = nr || 1;
         this.m_players = new Array();
         this.m_enemies = new Array();
         this.trees = new Array();
         this.scoreCounter = null;
         this.scoreTimer = null;
         this.m_totalScore = 0;
-        this.m_nrOfOpenGates = 2;
+        this.m_nrOfOpenGates = 4;
         this.enemySpawnTimer = null;
         this.enemyPathTimer = null;
         this.enemyTimerRepeat = Infinity;
-        this.enemySpawnRate = 2000;
+        this.enemySpawnRate = 1000;
         this.m_music = null;
         this.fireController = null;
         this.houses = new Array();
         this.totalFires = 0;
+        this.m_nrOfPlayersAlive = nr || 1;
+        this.hud = null;
 
-        this.m_cams = null;
+        this.m_cams = new Array();
         this.camera_is_splitted = false;
 
         this.allPlayersDead = false;
@@ -52,47 +55,86 @@ class Game extends rune.scene.Scene {
      */
     init() {
         super.init();
+
         this.cameras.removeCameras(true);
 
-        this.m_cams = [];
-        this.m_cams[0] = this.cameras.createCamera(0, 0, this.application.screen.width, this.application.screen.height);
-        this.cameras.addCamera(this.m_cams[0]);
+        this.stage.map.load('map');
+        this.initMusic();
 
-        for (let i = 0; i < this.m_nrOfPlayers; i++) {
-            var player = new Player(448, 320, i, this);
-            if (i == 1) {
-                var player = new Player(512, 320, i, this);
-            }
-
-            this.m_players.push(player);
-            this.stage.addChild(player);
-            this.cameras.getCameraAt(0).targets.add(player);
-        }
-
+        this.initCameras();
+        this.initPlayers();
         this.initHouses();
-        //this.createMiniMap();
 
-        /* for (let i = 0; i < 30; i++) {
-            let rand1 = Math.floor(Math.random()*800) + 64;
-            let rand2 = Math.floor(Math.random()*480) + 64;
-            
-            var tree = new Obstacle(rand1, rand2);
-            this.trees.push(tree);
-            this.stage.addChild(tree);
-        } */
+        //this.initHUD();
+        this.createMiniMap();
 
         this.fireController = new FireController(this);
 
-        this.initMusic();
         this.initScoreTimer();
         this.initScoreCounter();
-
         this.initEnemySpawnTimer();
         this.updateEnemyPathTimer();
-        this.stage.map.load('map');
-        this.cameras.getCameraAt(0).bounderies = new rune.geom.Rectangle(0, 0, 992, 672);
     }
 
+    /**
+     * This method is used to initialize the cameras.
+     * 
+     * @returns {undefined}
+     */
+    initCameras() {
+        this.m_cams[0] = this.cameras.createCamera(0, 0, this.application.screen.width, this.application.screen.height);
+        this.cameras.addCamera(this.m_cams[0]);
+        this.cameras.getCameraAt(0).bounderies = new rune.geom.Rectangle(0, 0, 992, 672);
+
+        this.m_cams[1] = this.cameras.createCamera(0, 0, this.application.screen.width / 2, this.application.screen.height);
+        this.m_cams[1].visible = false;
+        this.cameras.addCamera(this.m_cams[1]);
+        this.cameras.getCameraAt(1).bounderies = new rune.geom.Rectangle(0, 0, 992, 672);
+
+        this.m_cams[2] = this.cameras.createCamera(0 + this.application.screen.width / 2, 0, this.application.screen.width / 2, this.application.screen.height);
+        this.m_cams[2].visible = false;
+        this.cameras.addCamera(this.m_cams[2]);
+        this.cameras.getCameraAt(2).bounderies = new rune.geom.Rectangle(0, 0, 992, 672);
+    }
+    
+    initHUD() {
+        this.hud = new HUD();
+
+    }
+
+    /**
+     * This method is used to initialize the players.
+     * 
+     * @returns {undefined}
+     */
+    initPlayers() {
+            if (this.m_nrOfPlayers == 1) {
+                var player = new Player(448, 320, 0, this);
+                this.m_players.push(player);
+                this.m_cams[0].targets.add(player);
+                this.stage.addChild(player);
+            } 
+            else if (this.m_nrOfPlayers == 2){
+                var player1 = new Player(448, 320, 0, this);
+                this.m_players.push(player1);
+                this.m_cams[0].targets.add(player1);
+                this.m_cams[1].targets.add(player1);
+                this.stage.addChild(player1);
+                
+                var player2 = new Player(512, 320, 1, this);
+                this.m_players.push(player2);
+                this.m_cams[0].targets.add(player2);
+                this.m_cams[2].targets.add(player2);
+                this.stage.addChild(player2);
+            }
+
+    }
+
+    /**
+     * This method is used to initialize the score counter timer.
+     * 
+     * @returns {undefined}
+     */
     initScoreTimer() {
         this.scoreTimer = this.timers.create({
             duration: 1000,
@@ -114,6 +156,11 @@ class Game extends rune.scene.Scene {
         });
     }
 
+    /**
+     * This method is used to initialize the score counter.
+     * 
+     * @returns {undefined}
+     */
     initScoreCounter() {
         var text = 'Score: ' + this.m_totalScore.toString();
         this.scoreCounter = new rune.text.BitmapField(text, rune.text.BitmapFormat.FONT_MEDIUM);
@@ -124,11 +171,21 @@ class Game extends rune.scene.Scene {
         this.stage.addChild(this.scoreCounter);
     }
 
+    /**
+     * This method is used to update the score counter.
+     * 
+     * @returns {undefined}
+     */
     updateScoreCounter() {
         var text = 'Score: ' + this.m_totalScore.toString();
         this.scoreCounter.text = text;
     }
 
+    /**
+     * This method is used to create houses.
+     * 
+     * @returns {undefined}
+     */
     initHouses() {
         for (let i = 0; i < 3; i++) {
             var house = new House(this.getHouseCoordinates(i).x, this.getHouseCoordinates(i).y, i);
@@ -137,6 +194,11 @@ class Game extends rune.scene.Scene {
         }
     }
 
+    /**
+     * This method is used to initiate the game music.
+     * 
+     * @returns {undefined}
+     */
     initMusic() {
         this.m_music = this.application.sounds.music.get("game_music", true);
         this.m_music.volume = 0.075;
@@ -144,12 +206,21 @@ class Game extends rune.scene.Scene {
         this.m_music.play();
     }
 
-    /* createMiniMap() {
-        var miniMap = this.cameras.createCamera((this.cameras.getCameraAt(0).width / 2 - (96/2)),0,96,64);
-        miniMap.viewport.zoom = 0.25;
-        this.cameras.addCamera(miniMap);
-    } */
+    /**
+     * This method is used to create a minimap.
+     * 
+     * @returns {undefined}
+     */
+    createMiniMap() {
+        var miniMap = new MiniMap(this);
+        this.cameras.getCameraAt(0).addChild(miniMap);
 
+    }
+    /**
+     * This method is used to initiate the enemy spawn timer.
+     * 
+     * @returns {undefined}
+     */
     initEnemySpawnTimer() {
         this.enemySpawnTimer = this.timers.create({
             duration: this.enemySpawnRate,
@@ -159,6 +230,11 @@ class Game extends rune.scene.Scene {
         }, true);
     }
 
+    /**
+     * This method is used to initiate the enemy path timer.
+     * 
+     * @returns {undefined}
+     */
     updateEnemyPathTimer() {
         this.enemyPathTimer = this.timers.create({
             duration: 1000,
@@ -168,20 +244,33 @@ class Game extends rune.scene.Scene {
         }, true);
     }
 
+    /**
+     * This method is used to update the path of all enemies.
+     * 
+     * @returns {undefined}
+     */
     updateEnemyPath() {
         for (const enemy of this.m_enemies) {
             enemy.path = this.stage.map.back.getPath(enemy.centerX, enemy.centerY, this.m_players[enemy.target].centerX, this.m_players[enemy.target].centerY, true);
         }
     }
 
+    /**
+     * This method is used to create a new enemy and add it to the stage.
+     * 
+     * @returns {undefined}
+     */
     createEnemy() {
         const r = Math.floor(Math.random() * this.m_nrOfOpenGates);
-        var enemy = new Enemy(this.getEnemySpawnPoints(r).x, this.getEnemySpawnPoints(r).y);
-        enemy.target = Math.floor(Math.random() * this.m_nrOfPlayers);
+        var targetIndex = Math.floor(Math.random() * this.m_nrOfPlayersAlive);
+        var enemy = new Enemy(this.getEnemySpawnPoints(r).x, this.getEnemySpawnPoints(r).y, this, this.m_players[targetIndex]);
+        enemy.target = targetIndex;
         this.stage.addChild(enemy);
+                
+        if (this.m_players[targetIndex].status != 'dead') {
+            enemy.path = this.stage.map.back.getPath(enemy.centerX, enemy.centerY, this.m_players[enemy.target].centerX, this.m_players[enemy.target].centerY, true);
+        }
 
-        enemy.path = this.stage.map.back.getPath(enemy.centerX, enemy.centerY, this.m_players[enemy.target].centerX, this.m_players[enemy.target].centerY, true);
-        enemy.path.compress();
         this.m_enemies.push(enemy);
     }
 
@@ -200,14 +289,9 @@ class Game extends rune.scene.Scene {
             this.calcCamera();
         }
 
-        this.checkBulletEnemyHit();
-        this.checkBulletFireHit();
-        this.checkPlayerEnemyHit();
-        this.checkPlayerFireHit();
-
-
         this.fireController.checkActiveFires();
 
+        // Check if all players are dead.
         for (const player of this.m_players) {
             if (this.m_nrOfPlayers == 2) {
                 this.m_players[0].status == 'dead' && this.m_players[1].status == 'dead' ? this.allPlayersDead = true : this.allPlayersDead = false;
@@ -216,127 +300,62 @@ class Game extends rune.scene.Scene {
             }
         }
 
+        // If all players are dead, the game is over.
         if (this.allPlayersDead) {
-            this.m_music.stop();
-            this.timers.clear();
-
-            this.application.scenes.load( [new GameOver(this.m_totalScore, this.m_nrOfPlayers)] );
+            this.timers.create({
+                duration: 1000,
+                onComplete: function () {
+                    this.application.scenes.load( [new GameOver(this.m_totalScore, this.m_nrOfPlayers)] );
+                    this.m_music.stop();
+                },
+                scope: this
+            }, true);
         }
+
         this.updateScoreCounter();
 
         this.scoreCounter.x = this.cameras.getCameraAt(0).viewport.centerX - this.scoreCounter.width / 2;
         this.scoreCounter.y = this.cameras.getCameraAt(0).viewport.y + this.cameras.getCameraAt(0).viewport.height - this.scoreCounter.height;
     }
 
+    /**
+     * This method is used to change camera depending on the players position.
+     * 
+     * @returns {undefined}
+     */
     calcCamera() {
         var playerOnePos = { x: this.m_players[0].globalX, y: this.m_players[0].globalY };
         var playerTwoPos = { x: this.m_players[1].globalX, y: this.m_players[1].globalY };
 
-        if (!this.m_camera_is_splitted) {
+        if (!this.m_camera_is_splitted && this.m_players[0].status != 'dead' && this.m_players[1].status != 'dead') {
+            // If the players are too far apart, show split screen cameras
             if (Math.abs(playerOnePos.x - playerTwoPos.x) > this.application.screen.width - 50 || Math.abs(playerOnePos.y - playerTwoPos.y) > this.application.screen.height - 50) {
-                this.cameras.removeCameras(true);
-                this.m_cams = [];
-
-                this.m_cams[0] = this.cameras.createCamera(0, 0, this.application.screen.width / 2, this.application.screen.height);
-                this.m_cams[0].bounderies = new rune.geom.Rectangle(0, 0, 992, 672)
-                this.m_cams[1] = this.cameras.createCamera(this.application.screen.width / 2, 0, this.application.screen.width / 2, this.application.screen.height);
-                this.m_cams[1].bounderies = new rune.geom.Rectangle(0, 0, 992, 672)
-
-                this.m_cams[1].targets.add(this.m_players[1]);
-                this.m_cams[0].targets.add(this.m_players[0]);
-
-                this.cameras.addCamera(this.m_cams[0]);
-                this.cameras.addCamera(this.m_cams[1]);
+                this.cameras.getCameraAt(0).visible = false;
+                this.cameras.getCameraAt(1).visible = true;
+                this.cameras.getCameraAt(2).visible = true;
 
                 this.m_camera_is_splitted = true;
             }
         }
 
         if (this.m_camera_is_splitted) {
-            // If users are close to each other, merge the cameras
+            // If users are close to each other, show the main camera
             if (Math.abs(playerOnePos.x - playerTwoPos.x) < this.application.screen.width - 50 && Math.abs(playerOnePos.y - playerTwoPos.y) < this.application.screen.height - 50) {
-                this.cameras.removeCameras(true);
-                this.m_cams = [];
-
-                this.m_cams[0] = this.cameras.createCamera(0, 0, this.application.screen.width, this.application.screen.height);
-                this.m_cams[0].targets.add(this.m_players[0]);
-                this.m_cams[0].targets.add(this.m_players[1]);
-
-                this.cameras.addCamera(this.m_cams[0]);
+                this.cameras.getCameraAt(0).visible = true;
+                this.cameras.getCameraAt(1).visible = false;
+                this.cameras.getCameraAt(2).visible = false;
                 this.m_camera_is_splitted = false;
             }
         }
     }
 
-    checkBulletFireHit() {
-        var self = this;
-        for (let j = 0; j < this.m_players.length; j++) {
-            for (let i = 0; i < this.m_players[j].bullets.length; i++) {
-                if (this.m_players[j].bullets[i].id == 1) {
-                    for (const fires of this.fireController.activeFires) {
-                        for (const fire of fires.tileArr) {
-                            this.m_players[j].bullets[i].hitTest(fire, function () {
-                                this.dispose();
-                                fires.tileArr.splice(fires.tileArr.indexOf(fire), 1);
-                                fire.dispose();
-                                self.m_totalScore += 10;
-                                self.totalFires--;
-                                fire.deathSound.play();
-                                console.log('Fire put out');
-                            });
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    checkPlayerFireHit() {
-        var self = this;
-        for (let i = 0; i < this.m_players.length; i++) {
-            for (const fires of this.fireController.activeFires) {
-                for (const fire of fires.tileArr) {
-                    this.m_players[i].hitTest(fire, function () {
-                        self.cameras.getCameraAt(0).targets.remove(this);
-                        this.status = 'dead';
-                        this.deathSound.play();
-                        //this.dispose();
-                        console.log('Player ' + i + ' died');
-                    });
-                }
-            }
-        }
-    }
-
-    checkBulletEnemyHit() {
-        for (let i = 0; i < this.m_players[0].bullets.length; i++) {
-            if (this.m_players[0].bullets[i].id == 0) {
-                for (let j = 0; j < this.m_enemies.length; j++) {
-                    this.m_players[0].bullets[i].hitTest(this.m_enemies[j], function () {
-                        this.m_players[0].bullets[i].dispose();
-                        this.m_enemies[j].deathSound.play();
-                        this.m_totalScore += 10;
-                        this.m_enemies[j].dispose();
-                    }, this);
-                }
-            }
-        }
-    }
-
-    checkPlayerEnemyHit() {
-        for (let i = 0; i < this.m_players.length; i++) {
-            for (let j = 0; j < this.m_enemies.length; j++) {
-                this.m_players[i].hitTest(this.m_enemies[j], function () {
-                    this.cameras.getCameraAt(0).targets.remove(this.m_players[i]);
-                    this.m_players[i].status = 'dead';
-                    this.m_players[i].deathSound.play();
-                    //this.m_players[i].dispose();
-                    console.log('Player ' + i + ' died');
-                }, this);
-            }
-        }
-    }
-
+    /**
+     * This method is used to return the spawn point of the enemy.
+     * 
+     * @param {number} id The id of the spawn point.
+     * 
+     * @returns {object} The spawn point.
+     */
     getEnemySpawnPoints(id) {
         var spawnPoints = [
             {
@@ -359,8 +378,13 @@ class Game extends rune.scene.Scene {
         return spawnPoints[id];
     }
 
-
-
+    /**
+     * This method is used to return the coordinates of locations for the house.
+     * 
+     * @param {number} id The id of the house location.
+     * 
+     * @returns {object} The coordinates of the house location.
+     */
     getHouseCoordinates(id) {
         var coordinates = [
             {

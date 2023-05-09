@@ -34,6 +34,7 @@ class Menu extends rune.scene.Scene {
      */
     init() {
         super.init();
+
         this.m_initSound();
         this.m_initMusic();
         this.m_initBackground();
@@ -61,7 +62,7 @@ class Menu extends rune.scene.Scene {
         this.m_sound.volume = 0.2;
     }
     m_initMusic() {
-        this.m_music = this.application.sounds.music.get("menu_music", true);
+        this.m_music = this.application.sounds.master.get("menu_music", true);
         this.m_music.volume = 0.1;
         this.m_music.loop = true;
         this.m_music.play();
@@ -109,10 +110,10 @@ class Menu extends rune.scene.Scene {
     m_onMenuSelect(element) {
         switch (element.text) {
             case "Single Player":
-                this.application.scenes.load( [new Game(1)] );
+                this.application.scenes.load( [new Game(1, this.m_music)] );
                 break;   
             case "Multiplayer":
-                this.application.scenes.load( [new Game(2)] );
+                this.application.scenes.load( [new Game(2, this.m_music)] );
                 break;
             case "How to play":
                 this.application.scenes.load( [new How_to_play()] );

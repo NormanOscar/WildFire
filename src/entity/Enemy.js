@@ -1,5 +1,5 @@
 class Enemy extends rune.display.Sprite {
-    constructor(x, y) {
+    constructor(x, y, area, targetPlayer) {
         super(x, y, 32, 32, "enemy1");
         this.startPos = {
             x: x,
@@ -7,28 +7,24 @@ class Enemy extends rune.display.Sprite {
         };
         this.spawnPoint = null;
         this.target = null;
+        this.targetPlayer = targetPlayer;
         this.path = null;
         this.moving = false;
         this.tweens = new rune.tween.Tweens();
         this.deathSound = null;
+        this.area = area;
     }
 
     init() {
         super.init();
         this.initSounds();
-        this.hitbox.debug = true;
+        this.hitbox.debug = false;
         this.hitbox.debugColor = 'red';
         this.hitbox.set(7, 7, 16, 16);
-
-        this.initTimer();
     }
 
     initSounds() {
         this.deathSound = this.application.sounds.sound.get("enemy_die", false);
-    }
-
-    initTimer() {
-
     }
 
     update(step) {
@@ -56,6 +52,17 @@ class Enemy extends rune.display.Sprite {
                 },
                 easing: rune.tween.Linear.easeIn
             })
+        }
+
+        if (this.area.m_nrOfPlayers == 2) {
+            if (this.targetPlayer.status == 'dead') {
+                if (this.target == 0) {
+                    this.target = this.area.m_players[1].playerID;
+                }
+                if (this.target == 1) {
+                    this.target = this.area.m_players[0].playerID;
+                }
+            }
         }
     }
 

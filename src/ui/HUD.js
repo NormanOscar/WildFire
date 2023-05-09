@@ -1,19 +1,29 @@
 class HUD extends rune.display.DisplayObjectContainer {
-    constructor(score) {
-        super(0, 0, 1280, 720, "");
-        this.m_score = score;
+    constructor(area, score) {
+        super(0, 0, this.application.screen.width, this.application.screen.height);
+        this.m_scoreCounter = score;
+        this.m_miniMap = null;
+        this.area = area;
     }
 
     init() {
         super.init();
+        //this.m_initScore();
+        this.m_initMiniMap();
+    }
+
+    m_initMiniMap() {
+        if (this.m_miniMap == null) {
+            this.m_miniMap = new MiniMap(this.area);
+            this.addChild(this.m_miniMap);
+        }
     }
 
     m_initScore() {
-        if (this.m_score == null) {
-            this.m_score = new Score(this.m_score);
-            this.m_score.x = 500;
-            this.m_score.y = 200;
-            this.addChild(this.m_score);
+        if (this.m_scoreCounter == null) {
+            this.m_scoreCounter = new Score(this.m_scoreCounter);
+
+            this.addChild(this.m_scoreCounter);
         }
     }
 

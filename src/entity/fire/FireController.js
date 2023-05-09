@@ -34,7 +34,6 @@ class FireController {
             }
         }
 
-        console.log(this.activeFires);
         if (this.spawnPointsIndex <= 3) {
             var fires = new Fires(this.getFireSpawnPoints(this.spawnPointsIndex).x,this.getFireSpawnPoints(this.spawnPointsIndex).y, this.area);
             this.activeFires.push(fires);

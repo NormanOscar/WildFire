@@ -8,7 +8,7 @@ class Fire extends rune.display.Graphic {
         super.init();
         this.initSounds();
 
-        this.hitbox.debug = true;
+        this.hitbox.debug = false;
         this.hitbox.debugColor = 'purple';
     }
 

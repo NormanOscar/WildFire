@@ -7,7 +7,7 @@ class House extends rune.display.Graphic {
         super.init();
         this.immovable = true;
         this.hitbox.debugColor = 'orange';
-        this.hitbox.debug = true;
+        this.hitbox.debug = false;
         this.hitbox.set(5,75, 140, 100);
     }
 }

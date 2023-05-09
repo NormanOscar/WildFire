@@ -1,13 +1,13 @@
 class GameOver extends rune.scene.Scene {
     constructor(score, nr) {
         super();
-
         this.score = score;
         this.m_nrOfPlayers = nr || 2;
     }
 
     init() {
         super.init();
+
         this.m_initBackground();
         this.m_initTitle();
         this.m_initSound();
@@ -27,7 +27,7 @@ class GameOver extends rune.scene.Scene {
     }
 
     m_initTitle() {
-        var m_title = new rune.display.Graphic(this.cameras.getCameraAt(0).width / 2 - 134, 20, 268, 51, "gameOver");
+        var m_title = new rune.display.Graphic(this.cameras.getCameraAt(0).width / 2 - 134, 10, 268, 51, "gameOver");
         this.stage.addChild(m_title);
     }
 
