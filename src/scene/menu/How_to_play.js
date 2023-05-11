@@ -1,7 +1,3 @@
-//------------------------------------------------------------------------------
-// Constructor scope
-//------------------------------------------------------------------------------
-
 /**
  * Creates a new object.
  *
@@ -188,8 +184,8 @@
         this.m_menu = new rune.ui.VTMenu();
         this.m_menu.onSelect(this.m_onMenuSelect, this);
         this.m_menu.add("Back");
-        this.m_menu.x = 8;
-        this.m_menu.y = 20;
+        this.m_menu.x = this.cameras.getCameraAt(0).centerX - this.m_menu.width / 2;
+        this.m_menu.y = this.cameras.getCameraAt(0).height - this.m_menu.height;
         this.stage.addChild(this.m_menu);
     }
 

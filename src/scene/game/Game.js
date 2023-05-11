@@ -21,25 +21,30 @@ class Game extends rune.scene.Scene {
     constructor(nr, menuMusic) {
         super();
 
-        menuMusic.stop();
+        if (menuMusic != null) {
+            menuMusic.stop();
+        }
         this.m_nrOfPlayers = nr || 1;
         this.m_players = new Array();
         this.m_enemies = new Array();
-        this.trees = new Array();
-        this.scoreCounter = null;
         this.scoreTimer = null;
         this.m_totalScore = 0;
         this.m_nrOfOpenGates = 4;
         this.enemySpawnTimer = null;
         this.enemyPathTimer = null;
         this.enemyTimerRepeat = Infinity;
-        this.enemySpawnRate = 1000;
+        this.enemySpawnRate = 1500;
         this.m_music = null;
         this.fireController = null;
         this.houses = new Array();
         this.totalFires = 0;
         this.m_nrOfPlayersAlive = nr || 1;
-        this.hud = null;
+        this.mainHUD = null;
+        this.p1HUD = null;
+        this.p2HUD = null;
+        this.splittedMinimap = null;
+        this.splittedMinimapFrame = null;
+        this.scoreCounter = null;
 
         this.m_cams = new Array();
         this.camera_is_splitted = false;
@@ -65,15 +70,12 @@ class Game extends rune.scene.Scene {
         this.initPlayers();
         this.initHouses();
 
-        //this.initHUD();
-        this.createMiniMap();
+        this.initMainHUD();
 
         this.fireController = new FireController(this);
 
         this.initScoreTimer();
-        this.initScoreCounter();
         this.initEnemySpawnTimer();
-        this.updateEnemyPathTimer();
     }
 
     /**
@@ -96,10 +98,30 @@ class Game extends rune.scene.Scene {
         this.cameras.addCamera(this.m_cams[2]);
         this.cameras.getCameraAt(2).bounderies = new rune.geom.Rectangle(0, 0, 992, 672);
     }
-    
-    initHUD() {
-        this.hud = new HUD();
 
+    initMainHUD() {
+        this.mainHUD = new MainHUD(this, this.application.screen.width, this.application.screen.height);
+        this.cameras.getCameraAt(0).addChild(this.mainHUD);
+    }
+
+    initP1HUD() {
+        this.p1HUD = new SplittedHUD(this, this.application.screen.width / 2, this.application.screen.height, 1);
+        this.cameras.getCameraAt(1).addChild(this.p1HUD);
+    }
+    
+    initP2HUD() {
+        this.p2HUD = new SplittedHUD(this, this.application.screen.width / 2, this.application.screen.height, 2);
+        this.cameras.getCameraAt(2).addChild(this.p2HUD);
+    }
+
+    initSplittedMiniMap() {
+        this.splittedMinimap = new Minimap(this, this.application.screen.centerX - 46.5, 2, 'splitted');
+        this.application.screen.addChild(this.splittedMinimap);
+    }
+
+    initSplittedScoreCounter() {
+        this.splittedScoreCounter = new Score('Score: ' + this.m_totalScore.toString());
+        this.application.screen.addChild(this.splittedScoreCounter);
     }
 
     /**
@@ -108,25 +130,25 @@ class Game extends rune.scene.Scene {
      * @returns {undefined}
      */
     initPlayers() {
-            if (this.m_nrOfPlayers == 1) {
-                var player = new Player(448, 320, 0, this);
-                this.m_players.push(player);
-                this.m_cams[0].targets.add(player);
-                this.stage.addChild(player);
-            } 
-            else if (this.m_nrOfPlayers == 2){
-                var player1 = new Player(448, 320, 0, this);
-                this.m_players.push(player1);
-                this.m_cams[0].targets.add(player1);
-                this.m_cams[1].targets.add(player1);
-                this.stage.addChild(player1);
-                
-                var player2 = new Player(512, 320, 1, this);
-                this.m_players.push(player2);
-                this.m_cams[0].targets.add(player2);
-                this.m_cams[2].targets.add(player2);
-                this.stage.addChild(player2);
-            }
+        if (this.m_nrOfPlayers == 1) {
+            var player = new Player(448, 320, 0, this);
+            this.m_players.push(player);
+            this.m_cams[0].targets.add(player);
+            this.stage.addChild(player);
+        }
+        else if (this.m_nrOfPlayers == 2) {
+            var player1 = new Player(448, 320, 0, this);
+            this.m_players.push(player1);
+            this.m_cams[0].targets.add(player1);
+            this.m_cams[1].targets.add(player1);
+            this.stage.addChild(player1);
+
+            var player2 = new Player(512, 320, 1, this);
+            this.m_players.push(player2);
+            this.m_cams[0].targets.add(player2);
+            this.m_cams[2].targets.add(player2);
+            this.stage.addChild(player2);
+        }
 
     }
 
@@ -157,31 +179,6 @@ class Game extends rune.scene.Scene {
     }
 
     /**
-     * This method is used to initialize the score counter.
-     * 
-     * @returns {undefined}
-     */
-    initScoreCounter() {
-        var text = 'Score: ' + this.m_totalScore.toString();
-        this.scoreCounter = new rune.text.BitmapField(text, rune.text.BitmapFormat.FONT_MEDIUM);
-
-        this.scoreCounter.x = this.cameras.getCameraAt(0).viewport.x + (this.cameras.getCameraAt(0).viewport.width / 2) - this.scoreCounter.width / 2;
-        this.scoreCounter.y = this.cameras.getCameraAt(0).viewport.height - this.scoreCounter.height;
-
-        this.stage.addChild(this.scoreCounter);
-    }
-
-    /**
-     * This method is used to update the score counter.
-     * 
-     * @returns {undefined}
-     */
-    updateScoreCounter() {
-        var text = 'Score: ' + this.m_totalScore.toString();
-        this.scoreCounter.text = text;
-    }
-
-    /**
      * This method is used to create houses.
      * 
      * @returns {undefined}
@@ -207,16 +204,6 @@ class Game extends rune.scene.Scene {
     }
 
     /**
-     * This method is used to create a minimap.
-     * 
-     * @returns {undefined}
-     */
-    createMiniMap() {
-        var miniMap = new MiniMap(this);
-        this.cameras.getCameraAt(0).addChild(miniMap);
-
-    }
-    /**
      * This method is used to initiate the enemy spawn timer.
      * 
      * @returns {undefined}
@@ -231,31 +218,6 @@ class Game extends rune.scene.Scene {
     }
 
     /**
-     * This method is used to initiate the enemy path timer.
-     * 
-     * @returns {undefined}
-     */
-    updateEnemyPathTimer() {
-        this.enemyPathTimer = this.timers.create({
-            duration: 1000,
-            repeat: Infinity,
-            onTick: this.updateEnemyPath,
-            scope: this
-        }, true);
-    }
-
-    /**
-     * This method is used to update the path of all enemies.
-     * 
-     * @returns {undefined}
-     */
-    updateEnemyPath() {
-        for (const enemy of this.m_enemies) {
-            enemy.path = this.stage.map.back.getPath(enemy.centerX, enemy.centerY, this.m_players[enemy.target].centerX, this.m_players[enemy.target].centerY, true);
-        }
-    }
-
-    /**
      * This method is used to create a new enemy and add it to the stage.
      * 
      * @returns {undefined}
@@ -266,9 +228,9 @@ class Game extends rune.scene.Scene {
         var enemy = new Enemy(this.getEnemySpawnPoints(r).x, this.getEnemySpawnPoints(r).y, this, this.m_players[targetIndex]);
         enemy.target = targetIndex;
         this.stage.addChild(enemy);
-                
+
         if (this.m_players[targetIndex].status != 'dead') {
-            enemy.path = this.stage.map.back.getPath(enemy.centerX, enemy.centerY, this.m_players[enemy.target].centerX, this.m_players[enemy.target].centerY, true);
+            enemy.path = this.stage.map.back.getPath(enemy.centerX, enemy.centerY, enemy.targetPlayer.centerX, enemy.targetPlayer.centerY, true);
         }
 
         this.m_enemies.push(enemy);
@@ -296,7 +258,7 @@ class Game extends rune.scene.Scene {
             if (this.m_nrOfPlayers == 2) {
                 this.m_players[0].status == 'dead' && this.m_players[1].status == 'dead' ? this.allPlayersDead = true : this.allPlayersDead = false;
             } else {
-                player.status == 'dead'? this.allPlayersDead = true : this.allPlayersDead = false;
+                player.status == 'dead' ? this.allPlayersDead = true : this.allPlayersDead = false;
             }
         }
 
@@ -305,17 +267,12 @@ class Game extends rune.scene.Scene {
             this.timers.create({
                 duration: 1000,
                 onComplete: function () {
-                    this.application.scenes.load( [new GameOver(this.m_totalScore, this.m_nrOfPlayers)] );
+                    this.application.scenes.load([new GameOver(this.m_totalScore, this.m_nrOfPlayers)]);
                     this.m_music.stop();
                 },
                 scope: this
             }, true);
         }
-
-        this.updateScoreCounter();
-
-        this.scoreCounter.x = this.cameras.getCameraAt(0).viewport.centerX - this.scoreCounter.width / 2;
-        this.scoreCounter.y = this.cameras.getCameraAt(0).viewport.y + this.cameras.getCameraAt(0).viewport.height - this.scoreCounter.height;
     }
 
     /**
@@ -334,6 +291,12 @@ class Game extends rune.scene.Scene {
                 this.cameras.getCameraAt(1).visible = true;
                 this.cameras.getCameraAt(2).visible = true;
 
+                this.mainHUD.dispose();
+                this.initP1HUD();
+                this.initP2HUD();
+                this.initSplittedMiniMap();
+                this.initSplittedScoreCounter();
+
                 this.m_camera_is_splitted = true;
             }
         }
@@ -344,6 +307,14 @@ class Game extends rune.scene.Scene {
                 this.cameras.getCameraAt(0).visible = true;
                 this.cameras.getCameraAt(1).visible = false;
                 this.cameras.getCameraAt(2).visible = false;
+
+                this.p1HUD.dispose();
+                this.p2HUD.dispose();
+                this.splittedMinimap.frame.dispose();
+                this.splittedMinimap.dispose();
+                this.splittedScoreCounter.dispose();
+                this.initMainHUD();
+
                 this.m_camera_is_splitted = false;
             }
         }
@@ -360,18 +331,18 @@ class Game extends rune.scene.Scene {
         var spawnPoints = [
             {
                 x: 480,
-                y: 64
+                y: 32
             },
             {
-                x: 896,
+                x: 928,
                 y: 320
             },
             {
                 x: 480,
-                y: 576
+                y: 608
             },
             {
-                x: 64,
+                x: 32,
                 y: 320
             }
         ]

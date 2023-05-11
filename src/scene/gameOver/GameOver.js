@@ -33,13 +33,15 @@ class GameOver extends rune.scene.Scene {
 
     m_initScore() {
         var m_scoreTitle = new rune.text.BitmapField('Score: ', rune.text.BitmapFormat.FONT_MEDIUM);
+        m_scoreTitle.width = m_scoreTitle.textWidth;
         this.stage.addChild(m_scoreTitle);
-        m_scoreTitle.x = this.cameras.getCameraAt(0).centerX - 20;
-        m_scoreTitle.y = this.cameras.getCameraAt(0).centerY - 20;
+        m_scoreTitle.centerX = this.cameras.getCameraAt(0).centerX;
+        m_scoreTitle.centerY = this.cameras.getCameraAt(0).centerY - 20;
         
         var m_scoreText = new rune.text.BitmapField(this.score.toString(), rune.text.BitmapFormat.FONT_MEDIUM);
+        m_scoreText.width = m_scoreText.textWidth;
         this.stage.addChild(m_scoreText);
-        m_scoreText.x = this.cameras.getCameraAt(0).centerX - 5;
+        m_scoreText.centerX = this.cameras.getCameraAt(0).centerX;
         m_scoreText.y = this.cameras.getCameraAt(0).centerY;
     }
 
@@ -82,7 +84,7 @@ class GameOver extends rune.scene.Scene {
             }
         }
         
-        if (this.keyboard.justPressed("SPACE") || this.gamepads.justPressed(1)) {
+        if (this.keyboard.justPressed("SPACE") || this.gamepads.justPressed(0)) {
             this.m_menu.select();
         }
     }

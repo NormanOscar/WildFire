@@ -55,24 +55,18 @@ class Fires {
         if (this.status == 'active') {
             var r = Math.floor(Math.random() * this.m_fireDirections.length);
             var fireDirection = this.m_fireDirections[r];
-    
-            var tileX = this.tileArr[this.tileArr.length -1].x + fireDirection.x;
-            var tileY = this.tileArr[this.tileArr.length -1].y + fireDirection.y;
-            var mapIndex = this.area.stage.map.back.getTileIndexOf(tileX, tileY);
-            
-            /* for (let i = 0; i < this.tileArr.length; i++) {
-                if (this.area.stage.map.back.getTileValueAt(mapIndex) == 23 || this.tileArr[i].x == tileX) {
+
+            if (this.tileArr.length != 0) {
+                var tileX = this.tileArr[this.tileArr.length -1].x + fireDirection.x;
+                var tileY = this.tileArr[this.tileArr.length -1].y + fireDirection.y;
+                var mapIndex = this.area.stage.map.back.getTileIndexOf(tileX, tileY);
+        
+                if (this.area.stage.map.back.getTileValueAt(mapIndex) == 23) {
                     var fire = new Fire(tileX, tileY);
+                    this.area.totalFires++;
                     this.tileArr.push(fire);
                     this.area.stage.addChild(fire);
                 }
-            } */
-    
-            if (this.area.stage.map.back.getTileValueAt(mapIndex) == 23) {
-                var fire = new Fire(tileX, tileY);
-                this.area.totalFires++;
-                this.tileArr.push(fire);
-                this.area.stage.addChild(fire);
             }
         }
     }
