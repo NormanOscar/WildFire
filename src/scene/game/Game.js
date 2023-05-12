@@ -224,16 +224,14 @@ class Game extends rune.scene.Scene {
      */
     createEnemy() {
         const r = Math.floor(Math.random() * this.m_nrOfOpenGates);
-        var targetIndex = Math.floor(Math.random() * this.m_nrOfPlayersAlive);
-        var enemy = new Enemy(this.getEnemySpawnPoints(r).x, this.getEnemySpawnPoints(r).y, this, this.m_players[targetIndex]);
-        enemy.target = targetIndex;
-        this.stage.addChild(enemy);
-
+        var targetIndex = Math.floor(Math.random() * this.m_players.length);
+        
         if (this.m_players[targetIndex].status != 'dead') {
+            var enemy = new Enemy(this.getEnemySpawnPoints(r).x, this.getEnemySpawnPoints(r).y, this, this.m_players[targetIndex]);
+            this.stage.addChild(enemy);
             enemy.path = this.stage.map.back.getPath(enemy.centerX, enemy.centerY, enemy.targetPlayer.centerX, enemy.targetPlayer.centerY, true);
+            this.m_enemies.push(enemy);
         }
-
-        this.m_enemies.push(enemy);
     }
 
     /**

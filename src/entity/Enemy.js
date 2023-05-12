@@ -6,7 +6,6 @@ class Enemy extends rune.display.Sprite {
             y: y
         };
         this.spawnPoint = null;
-        this.target = null;
         this.targetPlayer = targetPlayer;
         this.path = null;
         this.moving = false;
@@ -24,28 +23,12 @@ class Enemy extends rune.display.Sprite {
         this.debug = true;
         this.initSounds();
         this.setHitbox();
-
-        //this.updateEnemyPathTimer();
     }
 
     setHitbox() {
         this.hitbox.debugColor = 'blue';
         this.hitbox.debug = true;
         this.hitbox.set(7, 7, 16, 16);
-    }
-
-    /**
-     * This method is used to initiate the enemy path timer.
-     * 
-     * @returns {undefined}
-     */
-    updateEnemyPathTimer() {
-        this.pathTimer = this.area.timers.create({
-            duration: 10,
-            repeat: Infinity,
-            onTick: this.updatePath,
-            scope: this
-        }, true);
     }
 
     initSounds() {
@@ -97,14 +80,12 @@ class Enemy extends rune.display.Sprite {
 
     changeTarget() {
         if (this.targetPlayer.status == 'dead') {
-            this.target = this.target == 0 ? this.area.m_players[1].playerID : this.area.m_players[0].playerID;
-
-            /* if (this.target == 0) {
-                this.target = this.area.m_players[1].playerID;
+            if (this.targetPlayer.playerID == 0) {
+                this.targetPlayer = this.area.m_players[1];
             }
-            if (this.target == 1) {
-                this.target = this.area.m_players[0].playerID;
-            } */
+            else if (this.targetPlayer.playerID == 1) {
+                this.targetPlayer = this.area.m_players[0];
+            }
         }
     }
 

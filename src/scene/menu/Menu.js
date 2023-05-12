@@ -72,7 +72,6 @@ class Menu extends rune.scene.Scene {
     m_initTitle() {
         var m_title = new rune.display.Graphic(this.cameras.getCameraAt(0).width / 2 - 116, 20, 232, 51, "title");
         this.stage.addChild(m_title);
-        console.log(m_title.x, m_title.x + m_title.width);
     }
 
     m_updateInput() {
