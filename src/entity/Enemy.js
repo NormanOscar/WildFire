@@ -1,6 +1,6 @@
 class Enemy extends rune.display.Sprite {
-    constructor(x, y, area, targetPlayer) {
-        super(x, y, 32, 32, "enemy1");
+    constructor(x, y, area, targetPlayer, speed) {
+        super(x, y, 32, 32, "enemy");
         this.startPos = {
             x: x,
             y: y
@@ -15,20 +15,26 @@ class Enemy extends rune.display.Sprite {
 
         this.pathTimer = null;
 
-        this.speed = 2;
+        this.speed = speed;
     }
 
     init() {
         super.init();
-        this.debug = true;
+        //this.debug = true;
         this.initSounds();
+        this.animate();
         this.setHitbox();
+    }
+
+    animate() {
+        this.animation.create('walking', [0, 1, 2, 3], 4, true);
+        this.animation.play('walking');
     }
 
     setHitbox() {
         this.hitbox.debugColor = 'blue';
-        this.hitbox.debug = true;
-        this.hitbox.set(7, 7, 16, 16);
+        //this.hitbox.debug = true;
+        this.hitbox.set(5, 9, 20, 20);
     }
 
     initSounds() {

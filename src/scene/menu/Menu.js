@@ -20,6 +20,8 @@ class Menu extends rune.scene.Scene {
         this.m_menu = null;
         this.m_sound = null;
         this.m_music = null;
+        this.menuSelected = 0;
+        this.menuBtns = [];
     }
 
     /**
@@ -34,7 +36,6 @@ class Menu extends rune.scene.Scene {
         this.m_initSound();
         this.m_initMusic();
         this.m_initBackground();
-        this.m_initTitle();
         this.m_initMenu();
         //this.m_initSingleHs();
         //this.m_initMultiHs();
@@ -69,39 +70,62 @@ class Menu extends rune.scene.Scene {
         this.stage.addChild(m_background);
     }
 
-    m_initTitle() {
-        var m_title = new rune.display.Graphic(this.cameras.getCameraAt(0).width / 2 - 116, 20, 232, 51, "title");
-        this.stage.addChild(m_title);
-    }
-
     m_updateInput() {
         if (this.keyboard.justPressed("w") || this.gamepads.get(0).stickLeftJustUp || this.gamepads.get(0).justPressed(12)) {
-            if (this.m_menu.up()) {
-                this.m_sound.play();
-            }
+            this.menuBtns[this.menuSelected].selected = false;
+            this.menuSelected == 0 ? this.menuSelected = 2 : this.menuSelected--;
+            this.menuBtns[this.menuSelected].selected = true;
+            this.m_sound.play();
         }
         
         if (this.keyboard.justPressed("s") || this.gamepads.get(0).stickLeftJustDown || this.gamepads.get(0).justPressed(13)) {
-            if (this.m_menu.down()) {
-                this.m_sound.play();
-            }
+            this.menuBtns[this.menuSelected].selected = false;
+            this.menuSelected == 2 ? this.menuSelected = 0 : this.menuSelected++;
+            this.menuBtns[this.menuSelected].selected = true;
+            this.m_sound.play();
         }
         
         if (this.keyboard.justPressed("SPACE") || this.gamepads.justPressed(0)) {
-            this.m_menu.select();
+            if (this.menuSelected == 0) {
+                this.application.scenes.load( [new Game(1, this.m_music)] );
+            } else if (this.menuSelected == 1) {
+                this.application.scenes.load( [new Game(2, this.m_music)] );
+            } else if (this.menuSelected == 2) {
+                this.application.scenes.load( [new HowToPlay()] );
+            }
         }
     }
 
     m_initMenu() {
-        this.m_menu = new rune.ui.VTMenu();
+        this.singleplayerBtn = new MenuBtn("singleplayer_btn");
+        this.singleplayerBtn.centerX = this.application.screen.centerX;
+        this.singleplayerBtn.y = 70;
+        this.singleplayerBtn.selected = true;
+        this.stage.addChild(this.singleplayerBtn);
+        this.menuBtns.push(this.singleplayerBtn);
+
+        this.coOpBtn = new MenuBtn("co-op_btn");
+        this.coOpBtn.centerX = this.application.screen.centerX;
+        this.coOpBtn.y = 110;
+        this.stage.addChild(this.coOpBtn);
+        this.menuBtns.push(this.coOpBtn);
+
+        this.howToPlayBtn = new MenuBtn("how_to_play_btn");
+        this.howToPlayBtn.centerX = this.application.screen.centerX;
+        this.howToPlayBtn.y = 150;
+        this.stage.addChild(this.howToPlayBtn);
+        this.menuBtns.push(this.howToPlayBtn);
+
+        /* this.m_menu = new rune.ui.VTMenu();
         this.m_menu.onSelect(this.m_onMenuSelect, this);
         this.m_menu.add("Single Player");
         this.m_menu.add("Co-Op");
         this.m_menu.add("How to play");
         this.m_menu.x = (this.cameras.getCameraAt(0).width / 2) - (this.m_menu.width / 2);
-        this.m_menu.y = 120;
-        this.stage.addChild(this.m_menu);
+        this.m_menu.y = 100;
+        this.stage.addChild(this.m_menu); */
     }
+
 
     m_onMenuSelect(element) {
         switch (element.text) {
@@ -112,7 +136,7 @@ class Menu extends rune.scene.Scene {
                 this.application.scenes.load( [new Game(2, this.m_music)] );
                 break;
             case "How to play":
-                this.application.scenes.load( [new How_to_play()] );
+                this.application.scenes.load( [new HowToPlay()] );
                 break;
         }
     }

@@ -267,7 +267,7 @@ class Player extends rune.display.Sprite {
      */
     updateKeyboard() {
         if (this.area.m_nrOfPlayers == 1 || this.area.m_players[this.coPlayerID].status == 'dead') {
-            if (this.keyboard.justPressed(this.getKeyboardControls(0).shootSecond)) {
+            if (this.keyboard.justPressed(this.getKeyboardControls(this.playerID).shootSecond)) {
                 this.shootSecond();
                 this.shootSecondSound.play();
             }   
@@ -352,7 +352,7 @@ class Player extends rune.display.Sprite {
         this.shootID == 0 ? this.shootID = 1 : this.shootID = 0;
 
         this.changeBulletDirection();
-        var bullet = new Bullet(this.bulletCoordinates[this.shootID].x, this.bulletCoordinates[this.shootID].y, 1, this.direction, this.area, this);
+        var bullet = new Bullet(this.bulletCoordinates[this.shootID].x, this.bulletCoordinates[this.shootID].y, this.coPlayerID, this.direction, this.area, this);
 
         this.stage.addChild(bullet);
         this.bullets.push(bullet);
@@ -433,6 +433,7 @@ class Player extends rune.display.Sprite {
                 left: 'left',
                 revive: 'p',
                 shoot: 'ENTER',
+                shootSecond: 'SPACE'
             }
         ]
         return controls[id];

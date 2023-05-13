@@ -1,15 +1,16 @@
 class GameOver extends rune.scene.Scene {
     constructor(score, nr) {
         super();
-        this.score = score;
-        this.m_nrOfPlayers = nr || 2;
+        this.score = score || 1000;
+        this.m_nrOfPlayers = nr || 1;
+        this.menuSelected = 0;
+        this.menuBtns = [];
     }
 
     init() {
         super.init();
 
         this.m_initBackground();
-        this.m_initTitle();
         this.m_initSound();
         this.m_initScore();
 
@@ -22,48 +23,38 @@ class GameOver extends rune.scene.Scene {
     }
 
     m_initBackground() {
-        var m_background = new rune.display.Sprite(0, 0, 400, 225, "menu_background");
+        var m_background = new rune.display.Sprite(0, 0, 400, 225, "gameover_background");
         this.stage.addChild(m_background);
     }
 
-    m_initTitle() {
-        var m_title = new rune.display.Graphic(this.cameras.getCameraAt(0).width / 2 - 134, 10, 268, 51, "gameOver");
-        this.stage.addChild(m_title);
-    }
-
     m_initScore() {
-        var m_scoreTitle = new rune.text.BitmapField('Score: ', rune.text.BitmapFormat.FONT_MEDIUM);
+        var m_scoreTitle = new rune.text.BitmapField('Score:', rune.text.BitmapFormat.FONT_MEDIUM);
         m_scoreTitle.width = m_scoreTitle.textWidth;
         this.stage.addChild(m_scoreTitle);
-        m_scoreTitle.centerX = this.cameras.getCameraAt(0).centerX;
-        m_scoreTitle.centerY = this.cameras.getCameraAt(0).centerY - 20;
+        m_scoreTitle.centerX = this.application.screen.centerX;
+
+        m_scoreTitle.centerY = this.application.screen.centerY - 20;
         
         var m_scoreText = new rune.text.BitmapField(this.score.toString(), rune.text.BitmapFormat.FONT_MEDIUM);
         m_scoreText.width = m_scoreText.textWidth;
         this.stage.addChild(m_scoreText);
-        m_scoreText.centerX = this.cameras.getCameraAt(0).centerX;
-        m_scoreText.y = this.cameras.getCameraAt(0).centerY;
+        m_scoreText.centerX = this.application.screen.centerX;
+        m_scoreText.y = this.application.screen.centerY;
     }
 
     m_initMenu() {
-        this.m_menu = new rune.ui.VTMenu();
-        this.m_menu.onSelect(this.m_onMenuSelect, this);
-        this.m_menu.add("Play again");
-        this.m_menu.add("Main menu");
-        this.m_menu.x = (this.cameras.getCameraAt(0).width / 2) - (this.m_menu.width / 2);
-        this.m_menu.y = this.cameras.getCameraAt(0).centerY + 70;
-        this.stage.addChild(this.m_menu);
-    }
+        this.playAgainBtn = new MenuBtn("play_again_btn");
+        this.playAgainBtn.centerX = this.application.screen.centerX;
+        this.playAgainBtn.y = this.application.screen.height - 75;
+        this.playAgainBtn.selected = true;
+        this.stage.addChild(this.playAgainBtn);
+        this.menuBtns.push(this.playAgainBtn);
 
-    m_onMenuSelect(element) {
-        switch (element.text) {
-            case "Play again":
-                this.application.scenes.load( [new Game(this.m_nrOfPlayers)] );
-                break;
-            case "Main menu":
-                this.application.scenes.load( [new Menu()] );
-                break;
-        }
+        this.mainMenuBtn = new MenuBtn("main_menu_btn");
+        this.mainMenuBtn.centerX = this.application.screen.centerX;
+        this.mainMenuBtn.y = this.application.screen.height - 40;
+        this.stage.addChild(this.mainMenuBtn);
+        this.menuBtns.push(this.mainMenuBtn);
     }
 
     update() {
@@ -72,20 +63,26 @@ class GameOver extends rune.scene.Scene {
     }
 
     m_updateInput() {
-        if (this.keyboard.justPressed("w") || /* this.gamepads.get(0).stickLeft.y < 0 */ this.gamepads.get(0).justPressed(12)) {
-            if (this.m_menu.up()) {
-                this.m_sound.play();
-            }
+        if (this.keyboard.justPressed("w") || this.gamepads.get(0).stickLeftJustUp || this.gamepads.get(0).justPressed(12)) {
+            this.menuBtns[this.menuSelected].selected = false;
+            this.menuSelected == 0 ? this.menuSelected++ : this.menuSelected--;
+            this.menuBtns[this.menuSelected].selected = true;
+            this.m_sound.play();
         }
         
-        if (this.keyboard.justPressed("s") || /* this.gamepads.get(0).stickLeft.y > 0 */ this.gamepads.get(0).justPressed(13)) {
-            if (this.m_menu.down()) {
-                this.m_sound.play();
-            }
+        if (this.keyboard.justPressed("s") || this.gamepads.get(0).stickLeftJustDown || this.gamepads.get(0).justPressed(13)) {
+            this.menuBtns[this.menuSelected].selected = false;
+            this.menuSelected == 1 ? this.menuSelected-- : this.menuSelected++;
+            this.menuBtns[this.menuSelected].selected = true;
+            this.m_sound.play();
         }
         
         if (this.keyboard.justPressed("SPACE") || this.gamepads.justPressed(0)) {
-            this.m_menu.select();
+            if (this.menuSelected == 0) {
+                this.application.scenes.load( [new Game(this.m_nrOfPlayers)] );
+            } else {
+                this.application.scenes.load( [new Menu()] );
+            }
         }
     }
 

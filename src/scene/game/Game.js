@@ -24,16 +24,16 @@ class Game extends rune.scene.Scene {
         if (menuMusic != null) {
             menuMusic.stop();
         }
+
         this.m_nrOfPlayers = nr || 1;
         this.m_players = new Array();
         this.m_enemies = new Array();
         this.scoreTimer = null;
         this.m_totalScore = 0;
-        this.m_nrOfOpenGates = 4;
-        this.enemySpawnTimer = null;
-        this.enemyPathTimer = null;
-        this.enemyTimerRepeat = Infinity;
+        this.m_nrOfOpenGates = 1;
         this.enemySpawnRate = 1500;
+        this.enemySpeed = 1.5;
+
         this.m_music = null;
         this.fireController = null;
         this.houses = new Array();
@@ -60,7 +60,10 @@ class Game extends rune.scene.Scene {
      */
     init() {
         super.init();
+        this.startGame();
+    }
 
+    startGame() {
         this.cameras.removeCameras(true);
 
         this.stage.map.load('map');
@@ -209,9 +212,9 @@ class Game extends rune.scene.Scene {
      * @returns {undefined}
      */
     initEnemySpawnTimer() {
-        this.enemySpawnTimer = this.timers.create({
+        this.timers.create({
             duration: this.enemySpawnRate,
-            repeat: this.enemyTimerRepeat,
+            repeat: Infinity,
             onTick: this.createEnemy,
             scope: this
         }, true);
@@ -223,11 +226,12 @@ class Game extends rune.scene.Scene {
      * @returns {undefined}
      */
     createEnemy() {
+        console.log(this.m_nrOfOpenGates);
         const r = Math.floor(Math.random() * this.m_nrOfOpenGates);
         var targetIndex = Math.floor(Math.random() * this.m_players.length);
         
         if (this.m_players[targetIndex].status != 'dead') {
-            var enemy = new Enemy(this.getEnemySpawnPoints(r).x, this.getEnemySpawnPoints(r).y, this, this.m_players[targetIndex]);
+            var enemy = new Enemy(this.getEnemySpawnPoints(r).x, this.getEnemySpawnPoints(r).y, this, this.m_players[targetIndex], this.enemySpeed);
             this.stage.addChild(enemy);
             enemy.path = this.stage.map.back.getPath(enemy.centerX, enemy.centerY, enemy.targetPlayer.centerX, enemy.targetPlayer.centerY, true);
             this.m_enemies.push(enemy);
@@ -244,6 +248,13 @@ class Game extends rune.scene.Scene {
      */
     update(step) {
         super.update(step);
+
+        if (this.m_totalScore == 1000) {
+            this.m_nrOfOpenGates++;
+            this.enemySpawnRate -= 200;
+            this.enemyTimerRepeat;
+            this.enemySpeed += 0.1;
+        }
 
         if (this.m_players.length == 2) {
             this.calcCamera();

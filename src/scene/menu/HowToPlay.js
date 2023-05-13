@@ -9,7 +9,7 @@
  * 
  * Game scene.
  */
- class How_to_play extends rune.scene.Scene {
+ class HowToPlay extends rune.scene.Scene {
 
     /**
      * Calls the constructor method of the super class.
@@ -31,12 +31,11 @@
         super.init();
 
         this.m_initBackground();
-        this.m_initTitle();
 
         this.m_singlePlayerConrols();
         this.m_verticalLine();
         this.m_multiPlayerConrols();
-        this.m_initMenu();
+        this.m_initBackText();
     }
 
     /**
@@ -53,18 +52,13 @@
     }
 
     m_initBackground() {
-        var m_background = new rune.display.Sprite(0, 0, 400, 225, "menu_background");
+        var m_background = new rune.display.Sprite(0, 0, 400, 225, "how_to_play_background");
         this.stage.addChild(m_background);
-    }
-
-    m_initTitle() {
-        var m_title = new rune.display.Graphic(this.cameras.getCameraAt(0).width / 2 - 142, 5, 284, 39, "howToPlay");
-        this.stage.addChild(m_title);
     }
 
     m_updateInput() {        
         if (this.keyboard.justPressed("SPACE") || this.gamepads.justPressed(1)) {
-            this.m_menu.select();
+            this.application.scenes.load([new Menu()]);
         }
     }
 
@@ -126,7 +120,7 @@
     }
 
     m_multiPlayerConrols() {
-        this.m_initModeTitle("Multiplayer", this.cameras.getCameraAt(0).width / 4 * 3, 50);
+        this.m_initModeTitle("Co-Op", this.cameras.getCameraAt(0).width / 4 * 3, 50);
 
         var m_moveStick = new rune.display.Sprite(this.cameras.getCameraAt(0).width / 4 * 2 + 9, 60, 42, 42, "moveStick");
         m_moveStick.animation.create('move', [0, 1, 0 , 2, 0, 3, 0, 4], 4, true);
@@ -180,21 +174,12 @@
         this.stage.addChild(m_modeTitle);
     }
 
-    m_initMenu() {
-        this.m_menu = new rune.ui.VTMenu();
-        this.m_menu.onSelect(this.m_onMenuSelect, this);
-        this.m_menu.add("Back");
-        this.m_menu.x = this.cameras.getCameraAt(0).centerX - this.m_menu.width / 2;
-        this.m_menu.y = this.cameras.getCameraAt(0).height - this.m_menu.height;
-        this.stage.addChild(this.m_menu);
-    }
-
-    m_onMenuSelect(element) {
-        switch (element.text) {
-            case "Back":
-                this.application.scenes.load( [new Menu()] );
-                break;
-        }
+    m_initBackText() {
+        this.backText = new rune.text.BitmapField('Press A to go back', rune.text.BitmapFormat.FONT_MEDIUM);
+        this.backText.width = this.backText.textWidth;
+        this.backText.x = this.cameras.getCameraAt(0).centerX - this.backText.width / 2;
+        this.backText.y = this.cameras.getCameraAt(0).height - 20;
+        this.stage.addChild(this.backText);
     }
 
     /**
