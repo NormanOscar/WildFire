@@ -87,6 +87,7 @@ class Player extends rune.display.Sprite {
      * @returns {undefined}
      */
     setHitbox() {
+        this.hitbox.debug = true
         this.hitbox.set(6, 4, 19, 24);
     }
 

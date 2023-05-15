@@ -66,7 +66,10 @@ wildfire.data.Requests.prototype.m_construct = function() {
 	this.add("house1", "./../asset/png/houses/house1.png");
 	this.add("house2", "./../asset/png/houses/house2.png");
 	this.add("b-button", "./../asset/png/howToPlay/b-button.png");
+	this.add("fireman_shoot", "./../asset/png/howToPlay/fireman_shoot.png");
+	this.add("fireman_shootSecond", "./../asset/png/howToPlay/fireman_shootSecond.png");
 	this.add("moveStick", "./../asset/png/howToPlay/moveStick.png");
+	this.add("revive", "./../asset/png/howToPlay/revive.png");
 	this.add("reviveBtn", "./../asset/png/howToPlay/reviveBtn.png");
 	this.add("shoot", "./../asset/png/howToPlay/shoot.png");
 	this.add("shootBtn", "./../asset/png/howToPlay/shootBtn.png");

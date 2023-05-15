@@ -19,6 +19,10 @@
 
         this.m_menu = null;
         this.m_sound = null;
+        this.m_controlsPage = null;
+        this.m_rulesPage = null;
+
+        this.currentPage = 0;
     }
 
     /**
@@ -34,6 +38,24 @@
         this.m_initBackText();
 
         this.m_initControlsPage();
+        this.m_initRulesPage();
+
+        this.timers.create({
+            duration: 3000,
+            repeat: Infinity,
+            onTick: function() {
+                if (this.currentPage == 0) {
+                    this.m_controlsPage.visible = false;
+                    this.m_rulesPage.visible = true;
+                    this.currentPage = 1;
+                } else {
+                    this.m_controlsPage.visible = true;
+                    this.m_rulesPage.visible = false;
+                    this.currentPage = 0;
+                }
+            },
+            scope: this,
+        });
     }
 
     /**
@@ -61,50 +83,53 @@
     }
 
     m_initControlsPage() {
+        this.m_controlsPage = new rune.display.DisplayObjectContainer(0, 0, 400, 225);
         this.m_singlePlayerConrols();
         this.m_multiPlayerConrols();
+        this.stage.addChild(this.m_controlsPage);
     }
 
     m_singlePlayerConrols() {
-        this.m_initModeTitle("Single Player", this.application.width / 4, 45);
+        this.m_initModeTitle("Single Player", this.application.width / 4 + 10, 45);
         
-        this.createBtn(this.application.width / 4 - 70, 75, 42, 42, "moveStick", [0, 1, 0 , 2, 0, 3, 0, 4], 4);
-        this.createText(this.application.width / 4, 75, "MOVE");
-        this.createCharacterAnimation(this.application.width / 4 + 50, 75, 32, 32, "player0", [20,21,22,23], 8);
+        this.createBtn(this.application.width / 4 - 60, 75, 42, 42, "moveStick", [0, 1, 0 , 2, 0, 3, 0, 4], 4);
+        this.createText(this.application.width / 4 + 10, 75, "MOVE");
+        this.createCharacterAnimation(this.application.width / 4 + 40, 75, 32, 32, "player0", [20,21,22,23], 8);
 
-        this.createBtn(this.application.width / 4 - 70, 110, 32, 32, "shootBtn", [0, 1], 2);
-        this.createText(this.application.width / 4, 110, "BULLET");
-        this.createCharacterAnimation(this.application.width / 4 + 55, 110, 52, 27, "shoot", [0, 0, 0, 0, 1, 2, 3, 4], 8);
+        this.createBtn(this.application.width / 4 - 60, 110, 32, 32, "shootBtn", [0, 1], 2);
+        this.createText(this.application.width / 4 + 10, 110, "BULLET");
+        this.createCharacterAnimation(this.application.width / 4 + 45, 110, 52, 27, "shoot", [0, 0, 0, 0, 1, 2, 3, 4], 8);
 
-        this.createBtn(this.application.width / 4 - 70, 145, 32, 32, "shootSecondBtn", [0, 1], 2);
-        this.createText(this.application.width / 4, 145, "WATER");
-        this.createCharacterAnimation(this.application.width / 4 + 55, 145, 52, 27, "shootSecond", [0, 0, 0, 0, 1, 2, 3, 4], 8);
+        this.createBtn(this.application.width / 4 - 60, 145, 32, 32, "shootSecondBtn", [0, 1], 2);
+        this.createText(this.application.width / 4 + 10, 145, "WATER");
+        this.createCharacterAnimation(this.application.width / 4 + 45, 145, 52, 27, "shootSecond", [0, 0, 0, 0, 1, 2, 3, 4], 8);
     }
 
     m_multiPlayerConrols() {
-        this.m_initModeTitle("Co-Op", this.application.width / 4 * 3, 45);
+        this.m_initModeTitle("Co-Op", this.application.width / 4 * 3 - 10, 45);
         
-        this.createBtn(this.application.width / 4 * 3 - 70, 75, 42, 42, "moveStick", [0, 1, 0 , 2, 0, 3, 0, 4], 4);
-        this.createText(this.application.width / 4 * 3, 75, "MOVE");
-        this.createCharacterAnimation(this.application.width / 4 * 3 + 50, 75, 32, 32, "player1", [20,21,22,23], 8);
+        this.createBtn(this.application.width / 4 * 3 - 80, 75, 42, 42, "moveStick", [0, 1, 0 , 2, 0, 3, 0, 4], 4);
+        this.createText(this.application.width / 4 * 3 - 10, 75, "MOVE");
+        this.createCharacterAnimation(this.application.width / 4 * 3 + 40, 75, 32, 32, "player1", [20,21,22,23], 8);
 
-        this.createBtn(this.application.width / 4 * 3 - 70, 110, 32, 32, "shootBtn", [0, 1], 2);
-        this.createText(this.application.width / 4 * 3, 110, "SHOOT");
-        this.createCharacterAnimation(this.application.width / 4 * 3 + 55, 110, 52, 27, "shoot", [0, 0, 0, 0, 1, 2, 3, 4], 8);
+        this.createBtn(this.application.width / 4 * 3 - 80, 110, 32, 32, "shootBtn", [0, 1], 2);
+        this.createText(this.application.width / 4 * 3 - 10, 110, "SHOOT");
+        this.createCharacterAnimation(this.application.width / 4 * 3 + 45, 110, 52, 32, "fireman_shoot", [0, 0, 0, 0, 1, 2, 3, 4], 8);
 
-        this.createBtn(this.application.width / 4 * 3 - 70, 145, 32, 32, "shootSecondBtn", [0, 1], 2);
-        this.createText(this.application.width / 4 * 3, 145, "SHOOT SECOND");
-        this.createCharacterAnimation(this.application.width / 4 * 3 + 55, 145, 52, 27, "shootSecond", [0, 0, 0, 0, 1, 2, 3, 4], 8);
+        this.createBtn(this.application.width / 4 * 3 - 80, 145, 32, 32, "shootSecondBtn", [0, 1], 2);
+        this.createText(this.application.width / 4 * 3 - 10, 145, "SHOOT SECOND");
+        this.createCharacterAnimation(this.application.width / 4 * 3 + 45, 145, 52, 32, "fireman_shootSecond", [0, 0, 0, 0, 1, 2, 3, 4], 8);
 
-        this.createBtn(this.application.width / 4 * 3 - 70, 180, 32, 32, "reviveBtn", [0, 1], 2);
-        this.createText(this.application.width / 4 * 3, 180, "REVIVE");
+        this.createBtn(this.application.width / 4 * 3 - 80, 180, 32, 32, "reviveBtn", [0, 1], 2);
+        this.createText(this.application.width / 4 * 3 - 10, 180, "REVIVE");
+        this.createCharacterAnimation(this.application.width / 4 * 3 + 45, 180, 52, 32, "revive", [0, 1, 2, 3, 4, 4, 0, 0], 8);
     }
 
     createBtn(x, y, width, height, texture, animationFrames, animationFrameRate) {
         var m_button = new ControlBtn(0, 0, width, height, texture, animationFrames, animationFrameRate);
         m_button.centerX = x;
         m_button.centerY = y;
-        this.stage.addChild(m_button);
+        this.m_controlsPage.addChild(m_button);
     }
 
     createText(x, y, text) {
@@ -112,7 +137,7 @@
         m_text.width = m_text.textWidth;
         m_text.centerX = x;
         m_text.centerY = y;
-        this.stage.addChild(m_text);
+        this.m_controlsPage.addChild(m_text);
     }
 
     createCharacterAnimation(x, y, width, height, texture, animationFrames, animationFrameRate) {
@@ -120,21 +145,71 @@
         m_character.centerY = y;
         m_character.animation.create('move', animationFrames, animationFrameRate, true);
         m_character.animation.play('move');
-        this.stage.addChild(m_character);
+        this.m_controlsPage.addChild(m_character);
     }
-
-    m_verticalLine() {
-        var m_verticalLine = new rune.display.Graphic(this.cameras.getCameraAt(0).width / 2 - 0.5, 55, 1, 100, "verticalLine");
-        this.stage.addChild(m_verticalLine);
-    }
-
 
     m_initModeTitle(text, x, y) {
         var m_modeTitle = new rune.text.BitmapField(text, rune.text.BitmapFormat.FONT_MEDIUM);
         m_modeTitle.width = m_modeTitle.textWidth;
         m_modeTitle.centerX = x;
         m_modeTitle.y = y;
-        this.stage.addChild(m_modeTitle);
+        this.m_controlsPage.addChild(m_modeTitle);
+    }
+
+    m_initRulesPage() {
+        this.m_rulesPage = new rune.display.DisplayObjectContainer(0, 0, 400, 225);
+        this.m_rulesPage.visible = false;
+
+        this.m_initRulesTitle();
+        this.m_initP1();
+        this.m_initP2();
+        this.stage.addChild(this.m_rulesPage);
+    }
+
+    m_initRulesTitle() {
+        var m_rulesTitle = new rune.text.BitmapField("Rules", rune.text.BitmapFormat.FONT_MEDIUM);
+        m_rulesTitle.width = m_rulesTitle.textWidth;
+        m_rulesTitle.centerX = this.application.screen.centerX;
+        m_rulesTitle.y = 45;
+        this.m_rulesPage.addChild(m_rulesTitle);
+    }
+    
+    m_initP1() {
+        this.createPlayerTitle("Player 1", this.application.width / 4);
+        this.createMainTaskText("Kill the enemies", this.application.width / 4);
+        this.createPlayerAnimation(this.application.width / 4, 95, 27, "shoot");
+        
+    }
+    
+    m_initP2() {
+        this.createPlayerTitle("Player 2", this.application.width / 4 * 3);
+        this.createMainTaskText("Extinguish the fire", this.application.width / 4 * 3);
+        this.createPlayerAnimation(this.application.width / 4 * 3, 95, 32, "fireman_shoot");
+    }
+
+    createPlayerTitle(text, x) {
+        var m_playerTitle = new rune.text.BitmapField(text, rune.text.BitmapFormat.FONT_MEDIUM);
+        m_playerTitle.width = m_playerTitle.textWidth;
+        m_playerTitle.centerX = x;
+        m_playerTitle.y = 55;
+        this.m_rulesPage.addChild(m_playerTitle);
+    }
+
+    createMainTaskText(text, x) {
+        var m_mainTaskText = new rune.text.BitmapField(text, rune.text.BitmapFormat.FONT_MEDIUM);
+        m_mainTaskText.width = m_mainTaskText.textWidth;
+        m_mainTaskText.centerX = x;
+        m_mainTaskText.y = 75;
+        this.m_rulesPage.addChild(m_mainTaskText);
+    }
+
+    createPlayerAnimation(x, y, height, texture) {
+        var player = new rune.display.Sprite(0, 0, 52, height, texture);
+        player.centerX = x;
+        player.y = y;
+        player.animation.create('move', [0, 0, 0, 0, 1, 2, 3, 4], 8, true);
+        player.animation.play('move');
+        this.m_rulesPage.addChild(player);
     }
 
     m_initBackText() {
