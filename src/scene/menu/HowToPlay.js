@@ -31,11 +31,9 @@
         super.init();
 
         this.m_initBackground();
-
-        this.m_singlePlayerConrols();
-        this.m_verticalLine();
-        this.m_multiPlayerConrols();
         this.m_initBackText();
+
+        this.m_initControlsPage();
     }
 
     /**
@@ -62,56 +60,67 @@
         }
     }
 
+    m_initControlsPage() {
+        this.m_singlePlayerConrols();
+        this.m_multiPlayerConrols();
+    }
+
     m_singlePlayerConrols() {
-        this.m_initModeTitle("Single Player", this.cameras.getCameraAt(0).width / 4, 50);
+        this.m_initModeTitle("Single Player", this.application.width / 4, 45);
+        
+        this.createBtn(this.application.width / 4 - 70, 75, 42, 42, "moveStick", [0, 1, 0 , 2, 0, 3, 0, 4], 4);
+        this.createText(this.application.width / 4, 75, "MOVE");
+        this.createCharacterAnimation(this.application.width / 4 + 50, 75, 32, 32, "player0", [20,21,22,23], 8);
 
-        var m_moveStick = new rune.display.Sprite(9, 60, 42, 42, "moveStick");
-        m_moveStick.animation.create('move', [0, 1, 0 , 2, 0, 3, 0, 4], 4, true);
-        m_moveStick.animation.play('move');
-        this.stage.addChild(m_moveStick);
+        this.createBtn(this.application.width / 4 - 70, 110, 32, 32, "shootBtn", [0, 1], 2);
+        this.createText(this.application.width / 4, 110, "BULLET");
+        this.createCharacterAnimation(this.application.width / 4 + 55, 110, 52, 27, "shoot", [0, 0, 0, 0, 1, 2, 3, 4], 8);
 
-        var m_moveText = new rune.text.BitmapField('MOVE', rune.text.BitmapFormat.FONT_MEDIUM);
-        m_moveText.width = m_moveText.textWidth;
-        m_moveText.x = 65;
-        m_moveText.y = 77;
-        this.stage.addChild(m_moveText);
+        this.createBtn(this.application.width / 4 - 70, 145, 32, 32, "shootSecondBtn", [0, 1], 2);
+        this.createText(this.application.width / 4, 145, "WATER");
+        this.createCharacterAnimation(this.application.width / 4 + 55, 145, 52, 27, "shootSecond", [0, 0, 0, 0, 1, 2, 3, 4], 8);
+    }
 
-        var m_move = new rune.display.Sprite(120, 60, 32, 32, "player0");
-        m_move.animation.create('move', [20,21,22,23], 8, true);
-        m_move.animation.play('move');
-        this.stage.addChild(m_move);
+    m_multiPlayerConrols() {
+        this.m_initModeTitle("Co-Op", this.application.width / 4 * 3, 45);
+        
+        this.createBtn(this.application.width / 4 * 3 - 70, 75, 42, 42, "moveStick", [0, 1, 0 , 2, 0, 3, 0, 4], 4);
+        this.createText(this.application.width / 4 * 3, 75, "MOVE");
+        this.createCharacterAnimation(this.application.width / 4 * 3 + 50, 75, 32, 32, "player1", [20,21,22,23], 8);
 
-        var m_shootBtn = new rune.display.Sprite(14, 100, 32, 32, "shootBtn");
-        m_shootBtn.animation.create('shoot', [0, 1], 2, true);
-        m_shootBtn.animation.play('shoot');
-        this.stage.addChild(m_shootBtn);
+        this.createBtn(this.application.width / 4 * 3 - 70, 110, 32, 32, "shootBtn", [0, 1], 2);
+        this.createText(this.application.width / 4 * 3, 110, "SHOOT");
+        this.createCharacterAnimation(this.application.width / 4 * 3 + 55, 110, 52, 27, "shoot", [0, 0, 0, 0, 1, 2, 3, 4], 8);
 
-        var m_shootText = new rune.text.BitmapField('BULLET', rune.text.BitmapFormat.FONT_MEDIUM);
-        m_shootText.width = m_shootText.textWidth;
-        m_shootText.x = 65;
-        m_shootText.y = 112;
-        this.stage.addChild(m_shootText);
+        this.createBtn(this.application.width / 4 * 3 - 70, 145, 32, 32, "shootSecondBtn", [0, 1], 2);
+        this.createText(this.application.width / 4 * 3, 145, "SHOOT SECOND");
+        this.createCharacterAnimation(this.application.width / 4 * 3 + 55, 145, 52, 27, "shootSecond", [0, 0, 0, 0, 1, 2, 3, 4], 8);
 
-        var m_shoot = new rune.display.Sprite(126, 100, 52, 27, "shoot");
-        m_shoot.animation.create('shoot', [0, 0, 0, 0, 1, 2, 3, 4], 8, true);
-        m_shoot.animation.play('shoot');
-        this.stage.addChild(m_shoot);
+        this.createBtn(this.application.width / 4 * 3 - 70, 180, 32, 32, "reviveBtn", [0, 1], 2);
+        this.createText(this.application.width / 4 * 3, 180, "REVIVE");
+    }
 
-        var m_shootSecondBtn = new rune.display.Sprite(14, 135, 32, 32, "shootSecondBtn");
-        m_shootSecondBtn.animation.create('shootSecond', [0, 1], 2, true);
-        m_shootSecondBtn.animation.play('shootSecond');
-        this.stage.addChild(m_shootSecondBtn);
+    createBtn(x, y, width, height, texture, animationFrames, animationFrameRate) {
+        var m_button = new ControlBtn(0, 0, width, height, texture, animationFrames, animationFrameRate);
+        m_button.centerX = x;
+        m_button.centerY = y;
+        this.stage.addChild(m_button);
+    }
 
-        var m_shootSecondText = new rune.text.BitmapField('WATER', rune.text.BitmapFormat.FONT_MEDIUM);
-        m_shootSecondText.width = m_shootSecondText.textWidth;
-        m_shootSecondText.x = 65;
-        m_shootSecondText.y = 147;
-        this.stage.addChild(m_shootSecondText);
+    createText(x, y, text) {
+        var m_text = new rune.text.BitmapField(text, rune.text.BitmapFormat.FONT_MEDIUM);
+        m_text.width = m_text.textWidth;
+        m_text.centerX = x;
+        m_text.centerY = y;
+        this.stage.addChild(m_text);
+    }
 
-        var m_shootSecond = new rune.display.Sprite(126, 135, 52, 27, "shootSecond");
-        m_shootSecond.animation.create('shootSecond', [0, 0, 0, 0, 1, 2, 3, 4], 8, true);
-        m_shootSecond.animation.play('shootSecond');
-        this.stage.addChild(m_shootSecond);
+    createCharacterAnimation(x, y, width, height, texture, animationFrames, animationFrameRate) {
+        var m_character = new rune.display.Sprite(x, 0, width, height, texture);
+        m_character.centerY = y;
+        m_character.animation.create('move', animationFrames, animationFrameRate, true);
+        m_character.animation.play('move');
+        this.stage.addChild(m_character);
     }
 
     m_verticalLine() {
@@ -119,57 +128,11 @@
         this.stage.addChild(m_verticalLine);
     }
 
-    m_multiPlayerConrols() {
-        this.m_initModeTitle("Co-Op", this.cameras.getCameraAt(0).width / 4 * 3, 50);
-
-        var m_moveStick = new rune.display.Sprite(this.cameras.getCameraAt(0).width / 4 * 2 + 9, 60, 42, 42, "moveStick");
-        m_moveStick.animation.create('move', [0, 1, 0 , 2, 0, 3, 0, 4], 4, true);
-        m_moveStick.animation.play('move');
-        this.stage.addChild(m_moveStick);
-
-        var m_moveText = new rune.text.BitmapField('MOVE', rune.text.BitmapFormat.FONT_MEDIUM);
-        m_moveText.width = m_moveText.textWidth;
-        m_moveText.x = 264;
-        m_moveText.y = 77;
-        this.stage.addChild(m_moveText);
-
-        var m_move = new rune.display.Sprite(309, 60, 32, 32, "player0");
-        m_move.animation.create('move', [20,21,22,23], 8, true);
-        m_move.animation.play('move');
-        this.stage.addChild(m_move);
-
-        var m_shootBtn = new rune.display.Sprite(this.cameras.getCameraAt(0).width / 4 * 2 + 14, 100, 32, 32, "shootBtn");
-        m_shootBtn.animation.create('shoot', [0, 1], 2, true);
-        m_shootBtn.animation.play('shoot');
-        this.stage.addChild(m_shootBtn);
-
-        var m_shootText = new rune.text.BitmapField('SHOOT', rune.text.BitmapFormat.FONT_MEDIUM);
-        m_shootText.width = m_shootText.textWidth;
-        m_shootText.x = 264;
-        m_shootText.y = 112;
-        this.stage.addChild(m_shootText);
-
-        var m_shoot = new rune.display.Sprite(315, 100, 52, 27, "shoot");
-        m_shoot.animation.create('shoot', [0, 0, 0, 0, 1, 2, 3, 4], 8, true);
-        m_shoot.animation.play('shoot');
-        this.stage.addChild(m_shoot);
-
-        var m_reviveBtn = new rune.display.Sprite(this.cameras.getCameraAt(0).width / 4 * 2 + 14, 135, 32, 32, "reviveBtn");
-        m_reviveBtn.animation.create('revive', [0, 1], 2, true);
-        m_reviveBtn.animation.play('revive');
-        this.stage.addChild(m_reviveBtn);
-        
-        var m_reviveText = new rune.text.BitmapField('REVIVE', rune.text.BitmapFormat.FONT_MEDIUM);
-        m_reviveText.width = m_reviveText.textWidth;
-        m_reviveText.x = 264;
-        m_reviveText.y = 147;
-        this.stage.addChild(m_reviveText);
-    }
 
     m_initModeTitle(text, x, y) {
         var m_modeTitle = new rune.text.BitmapField(text, rune.text.BitmapFormat.FONT_MEDIUM);
         m_modeTitle.width = m_modeTitle.textWidth;
-        m_modeTitle.x = x - m_modeTitle.width / 2;
+        m_modeTitle.centerX = x;
         m_modeTitle.y = y;
         this.stage.addChild(m_modeTitle);
     }

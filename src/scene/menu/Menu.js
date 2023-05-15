@@ -115,15 +115,6 @@ class Menu extends rune.scene.Scene {
         this.howToPlayBtn.y = 150;
         this.stage.addChild(this.howToPlayBtn);
         this.menuBtns.push(this.howToPlayBtn);
-
-        /* this.m_menu = new rune.ui.VTMenu();
-        this.m_menu.onSelect(this.m_onMenuSelect, this);
-        this.m_menu.add("Single Player");
-        this.m_menu.add("Co-Op");
-        this.m_menu.add("How to play");
-        this.m_menu.x = (this.cameras.getCameraAt(0).width / 2) - (this.m_menu.width / 2);
-        this.m_menu.y = 100;
-        this.stage.addChild(this.m_menu); */
     }
 
 
@@ -150,7 +141,7 @@ class Menu extends rune.scene.Scene {
         const multiHsList = new HighscoreList(this, 'Co-Op', 'co-op');
         this.stage.addChild(multiHsList);
     }
-
+    
     /**
      * This method is automatically called once just before the scene ends. Use 
      * the method to reset references and remove objects that no longer need to 
