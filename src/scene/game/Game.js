@@ -30,7 +30,7 @@ class Game extends rune.scene.Scene {
         this.m_enemies = new Array();
         this.scoreTimer = null;
         this.m_totalScore = 0;
-        this.m_nrOfOpenGates = 1;
+        this.m_nrOfOpenGates = 2;
         this.enemySpawnRate = 1500;
         this.enemySpeed = 1.5;
 
@@ -343,12 +343,12 @@ class Game extends rune.scene.Scene {
                 y: 32
             },
             {
-                x: 928,
-                y: 320
-            },
-            {
                 x: 480,
                 y: 608
+            },
+            {
+                x: 928,
+                y: 320
             },
             {
                 x: 32,

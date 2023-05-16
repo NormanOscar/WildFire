@@ -86,6 +86,7 @@
         this.m_controlsPage = new rune.display.DisplayObjectContainer(0, 0, 400, 225);
         this.m_singlePlayerConrols();
         this.m_multiPlayerConrols();
+        this.m_initPageCounter(1);
         this.stage.addChild(this.m_controlsPage);
     }
 
@@ -160,46 +161,58 @@
         this.m_rulesPage = new rune.display.DisplayObjectContainer(0, 0, 400, 225);
         this.m_rulesPage.visible = false;
 
-        this.m_initRulesTitle();
         this.m_initP1();
         this.m_initP2();
-        this.stage.addChild(this.m_rulesPage);
-    }
+        this.m_initGeneralRules();
 
-    m_initRulesTitle() {
-        var m_rulesTitle = new rune.text.BitmapField("Rules", rune.text.BitmapFormat.FONT_MEDIUM);
-        m_rulesTitle.width = m_rulesTitle.textWidth;
-        m_rulesTitle.centerX = this.application.screen.centerX;
-        m_rulesTitle.y = 45;
-        this.m_rulesPage.addChild(m_rulesTitle);
+        this.m_initPageCounter(2);
+        this.stage.addChild(this.m_rulesPage);
     }
     
     m_initP1() {
         this.createPlayerTitle("Player 1", this.application.width / 4);
         this.createMainTaskText("Kill the enemies", this.application.width / 4);
-        this.createPlayerAnimation(this.application.width / 4, 95, 27, "shoot");
+        this.createMainRulesText("(Can only shoot enemies)", this.application.width / 4);
+        this.createPlayerAnimation(this.application.width / 4 + 10, 72, 27, "shoot");
         
     }
     
     m_initP2() {
         this.createPlayerTitle("Player 2", this.application.width / 4 * 3);
         this.createMainTaskText("Extinguish the fire", this.application.width / 4 * 3);
-        this.createPlayerAnimation(this.application.width / 4 * 3, 95, 32, "fireman_shoot");
+        this.createMainRulesText("(Can only shoot fires)", this.application.width / 4 * 3);
+        this.createPlayerAnimation(this.application.width / 4 * 3 + 10, 72, 32, "fireman_shoot");
+    }
+
+    m_initGeneralRules() {
+        var m_generalRulesTitle = new rune.text.BitmapField("If co-player is dead, second weapon is unlocked");
+        m_generalRulesTitle.width = m_generalRulesTitle.textWidth;
+        m_generalRulesTitle.centerX = this.application.screen.centerX;
+        m_generalRulesTitle.y = 140;
+        this.m_rulesPage.addChild(m_generalRulesTitle);
+    }
+
+    createMainRulesText(text, x) {
+        var m_mainRulesText = new rune.text.BitmapField(text);
+        m_mainRulesText.width = m_mainRulesText.textWidth;
+        m_mainRulesText.centerX = x;
+        m_mainRulesText.y = 105;
+        this.m_rulesPage.addChild(m_mainRulesText);
     }
 
     createPlayerTitle(text, x) {
-        var m_playerTitle = new rune.text.BitmapField(text, rune.text.BitmapFormat.FONT_MEDIUM);
+        var m_playerTitle = new rune.text.BitmapField(text);
         m_playerTitle.width = m_playerTitle.textWidth;
         m_playerTitle.centerX = x;
-        m_playerTitle.y = 55;
+        m_playerTitle.y = 45;
         this.m_rulesPage.addChild(m_playerTitle);
     }
 
     createMainTaskText(text, x) {
-        var m_mainTaskText = new rune.text.BitmapField(text, rune.text.BitmapFormat.FONT_MEDIUM);
+        var m_mainTaskText = new rune.text.BitmapField(text);
         m_mainTaskText.width = m_mainTaskText.textWidth;
         m_mainTaskText.centerX = x;
-        m_mainTaskText.y = 75;
+        m_mainTaskText.y = 60;
         this.m_rulesPage.addChild(m_mainTaskText);
     }
 
@@ -210,6 +223,14 @@
         player.animation.create('move', [0, 0, 0, 0, 1, 2, 3, 4], 8, true);
         player.animation.play('move');
         this.m_rulesPage.addChild(player);
+    }
+
+    m_initPageCounter(pageNr) {
+        this.pageCounter = new rune.text.BitmapField('Page ' + pageNr + '/2', rune.text.BitmapFormat.FONT_MEDIUM);
+        this.pageCounter.width = this.pageCounter.textWidth;
+        this.pageCounter.centerX = this.application.screen.width - 50;
+        this.pageCounter.y = this.application.screen.height - 20;
+        pageNr == 1 ? this.m_controlsPage.addChild(this.pageCounter) : this.m_rulesPage.addChild(this.pageCounter);
     }
 
     m_initBackText() {
