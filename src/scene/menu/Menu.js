@@ -22,6 +22,9 @@ class Menu extends rune.scene.Scene {
         this.m_music = null;
         this.menuSelected = 0;
         this.menuBtns = [];
+        this.singleHsList = null;
+        this.multiHsList = null;
+        this.currentPage = 0;
     }
 
     /**
@@ -37,8 +40,25 @@ class Menu extends rune.scene.Scene {
         this.m_initMusic();
         this.m_initBackground();
         this.m_initMenu();
-        //this.m_initSingleHs();
-        //this.m_initMultiHs();
+        this.m_initSingleHs();
+        this.m_initMultiHs();
+
+        this.timers.create({
+            duration: 2500,
+            repeat: Infinity,
+            onTick: function() {
+                if (this.currentPage == 0) {
+                    this.singleHsList.visible = false;
+                    this.multiHsList.visible = true;
+                    this.currentPage = 1;
+                } else {
+                    this.singleHsList.visible = true;
+                    this.multiHsList.visible = false;
+                    this.currentPage = 0;
+                }
+            },
+            scope: this,
+        });
     }
 
     /**
@@ -98,20 +118,20 @@ class Menu extends rune.scene.Scene {
 
     m_initMenu() {
         this.singleplayerBtn = new MenuBtn("singleplayer_btn");
-        this.singleplayerBtn.centerX = this.application.screen.centerX;
+        this.singleplayerBtn.centerX = this.application.screen.width / 4;
         this.singleplayerBtn.y = 70;
         this.singleplayerBtn.selected = true;
         this.stage.addChild(this.singleplayerBtn);
         this.menuBtns.push(this.singleplayerBtn);
 
         this.coOpBtn = new MenuBtn("co-op_btn");
-        this.coOpBtn.centerX = this.application.screen.centerX;
+        this.coOpBtn.centerX = this.application.screen.width / 4;
         this.coOpBtn.y = 110;
         this.stage.addChild(this.coOpBtn);
         this.menuBtns.push(this.coOpBtn);
 
         this.howToPlayBtn = new MenuBtn("how_to_play_btn");
-        this.howToPlayBtn.centerX = this.application.screen.centerX;
+        this.howToPlayBtn.centerX = this.application.screen.width / 4;
         this.howToPlayBtn.y = 150;
         this.stage.addChild(this.howToPlayBtn);
         this.menuBtns.push(this.howToPlayBtn);
@@ -133,13 +153,14 @@ class Menu extends rune.scene.Scene {
     }
 
     m_initSingleHs() {
-        const singleHsList = new HighscoreList(this, 'Singleplayer', 'single');
-        this.stage.addChild(singleHsList);
+        this.singleHsList = new HighscoreList(this, 'Singleplayer', 'single');
+        this.stage.addChild(this.singleHsList);
         
     }
     m_initMultiHs() {
-        const multiHsList = new HighscoreList(this, 'Co-Op', 'co-op');
-        this.stage.addChild(multiHsList);
+        this.multiHsList = new HighscoreList(this, 'Co-Op', 'co-op');
+        this.multiHsList.visible = false;
+        this.stage.addChild(this.multiHsList);
     }
     
     /**

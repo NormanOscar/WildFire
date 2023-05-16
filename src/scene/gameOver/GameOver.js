@@ -1,10 +1,11 @@
 class GameOver extends rune.scene.Scene {
-    constructor(score, nr) {
+    constructor(score, nr, newHighscore) {
         super();
         this.score = score || 1000;
         this.m_nrOfPlayers = nr || 1;
         this.menuSelected = 0;
         this.menuBtns = [];
+        this.newHighscore = newHighscore;
     }
 
     init() {
@@ -12,6 +13,11 @@ class GameOver extends rune.scene.Scene {
 
         this.m_initBackground();
         this.m_initSound();
+
+        if (this.newHighscore) {
+            this.initNewHighscore();
+        }
+
         this.m_initScore();
 
         this.m_initMenu();
@@ -27,19 +33,26 @@ class GameOver extends rune.scene.Scene {
         this.stage.addChild(m_background);
     }
 
+    initNewHighscore() {
+        var m_newHighscore = new rune.text.BitmapField('New Highscore!', rune.text.BitmapFormat.FONT_MEDIUM);
+        m_newHighscore.width = m_newHighscore.textWidth;
+        this.stage.addChild(m_newHighscore);
+        m_newHighscore.centerX = this.application.screen.centerX;
+        m_newHighscore.y = this.application.screen.centerY - 40;
+    }
+
     m_initScore() {
         var m_scoreTitle = new rune.text.BitmapField('Score:', rune.text.BitmapFormat.FONT_MEDIUM);
         m_scoreTitle.width = m_scoreTitle.textWidth;
         this.stage.addChild(m_scoreTitle);
         m_scoreTitle.centerX = this.application.screen.centerX;
-
-        m_scoreTitle.centerY = this.application.screen.centerY - 20;
+        m_scoreTitle.centerY = this.newHighscore ? this.application.screen.centerY : this.application.screen.centerY - 40;
         
         var m_scoreText = new rune.text.BitmapField(this.score.toString(), rune.text.BitmapFormat.FONT_MEDIUM);
         m_scoreText.width = m_scoreText.textWidth;
         this.stage.addChild(m_scoreText);
         m_scoreText.centerX = this.application.screen.centerX;
-        m_scoreText.y = this.application.screen.centerY;
+        m_scoreText.centerY = this.newHighscore ? this.application.screen.centerY + 20 : this.application.screen.centerY - 25;
     }
 
     m_initMenu() {

@@ -41,7 +41,7 @@
         this.m_initRulesPage();
 
         this.timers.create({
-            duration: 5000,
+            duration: 10000,
             repeat: Infinity,
             onTick: function() {
                 if (this.currentPage == 0) {

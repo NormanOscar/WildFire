@@ -79,6 +79,7 @@ wildfire.data.Requests.prototype.m_construct = function() {
 	this.add("player0", "./../asset/png/players/player0.png");
 	this.add("player1", "./../asset/png/players/player1.png");
 	this.add("tileset", "./../asset/png/tileset/tileset.png");
+	this.add("countdown", "./../asset/png/ui/countdown.png");
 	this.add("main_frame", "./../asset/png/ui/main_frame.png");
 	this.add("minimapFrame", "./../asset/png/ui/minimapFrame.png");
 	this.add("player1_frame", "./../asset/png/ui/player1_frame.png");

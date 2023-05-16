@@ -53,6 +53,8 @@ class Game extends rune.scene.Scene {
         this.dificulty = 1;
 
         this.allPlayersDead = false;
+
+        this.newHighscore = false;
     }
 
     /**
@@ -63,14 +65,13 @@ class Game extends rune.scene.Scene {
      */
     init() {
         super.init();
-        
         this.startGame();
     }
     
     startGame() {
+        this.stage.map.load('map');
         this.cameras.removeCameras(true);
         
-        this.stage.map.load('map');
         this.initMusic();
         
         this.initCameras();
@@ -124,14 +125,6 @@ class Game extends rune.scene.Scene {
         for (const activeFire of this.fireController.activeFires) {
             activeFire.fireSpawnRate -= 100;
         }
-
-        console.table({
-            "Dificulty": this.dificulty,
-            "Nr of open gates": this.m_nrOfOpenGates,
-            "Enemy spawn rate": this.enemySpawnRate,
-            "Enemy speed": this.enemySpeed,
-            "Fire spawn rate": this.fireController.activeFires[0].fireSpawnRate
-        })
     }
 
     /**
@@ -205,7 +198,6 @@ class Game extends rune.scene.Scene {
             this.m_cams[2].targets.add(player2);
             this.stage.addChild(player2);
         }
-
     }
 
     /**
@@ -320,10 +312,7 @@ class Game extends rune.scene.Scene {
         if (this.allPlayersDead) {
             this.timers.create({
                 duration: 1000,
-                onComplete: function () {
-                    this.application.scenes.load([new GameOver(this.m_totalScore, this.m_nrOfPlayers)]);
-                    this.m_music.stop();
-                },
+                onComplete: this.gameOver,
                 scope: this
             }, true);
         }
@@ -426,6 +415,17 @@ class Game extends rune.scene.Scene {
             }
         ]
         return coordinates[id];
+    }
+
+    gameOver() {
+        if (this.application.highscores.test(this.m_totalScore, this.m_nrOfPlayers - 1) != -1) {
+            if (this.application.highscores.get(0, this.m_nrOfPlayers - 1).score < this.m_totalScore) {
+                this.newHighscore = true;
+            }
+            this.application.highscores.send(this.m_totalScore, 'Oscar', this.m_nrOfPlayers - 1);
+        }
+        this.application.scenes.load([new GameOver(this.m_totalScore, this.m_nrOfPlayers, this.newHighscore)]);
+        this.m_music.stop();
     }
 
     /**

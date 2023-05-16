@@ -57,7 +57,6 @@ class Fires {
             var r = Math.floor(Math.random() * this.m_fireDirections.length);
             var fireDirection = this.m_fireDirections[r];
 
-            console.log(randomFire);
             if (this.tileArr.length != 0) {
                 var tileX = this.tileArr[this.tileArr.length -1].x + fireDirection.x;
                 var tileY = this.tileArr[this.tileArr.length -1].y + fireDirection.y;
