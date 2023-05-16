@@ -27,6 +27,7 @@ class Fires {
         this.status = 'active';
         this.area = scene;
         this.spawnTimer = null;
+        this.fireSpawnRate = 1000;
         this.init();
     }
 
@@ -37,7 +38,7 @@ class Fires {
         this.area.stage.addChild(fire);
 
         this.spawnTimer = this.area.timers.create({
-            duration: 1000,
+            duration: this.fireSpawnRate,
             repeat: Infinity,
             onTick: this.createFire,
             scope: this
@@ -56,6 +57,7 @@ class Fires {
             var r = Math.floor(Math.random() * this.m_fireDirections.length);
             var fireDirection = this.m_fireDirections[r];
 
+            console.log(randomFire);
             if (this.tileArr.length != 0) {
                 var tileX = this.tileArr[this.tileArr.length -1].x + fireDirection.x;
                 var tileY = this.tileArr[this.tileArr.length -1].y + fireDirection.y;

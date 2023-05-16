@@ -49,6 +49,9 @@ class Game extends rune.scene.Scene {
         this.m_cams = new Array();
         this.camera_is_splitted = false;
 
+        this.dificultyTimer = null;
+        this.dificulty = 1;
+
         this.allPlayersDead = false;
     }
 
@@ -60,25 +63,75 @@ class Game extends rune.scene.Scene {
      */
     init() {
         super.init();
+        
         this.startGame();
     }
-
+    
     startGame() {
         this.cameras.removeCameras(true);
-
+        
         this.stage.map.load('map');
         this.initMusic();
-
+        
         this.initCameras();
         this.initPlayers();
         this.initHouses();
-
+        
         this.initMainHUD();
 
         this.fireController = new FireController(this);
 
         this.initScoreTimer();
         this.initEnemySpawnTimer();
+
+        this.initDificultyTimer();
+    }
+
+    initDificultyTimer() {
+        this.dificultyTimer = this.timers.create({
+            duration: 10000,
+            repeat: Infinity,
+            onTick: this.checkScore,
+            scope: this,
+        });
+    }
+
+    checkScore() {
+        if (this.m_totalScore >= 100 && this.m_totalScore < 200) {
+            console.log("Dificulty changed to 2");
+            this.dificulty++;
+            this.chageDificulty();
+        } else if (this.m_totalScore >= 200 && this.m_totalScore < 300) {
+            console.log("Dificulty changed to 3");
+            this.dificulty++;
+            this.chageDificulty();
+        } else if (this.m_totalScore >= 300 && this.m_totalScore < 400) {
+            console.log("Dificulty changed to 4");
+            this.dificulty++;
+            this.chageDificulty();
+        } else {
+            console.log("Dificulty changed to 5");
+            this.dificulty++;
+            this.chageDificulty();
+        }
+    }
+
+    chageDificulty() {
+        if (this.dificulty <= 3) this.m_nrOfOpenGates++;
+
+        this.enemySpawnRate -= 100;
+        this.enemySpeed += 0.1;
+        for (const activeFire of this.fireController.activeFires) {
+            activeFire.fireSpawnRate -= 100;
+        }
+
+        console.table({
+            "Dificulty": this.dificulty,
+            "Nr of open gates": this.m_nrOfOpenGates,
+            "Enemy spawn rate": this.enemySpawnRate,
+            "Enemy speed": this.enemySpeed,
+            "Fire spawn rate": this.fireController.activeFires[0].fireSpawnRate
+        })
     }
 
     /**
@@ -226,7 +279,6 @@ class Game extends rune.scene.Scene {
      * @returns {undefined}
      */
     createEnemy() {
-        console.log(this.m_nrOfOpenGates);
         const r = Math.floor(Math.random() * this.m_nrOfOpenGates);
         var targetIndex = Math.floor(Math.random() * this.m_players.length);
         
@@ -248,13 +300,6 @@ class Game extends rune.scene.Scene {
      */
     update(step) {
         super.update(step);
-
-        if (this.m_totalScore == 1000) {
-            this.m_nrOfOpenGates++;
-            this.enemySpawnRate -= 200;
-            this.enemyTimerRepeat;
-            this.enemySpeed += 0.1;
-        }
 
         if (this.m_players.length == 2) {
             this.calcCamera();
