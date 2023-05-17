@@ -6,6 +6,7 @@ class Fire extends rune.display.Sprite {
 
     init() {
         super.init();
+
         this.initSounds();
         this.animate();
         this.setHitbox();

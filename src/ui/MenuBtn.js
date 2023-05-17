@@ -1,7 +1,11 @@
 class MenuBtn extends rune.display.Sprite {
     constructor(texture) {
         super(0, 0, 122, 30, texture);
+        this.btnType = texture;
         this.selected = false;
+        this.animationFrames = [1, 2];
+        this.animationFrameRate = 2;
+        this.loop = true;
     }
 
     init() {
@@ -12,7 +16,13 @@ class MenuBtn extends rune.display.Sprite {
     animate() {
         this.animation.create("idle", [0], 1, true);
         this.animation.play("idle");
-        this.animation.create("selected", [1, 2], 2, true);
+        if (this.btnType == 'save_btn') {
+            this.animationFrames = [1];
+            this.animationFrameRate = 1;
+            this.loop = false;
+        }
+        console.log(this);
+        this.animation.create("selected", this.animationFrames, this.animationFrameRate, this.loop);
     }
 
     update(step) {

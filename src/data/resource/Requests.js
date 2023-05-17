@@ -59,9 +59,13 @@ wildfire.data.Requests.prototype.m_construct = function() {
 	this.add("how_to_play_btn", "./../asset/png/buttons/how_to_play_btn.png");
 	this.add("main_menu_btn", "./../asset/png/buttons/main_menu_btn.png");
 	this.add("play_again_btn", "./../asset/png/buttons/play_again_btn.png");
+	this.add("save_btn", "./../asset/png/buttons/save_btn.png");
 	this.add("singleplayer_btn", "./../asset/png/buttons/singleplayer_btn.png");
+	this.add("charFrame", "./../asset/png/charFrame.png");
 	this.add("enemy", "./../asset/png/enemy/enemy.png");
 	this.add("fire", "./../asset/png/fire/fire.png");
+	this.add("particle", "./../asset/png/fire/particle.png");
+	this.add("font", "./../asset/png/fonts/font.png");
 	this.add("house0", "./../asset/png/houses/house0.png");
 	this.add("house1", "./../asset/png/houses/house1.png");
 	this.add("house2", "./../asset/png/houses/house2.png");

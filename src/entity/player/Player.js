@@ -101,23 +101,25 @@ class Player extends rune.display.Sprite {
      */
     update(step) {
         super.update(step);
-        this.updateInput();
-        this.stage.map.back.hitTestAndSeparate(this);
-
-        this.checkHouseCollision();
-        this.checkFireCollision();
-        this.checkEnemyCollision();
-
-        if (this.status == 'dead') {
-            this.animation.gotoAndPlay('dead');
-            this.can_move = false;
-        } else {
-            this.can_move = true;
-        }
-
-        if (this.area.m_nrOfPlayers == 2) {
-            if (this.area.m_players[0].status == 'dead' || this.area.m_players[1].status == 'dead') {
-                this.checkRevive();
+        if (this.area.gameStarted) {
+            this.updateInput();
+            this.stage.map.back.hitTestAndSeparate(this);
+    
+            this.checkHouseCollision();
+            this.checkFireCollision();
+            this.checkEnemyCollision();
+    
+            if (this.status == 'dead') {
+                this.animation.gotoAndPlay('dead');
+                this.can_move = false;
+            } else {
+                this.can_move = true;
+            }
+    
+            if (this.area.m_nrOfPlayers == 2) {
+                if (this.area.m_players[0].status == 'dead' || this.area.m_players[1].status == 'dead') {
+                    this.checkRevive();
+                }
             }
         }
     }

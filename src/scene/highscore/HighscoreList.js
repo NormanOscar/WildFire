@@ -14,7 +14,7 @@ class HighscoreList extends rune.ui.VTList {
         this.id = this.listType == 'single' ? 0 : 1;
         this.initHeader();
         this.initHighscores();
-        this.centerX = this.application.screen.width / 4 * 3 - 10;
+        this.centerX = this.application.screen.width / 4 * 3 - 25;
         this.y = 60;
     }
     
@@ -28,7 +28,7 @@ class HighscoreList extends rune.ui.VTList {
 
     initHighscores() {
         for (let i = 0; i < 8; i++) {
-            const score = this.application.highscores.get(i, 0);
+            const score = this.application.highscores.get(i, this.id);
             if (i == 0 && score == null) {
                 this.is_empty = true;
                 this.add('No highscores yet');
@@ -37,7 +37,7 @@ class HighscoreList extends rune.ui.VTList {
             if (!this.is_empty) {
                 if (score == null) return;
                 const d = new Date(score.date);
-                const date = d.getDate() + '/' + d.getMonth() + '/' + d.getFullYear().toString().slice(2, 4);
+                const date = d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear().toString().slice(2, 4);
                 const scoreText = ('NO' + (i + 1)) + ': ' + String(score.score) + ' - ' + score.name + ' - ' + date;
                 this.add(scoreText);
             }

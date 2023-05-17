@@ -25,12 +25,13 @@ wildfire.system.Main = function() {
         developer: "se.normanoscar",
         app: "wildfire",
         build: "1.0.0",
-        scene: GameOver,
+        scene: Menu,
         resources: wildfire.data.Requests,
         useGamepads:true,
         useKeyboard:true,
         framerate: 30,
-        debug: true
+        debug: true,
+        numHighscoreTables: 2
     });
 };
 

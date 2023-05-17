@@ -118,20 +118,20 @@ class Menu extends rune.scene.Scene {
 
     m_initMenu() {
         this.singleplayerBtn = new MenuBtn("singleplayer_btn");
-        this.singleplayerBtn.centerX = this.application.screen.width / 4;
+        this.singleplayerBtn.centerX = this.application.screen.width / 4 - 10;
         this.singleplayerBtn.y = 70;
         this.singleplayerBtn.selected = true;
         this.stage.addChild(this.singleplayerBtn);
         this.menuBtns.push(this.singleplayerBtn);
 
         this.coOpBtn = new MenuBtn("co-op_btn");
-        this.coOpBtn.centerX = this.application.screen.width / 4;
+        this.coOpBtn.centerX = this.application.screen.width / 4 - 10;
         this.coOpBtn.y = 110;
         this.stage.addChild(this.coOpBtn);
         this.menuBtns.push(this.coOpBtn);
 
         this.howToPlayBtn = new MenuBtn("how_to_play_btn");
-        this.howToPlayBtn.centerX = this.application.screen.width / 4;
+        this.howToPlayBtn.centerX = this.application.screen.width / 4 - 10;
         this.howToPlayBtn.y = 150;
         this.stage.addChild(this.howToPlayBtn);
         this.menuBtns.push(this.howToPlayBtn);

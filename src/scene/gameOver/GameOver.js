@@ -70,8 +70,8 @@ class GameOver extends rune.scene.Scene {
         this.menuBtns.push(this.mainMenuBtn);
     }
 
-    update() {
-        super.update();
+    update(step) {
+        super.update(step);
         this.m_updateInput();
     }
 

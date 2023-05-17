@@ -55,6 +55,7 @@ class Game extends rune.scene.Scene {
         this.allPlayersDead = false;
 
         this.newHighscore = false;
+        this.gameStarted = false;
     }
 
     /**
@@ -65,20 +66,30 @@ class Game extends rune.scene.Scene {
      */
     init() {
         super.init();
-        this.startGame();
-    }
-    
-    startGame() {
         this.stage.map.load('map');
         this.cameras.removeCameras(true);
-        
-        this.initMusic();
-        
         this.initCameras();
         this.initPlayers();
         this.initHouses();
-        
         this.initMainHUD();
+        
+        this.initCountdown();
+        this.countdownTimer = this.timers.create({
+            duration: 3000,
+            onComplete: this.startGame,
+            scope: this,
+        });
+    }
+
+    initCountdown() {
+        var countdown = new Countdown();
+        this.cameras.getCameraAt(0).addChild(countdown);
+    }
+    
+    startGame() {
+        this.gameStarted = true;
+        
+        this.initMusic();
 
         this.fireController = new FireController(this);
 
@@ -98,15 +109,15 @@ class Game extends rune.scene.Scene {
     }
 
     checkScore() {
-        if (this.m_totalScore >= 100 && this.m_totalScore < 200) {
+        if (this.m_totalScore >= 1000 && this.m_totalScore < 2000) {
             console.log("Dificulty changed to 2");
             this.dificulty++;
             this.chageDificulty();
-        } else if (this.m_totalScore >= 200 && this.m_totalScore < 300) {
+        } else if (this.m_totalScore >= 2000 && this.m_totalScore < 3000) {
             console.log("Dificulty changed to 3");
             this.dificulty++;
             this.chageDificulty();
-        } else if (this.m_totalScore >= 300 && this.m_totalScore < 400) {
+        } else if (this.m_totalScore >= 3000 && this.m_totalScore < 4000) {
             console.log("Dificulty changed to 4");
             this.dificulty++;
             this.chageDificulty();
@@ -293,29 +304,33 @@ class Game extends rune.scene.Scene {
     update(step) {
         super.update(step);
 
-        if (this.m_players.length == 2) {
-            this.calcCamera();
-        }
+        if (this.gameStarted) {
 
-        this.fireController.checkActiveFires();
-
-        // Check if all players are dead.
-        for (const player of this.m_players) {
-            if (this.m_nrOfPlayers == 2) {
-                this.m_players[0].status == 'dead' && this.m_players[1].status == 'dead' ? this.allPlayersDead = true : this.allPlayersDead = false;
-            } else {
-                player.status == 'dead' ? this.allPlayersDead = true : this.allPlayersDead = false;
+            if (this.m_players.length == 2) {
+                this.calcCamera();
+            }
+    
+            this.fireController.checkActiveFires();
+    
+            // Check if all players are dead.
+            for (const player of this.m_players) {
+                if (this.m_nrOfPlayers == 2) {
+                    this.m_players[0].status == 'dead' && this.m_players[1].status == 'dead' ? this.allPlayersDead = true : this.allPlayersDead = false;
+                } else {
+                    player.status == 'dead' ? this.allPlayersDead = true : this.allPlayersDead = false;
+                }
+            }
+    
+            // If all players are dead, the game is over.
+            if (this.allPlayersDead) {
+                this.timers.create({
+                    duration: 1000,
+                    onComplete: this.gameOver,
+                    scope: this
+                }, true);
             }
         }
 
-        // If all players are dead, the game is over.
-        if (this.allPlayersDead) {
-            this.timers.create({
-                duration: 1000,
-                onComplete: this.gameOver,
-                scope: this
-            }, true);
-        }
     }
 
     /**
@@ -419,13 +434,16 @@ class Game extends rune.scene.Scene {
 
     gameOver() {
         if (this.application.highscores.test(this.m_totalScore, this.m_nrOfPlayers - 1) != -1) {
-            if (this.application.highscores.get(0, this.m_nrOfPlayers - 1).score < this.m_totalScore) {
+            /* if (this.application.highscores.get(0, this.m_nrOfPlayers - 1).score < this.m_totalScore) {
                 this.newHighscore = true;
-            }
-            this.application.highscores.send(this.m_totalScore, 'Oscar', this.m_nrOfPlayers - 1);
+            } */
+            this.application.scenes.load([new NewHighscore(this.m_totalScore, this.m_nrOfPlayers)]);
+            this.m_music.stop();
+            //this.application.highscores.send(this.m_totalScore, 'Oscar', this.m_nrOfPlayers - 1);
+        } else {
+            this.application.scenes.load([new GameOver(this.m_totalScore, this.m_nrOfPlayers, this.newHighscore)]);
+            this.m_music.stop();
         }
-        this.application.scenes.load([new GameOver(this.m_totalScore, this.m_nrOfPlayers, this.newHighscore)]);
-        this.m_music.stop();
     }
 
     /**

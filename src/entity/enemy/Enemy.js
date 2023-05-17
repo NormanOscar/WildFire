@@ -20,7 +20,6 @@ class Enemy extends rune.display.Sprite {
 
     init() {
         super.init();
-        //this.debug = true;
         this.initSounds();
         this.animate();
         this.setHitbox();
@@ -33,7 +32,6 @@ class Enemy extends rune.display.Sprite {
 
     setHitbox() {
         this.hitbox.debugColor = 'blue';
-        //this.hitbox.debug = true;
         this.hitbox.set(5, 9, 20, 20);
     }
 
