@@ -210,9 +210,9 @@ class Player extends rune.display.Sprite {
      */
     updateInput() {
         if (this.can_move) {
-            this.m_gamepad = this.gamepads.get(this.playerID);
-            if (this.m_gamepad.connected) {
-                this.updateGamepad();
+            var m_gamepad = this.gamepads.get(this.playerID);
+            if (m_gamepad.connected) {
+                this.updateGamepad(m_gamepad);
             } else {
                 this.updateKeyboard();
             }
@@ -224,26 +224,26 @@ class Player extends rune.display.Sprite {
      * 
      * @returns {undefined}
      */
-    updateGamepad() {
-        if (this.m_gamepad.stickLeft) {
-            this.x += this.m_gamepad.stickLeft.x * this.speed;
-            this.y += this.m_gamepad.stickLeft.y * this.speed;
+    updateGamepad(m_gamepad) {
+        if (m_gamepad.stickLeft) {
+            this.x += m_gamepad.stickLeft.x * this.speed;
+            this.y += m_gamepad.stickLeft.y * this.speed;
 
-            if (this.m_gamepad.stickLeftRight) {
+            if (m_gamepad.stickLeftRight) {
                 this.direction = 'right';
                 this.animation.gotoAndPlay('run_side');
                 this.flippedX = false;
             }
-            else if (this.m_gamepad.stickLeftDown) {
+            else if (m_gamepad.stickLeftDown) {
                 this.direction = 'down';
                 this.animation.gotoAndPlay('run_down');
             }
-            else if (this.m_gamepad.stickLeftLeft) {
+            else if (m_gamepad.stickLeftLeft) {
                 this.direction = 'left';
                 this.animation.gotoAndPlay('run_side');
                 this.flippedX = true;
             }
-            else if (this.m_gamepad.stickLeftUp) {
+            else if (m_gamepad.stickLeftUp) {
                 this.direction = 'up';
                 this.animation.gotoAndPlay('run_up');
             }
@@ -251,12 +251,12 @@ class Player extends rune.display.Sprite {
                 this.playIdleAnimation();
             }
         }
-        if (this.m_gamepad.justPressed(0)) {
+        if (m_gamepad.justPressed(0)) {
             this.shoot();
             this.shootSound.play();
         }
         if (this.area.m_nrOfPlayers == 1 || this.area.m_players[this.coPlayerID].status == 'dead') {
-            if (this.m_gamepad.justPressed(1)) {
+            if (m_gamepad.justPressed(1)) {
                 this.shootSecond();
                 this.shootSecondSound.play();
             }   

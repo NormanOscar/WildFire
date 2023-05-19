@@ -90,7 +90,7 @@ class GameOver extends rune.scene.Scene {
             this.m_sound.play();
         }
         
-        if (this.keyboard.justPressed("SPACE") || this.gamepads.justPressed(0)) {
+        if (this.keyboard.justPressed("SPACE") || this.gamepads.get(0).justPressed(0)) {
             if (this.menuSelected == 0) {
                 this.application.scenes.load( [new Game(this.m_nrOfPlayers)] );
             } else {

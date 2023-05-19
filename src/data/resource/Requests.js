@@ -53,6 +53,7 @@ wildfire.data.Requests.prototype.m_construct = function() {
 	this.add("gameover_background", "./../asset/png/backgrounds/gameover_background.png");
 	this.add("how_to_play_background", "./../asset/png/backgrounds/how_to_play_background.png");
 	this.add("menu_background", "./../asset/png/backgrounds/menu_background.png");
+	this.add("newHighscore_background", "./../asset/png/backgrounds/newHighscore_background.png");
 	this.add("bullet0", "./../asset/png/bullets/bullet0.png");
 	this.add("bullet1", "./../asset/png/bullets/bullet1.png");
 	this.add("co-op_btn", "./../asset/png/buttons/co-op_btn.png");
@@ -61,10 +62,8 @@ wildfire.data.Requests.prototype.m_construct = function() {
 	this.add("play_again_btn", "./../asset/png/buttons/play_again_btn.png");
 	this.add("save_btn", "./../asset/png/buttons/save_btn.png");
 	this.add("singleplayer_btn", "./../asset/png/buttons/singleplayer_btn.png");
-	this.add("charFrame", "./../asset/png/charFrame.png");
 	this.add("enemy", "./../asset/png/enemy/enemy.png");
 	this.add("fire", "./../asset/png/fire/fire.png");
-	this.add("particle", "./../asset/png/fire/particle.png");
 	this.add("font", "./../asset/png/fonts/font.png");
 	this.add("house0", "./../asset/png/houses/house0.png");
 	this.add("house1", "./../asset/png/houses/house1.png");
@@ -80,6 +79,13 @@ wildfire.data.Requests.prototype.m_construct = function() {
 	this.add("shootSecond", "./../asset/png/howToPlay/shootSecond.png");
 	this.add("shootSecondBtn", "./../asset/png/howToPlay/shootSecondBtn.png");
 	this.add("verticalLine", "./../asset/png/howToPlay/verticalLine.png");
+	this.add("charFrame", "./../asset/png/newHighScoreScreen/charFrame.png");
+	this.add("charFrame_player1", "./../asset/png/newHighScoreScreen/charFrame_player1.png");
+	this.add("charFrame_player2", "./../asset/png/newHighScoreScreen/charFrame_player2.png");
+	this.add("charWheel_arrow", "./../asset/png/newHighScoreScreen/charWheel_arrow.png");
+	this.add("newHighscore_title", "./../asset/png/newHighScoreScreen/newHighscore_title.png");
+	this.add("particle", "./../asset/png/particles/particle.png");
+	this.add("secondParticle", "./../asset/png/particles/secondParticle.png");
 	this.add("player0", "./../asset/png/players/player0.png");
 	this.add("player1", "./../asset/png/players/player1.png");
 	this.add("tileset", "./../asset/png/tileset/tileset.png");

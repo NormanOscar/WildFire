@@ -11,6 +11,7 @@ npx google-closure-compiler \
 --js "./../../src/data/resource/Requests.js" \
 --js "./../../src/entity/fire/Fire.js" \
 --js "./../../src/entity/particle/Particle.js" \
+--js "./../../src/entity/particle/SecondParticle.js" \
 --js "./../../src/entity/fire/Fires.js" \
 --js "./../../src/entity/fire/FireController.js" \
 --js "./../../src/entity/bullet/Bullet.js" \
@@ -26,7 +27,8 @@ npx google-closure-compiler \
 --js "./../../src/scene/menu/HowToPlay.js" \
 --js "./../../src/scene/highscore/HighscoreList.js" \
 --js "./../../src/scene/gameOver/GameOver.js" \
---js "./../src/scene/gameOver/CharacterWheel.js" \
+--js "./../../src/scene/gameOver/CharWheelArrow.js" \
+--js "./../../src/scene/gameOver/CharWheel.js" \
 --js "./../../src/scene/gameOver/NewHighscore.js" \
 --js "./../../src/scene/game/Countdown.js" \
 --js "./../../src/scene/game/Game.js" \

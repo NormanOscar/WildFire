@@ -185,7 +185,7 @@
     }
 
     m_initGeneralRules() {
-        var m_generalRulesTitle = new rune.text.BitmapField("If co-player is dead, second weapon is unlocked");
+        var m_generalRulesTitle = new rune.text.BitmapField("If co-player is dead, second weapon is unlocked", rune.text.BitmapFormat.FONT_MEDIUM);
         m_generalRulesTitle.width = m_generalRulesTitle.textWidth;
         m_generalRulesTitle.centerX = this.application.screen.centerX;
         m_generalRulesTitle.y = 140;
@@ -193,7 +193,7 @@
     }
 
     createMainRulesText(text, x) {
-        var m_mainRulesText = new rune.text.BitmapField(text);
+        var m_mainRulesText = new rune.text.BitmapField(text, rune.text.BitmapFormat.FONT_MEDIUM);
         m_mainRulesText.width = m_mainRulesText.textWidth;
         m_mainRulesText.centerX = x;
         m_mainRulesText.y = 105;
@@ -201,7 +201,7 @@
     }
 
     createPlayerTitle(text, x) {
-        var m_playerTitle = new rune.text.BitmapField(text);
+        var m_playerTitle = new rune.text.BitmapField(text, rune.text.BitmapFormat.FONT_MEDIUM);
         m_playerTitle.width = m_playerTitle.textWidth;
         m_playerTitle.centerX = x;
         m_playerTitle.y = 45;
@@ -209,7 +209,7 @@
     }
 
     createMainTaskText(text, x) {
-        var m_mainTaskText = new rune.text.BitmapField(text);
+        var m_mainTaskText = new rune.text.BitmapField(text, rune.text.BitmapFormat.FONT_MEDIUM);
         m_mainTaskText.width = m_mainTaskText.textWidth;
         m_mainTaskText.centerX = x;
         m_mainTaskText.y = 60;

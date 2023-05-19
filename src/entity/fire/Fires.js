@@ -30,7 +30,7 @@ class Fires {
         this.fireSpawnRate = 1000;
         
         this.emitter = new rune.particle.Emitter(0, 0, 32, 10, {
-            particles: [Particle],
+            particles: [Particle, SecondParticle],
             capacity: 4,
             accelerationY: -0.025,
             maxVelocityY: -1.25,

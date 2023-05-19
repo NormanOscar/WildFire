@@ -3,8 +3,15 @@ class NewHighscore extends rune.scene.Scene {
         super();
         this.menuItems = [];
         this.menuSelected = 0;
-        this.score = score;
-        this.m_nrOfPlayers = nrOfPlayers;
+        this.playerTwoMenuItems = [];
+        this.playerTwoMenuSelected = 0;
+        this.score = score || 100;
+        this.m_nrOfPlayers = nrOfPlayers || 2;
+        this.m_sound = null;
+        this.title = null;
+        this.scoreTitle = null;
+        this.scoreText = null;
+        this.namePickerTitle = null;
     }
 
     init() {
@@ -13,23 +20,16 @@ class NewHighscore extends rune.scene.Scene {
         
         this.m_initBackground();
         this.initTitle();
+        this.initScoreTitle();
+        this.initScoreText();
+        
+        this.initNamePickerTitle();
 
-        var charWheelX = -80;
-        for (let i = 0; i < 3; i++) {
-            var charWheel = new CharacterWheel(charWheelX, this);
-
-            this.menuItems.push(charWheel);
-            this.stage.addChild(charWheel);
-            charWheelX += 50;
-        }
-        this.menuItems[0].selected = true;
-        console.table({
-            "this.menuItems[0].selected": this.menuItems[0].selected,
-            "this.menuItems[1].selected": this.menuItems[1].selected,
-            "this.menuItems[2].selected": this.menuItems[2].selected
-        })
-
-        this.initSaveBtn();
+        if (this.m_nrOfPlayers == 1) {
+            this.initOneCharWheels();
+        } else {
+            this.initTwoPlayerCharWheels();
+        }        
     }
 
     m_initSound() {
@@ -38,21 +38,94 @@ class NewHighscore extends rune.scene.Scene {
     }
     
     m_initBackground() {
-        this.stage.backgroundColor = 'Orange';
+        var m_background = new rune.display.Sprite(0, 0, 400, 225, "newHighscore_background");
+        this.stage.addChild(m_background);
     }
 
     initTitle() {
-        var m_title = new rune.text.BitmapField('New Highscore!', rune.text.BitmapFormat.FONT_MEDIUM);
-        m_title.width = m_title.textWidth;
-        this.stage.addChild(m_title);
-        m_title.centerX = this.application.screen.centerX;
-        m_title.y = this.application.screen.y + 40;
+        this.title = new rune.display.Sprite(0, 0, 272, 26, "newHighscore_title");
+        this.title.centerX = this.application.screen.centerX;
+        this.title.y = this.m_nrOfPlayers == 1 ? 20 : 10;
+        this.title.animation.create("idle", [0, 1, 2, 3], 6, true);
+        this.title.animation.play("idle");
+        this.stage.addChild(this.title);
     }
 
-    initSaveBtn() {
-        var saveBtn = new MenuBtn("save_btn");
-        saveBtn.centerX = this.application.screen.width / 4 * 3;
-        saveBtn.centerY = this.application.screen.centerY;
+    initScoreTitle() {
+        this.scoreTitle = new rune.text.BitmapField('Score:', rune.text.BitmapFormat.FONT_MEDIUM);
+        this.scoreTitle.width = this.scoreTitle.textWidth;
+        this.scoreTitle.centerX = this.application.screen.centerX;
+        this.scoreTitle.centerY = this.m_nrOfPlayers == 1 ? this.application.screen.centerY - 40 : this.application.screen.centerY - 60;
+        this.stage.addChild(this.scoreTitle);
+    }
+    
+    initScoreText() {
+        this.scoreText = new rune.text.BitmapField(this.score.toString(), rune.text.BitmapFormat.FONT_MEDIUM);
+        this.scoreText.width = this.scoreText.textWidth;
+        this.scoreText.centerX = this.application.screen.centerX;
+        this.scoreText.centerY = this.scoreTitle.centerY + 15;
+        this.stage.addChild(this.scoreText);
+    }
+
+    initNamePickerTitle() {
+        this.namePickerTitle = new rune.text.BitmapField('Pick your name:', rune.text.BitmapFormat.FONT_MEDIUM);
+        this.namePickerTitle.width = this.namePickerTitle.textWidth;
+        this.namePickerTitle.centerX = this.application.screen.centerX;
+        this.namePickerTitle.centerY = this.m_nrOfPlayers == 1 ? this.application.screen.centerY + 20 : this.application.screen.centerY - 20;
+        this.stage.addChild(this.namePickerTitle);
+    }
+
+    initOneCharWheels() {
+        var charWheelX = 80;
+        var charWheelY = this.application.screen.centerY + 60;
+        for (let i = 0; i < 3; i++) {
+            var charWheel = new CharWheel(charWheelX, charWheelY, this, 0);
+
+            this.menuItems.push(charWheel);
+            this.stage.addChild(charWheel);
+            charWheelX += 50;
+        }
+        this.menuItems[0].selected = true;
+        this.initSaveBtn(80, charWheelY);
+    }
+
+    initTwoPlayerCharWheels() {
+        var charWheelX = 120;
+        var charWheelY = this.application.screen.centerY + 20;
+        for (let i = 0; i < 3; i++) {
+            var charWheel = new CharWheel(charWheelX, charWheelY, this, 0);
+            this.menuItems.push(charWheel);
+            this.stage.addChild(charWheel);
+            charWheelX += 50;
+        }
+        this.menuItems[0].selected = true;
+        this.initPlayerTitle(30, charWheelY, 1);
+
+        var playerTwoCharWgeelX = 120;
+        var playerTwoCharWheelY = this.application.screen.centerY + 80;
+        for (let i = 0; i < 3; i++) {
+            var charWheel = new CharWheel(playerTwoCharWgeelX, playerTwoCharWheelY, this, 1);
+            this.playerTwoMenuItems.push(charWheel);
+            this.stage.addChild(charWheel);
+            playerTwoCharWgeelX += 50;
+        }
+        this.playerTwoMenuItems[0].selected = true;
+        this.initPlayerTitle(30, playerTwoCharWheelY, 2);
+        this.initSaveBtn(30, charWheelY);
+    }
+
+    initPlayerTitle(initX, initY, id) {
+        var playerTitle = new rune.text.BitmapField('Player ' + id + ':', rune.text.BitmapFormat.FONT_MEDIUM);
+        playerTitle.width = playerTitle.textWidth;
+        playerTitle.x = initX;
+        playerTitle.centerY = initY;
+        this.stage.addChild(playerTitle);
+    }
+
+    initSaveBtn(initX, initY) {
+        var saveBtn = new SaveBtn();
+        saveBtn.x = this.application.screen.width - saveBtn.width - initX;
+        saveBtn.centerY = initY;
         this.stage.addChild(saveBtn);
         this.menuItems.push(saveBtn);
     }
@@ -63,6 +136,14 @@ class NewHighscore extends rune.scene.Scene {
     }
 
     m_updateInput() {
+        this.updatePlayerOneInput();
+
+        if (this.m_nrOfPlayers == 2) {
+            this.updatePlayerTwoInput();
+        }
+    }
+    
+    updatePlayerOneInput() {
         if (this.keyboard.justPressed("a") || this.gamepads.get(0).stickLeftJustLeft || this.gamepads.get(0).justPressed(14)) {
             if (this.menuSelected != 0) {
                 this.menuItems[this.menuSelected].selected = false;
@@ -85,14 +166,40 @@ class NewHighscore extends rune.scene.Scene {
                 this.m_sound.play();
             }
         }
-
-        if (this.keyboard.justPressed("ENTER") || this.gamepads.justPressed(9)) {
+    
+        if (this.keyboard.justPressed("SPACE") || this.gamepads.get(0).justPressed(0)) {
             if (this.menuSelected == 3) {
                 var name = this.menuItems[0].text + this.menuItems[1].text + this.menuItems[2].text;
                 console.log(name);
-
+                if (this.m_nrOfPlayers == 2) {
+                    name += "&" + this.playerTwoMenuItems[0].text + this.playerTwoMenuItems[1].text + this.playerTwoMenuItems[2].text;
+                }
+    
                 this.application.highscores.send(this.score, name, this.m_nrOfPlayers - 1);
                 this.application.scenes.load([ new Menu() ]);
+            }
+        }
+    }
+
+    updatePlayerTwoInput() {
+        if (this.keyboard.justPressed("left") || this.gamepads.get(1).stickLeftJustLeft || this.gamepads.get(1).justPressed(14)) {
+            if (this.playerTwoMenuSelected != 0) {
+                this.playerTwoMenuItems[this.playerTwoMenuSelected].selected = false;
+                this.playerTwoMenuItems[this.playerTwoMenuSelected].frame.visible = false;
+                this.playerTwoMenuSelected--;
+                this.playerTwoMenuItems[this.playerTwoMenuSelected].selected = true;
+                this.m_sound.play();
+            }
+        }
+        
+        if (this.keyboard.justPressed("right") || this.gamepads.get(1).stickLeftJustRight || this.gamepads.get(1).justPressed(15)) {
+            if (this.playerTwoMenuSelected != 2) {
+                this.playerTwoMenuItems[this.playerTwoMenuSelected].selected = false;
+                this.playerTwoMenuItems[this.playerTwoMenuSelected].frame.visible = false;
+    
+                this.playerTwoMenuSelected++;
+                this.playerTwoMenuItems[this.playerTwoMenuSelected].selected = true;
+                this.m_sound.play();
             }
         }
     }

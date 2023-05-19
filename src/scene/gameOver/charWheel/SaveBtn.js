@@ -1,7 +1,6 @@
-class MenuBtn extends rune.display.Sprite {
-    constructor(texture) {
-        super(0, 0, 122, 30, texture);
-        this.btnType = texture;
+class SaveBtn extends rune.display.Sprite {
+    constructor() {
+        super(0, 0, 88, 30, "save_btn");
         this.selected = false;
     }
 
@@ -12,8 +11,8 @@ class MenuBtn extends rune.display.Sprite {
 
     animate() {
         this.animation.create("idle", [0], 1, true);
+        this.animation.create("selected", [1], 2, true);
         this.animation.play("idle");
-        this.animation.create("selected", [1, 2], 2, true);
     }
 
     update(step) {
