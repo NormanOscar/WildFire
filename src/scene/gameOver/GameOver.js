@@ -76,29 +76,59 @@ class GameOver extends rune.scene.Scene {
     }
 
     m_updateInput() {
-        if (this.keyboard.justPressed("w") || this.gamepads.get(0).stickLeftJustUp || this.gamepads.get(0).justPressed(12)) {
-            this.menuBtns[this.menuSelected].selected = false;
-            this.menuSelected == 0 ? this.menuSelected++ : this.menuSelected--;
-            this.menuBtns[this.menuSelected].selected = true;
-            this.m_sound.play();
-        }
-        
-        if (this.keyboard.justPressed("s") || this.gamepads.get(0).stickLeftJustDown || this.gamepads.get(0).justPressed(13)) {
-            this.menuBtns[this.menuSelected].selected = false;
-            this.menuSelected == 1 ? this.menuSelected-- : this.menuSelected++;
-            this.menuBtns[this.menuSelected].selected = true;
-            this.m_sound.play();
-        }
-        
-        if (this.keyboard.justPressed("SPACE") || this.gamepads.get(0).justPressed(0)) {
-            if (this.menuSelected == 0) {
-                this.application.scenes.load( [new Game(this.m_nrOfPlayers)] );
-            } else {
-                this.application.scenes.load( [new Menu()] );
-            }
+        var m_gamepad = this.gamepads.get(0);
+        if (m_gamepad.connected) {
+            this.m_updateGamepadInput(m_gamepad);
+        } else {
+            this.m_updateKeyboardInput();
         }
     }
 
+    m_updateGamepadInput(gamepad) {
+        if (gamepad.stickLeftJustUp || gamepad.justPressed(12)) {
+            this.up();
+        }
+        if (gamepad.stickLeftJustDown || gamepad.justPressed(13)) {
+            this.down();
+        }
+        if (gamepad.justPressed(0)) {
+            this.select();
+        }
+    }
+
+    m_updateKeyboardInput() {
+        if (this.keyboard.justPressed("w")) {
+            this.up();
+        }
+        if (this.keyboard.justPressed("s")) {
+            this.down();
+        }
+        if (this.keyboard.justPressed("SPACE")) {
+            this.select();
+        }
+    }
+
+    up() {
+        this.menuBtns[this.menuSelected].selected = false;
+        this.menuSelected == 0 ? this.menuSelected++ : this.menuSelected--;
+        this.menuBtns[this.menuSelected].selected = true;
+        this.m_sound.play();
+    }
+    
+    down() {
+        this.menuBtns[this.menuSelected].selected = false;
+        this.menuSelected == 1 ? this.menuSelected-- : this.menuSelected++;
+        this.menuBtns[this.menuSelected].selected = true;
+        this.m_sound.play();
+    }
+    
+    select() {
+        if (this.menuSelected == 0) {
+            this.application.scenes.load( [new Game(this.m_nrOfPlayers)] );
+        } else {
+            this.application.scenes.load( [new Menu()] );
+        }
+    }
 
     dispose() {
         super.dispose();

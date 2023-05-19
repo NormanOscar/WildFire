@@ -71,13 +71,15 @@ class Minimap extends rune.display.Artboard {
 
     update(step) {
         super.update(step);
-        this.m_printForest();
-        this.m_printHouses();
-        this.m_printPlayers();
-
-        if (this.area.gameStarted) {
-            this.m_printFires();
-            this.m_printEnemies();
+        if (!this.area.gameEnded) {
+            this.m_printForest();
+            this.m_printHouses();
+            this.m_printPlayers();
+    
+            if (this.area.gameStarted) {
+                this.m_printFires();
+                this.m_printEnemies();
+            }
         }
     }
 

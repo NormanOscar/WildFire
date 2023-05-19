@@ -78,8 +78,6 @@ wildfire.data.Requests.prototype.m_construct = function() {
 	this.add("shootBtn", "./../asset/png/howToPlay/shootBtn.png");
 	this.add("shootSecond", "./../asset/png/howToPlay/shootSecond.png");
 	this.add("shootSecondBtn", "./../asset/png/howToPlay/shootSecondBtn.png");
-	this.add("verticalLine", "./../asset/png/howToPlay/verticalLine.png");
-	this.add("charFrame", "./../asset/png/newHighScoreScreen/charFrame.png");
 	this.add("charFrame_player1", "./../asset/png/newHighScoreScreen/charFrame_player1.png");
 	this.add("charFrame_player2", "./../asset/png/newHighScoreScreen/charFrame_player2.png");
 	this.add("charWheel_arrow", "./../asset/png/newHighScoreScreen/charWheel_arrow.png");

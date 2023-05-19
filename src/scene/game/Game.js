@@ -56,6 +56,7 @@ class Game extends rune.scene.Scene {
 
         this.newHighscore = false;
         this.gameStarted = false;
+        this.gameEnded = false;
     }
 
     /**
@@ -433,6 +434,7 @@ class Game extends rune.scene.Scene {
     }
 
     gameOver() {
+        this.gameEnded = true;
         if (this.application.highscores.test(this.m_totalScore, this.m_nrOfPlayers - 1) != -1) {
             /* if (this.application.highscores.get(0, this.m_nrOfPlayers - 1).score < this.m_totalScore) {
                 this.newHighscore = true;
