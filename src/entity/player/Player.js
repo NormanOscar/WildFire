@@ -251,12 +251,12 @@ class Player extends rune.display.Sprite {
                 this.playIdleAnimation();
             }
         }
-        if (m_gamepad.justPressed(0)) {
+        if (m_gamepad.justPressed(1)) {
             this.shoot();
             this.shootSound.play();
         }
         if (this.area.m_nrOfPlayers == 1 || this.area.m_players[this.coPlayerID].status == 'dead') {
-            if (m_gamepad.justPressed(1)) {
+            if (m_gamepad.justPressed(0)) {
                 this.shootSecond();
                 this.shootSecondSound.play();
             }   

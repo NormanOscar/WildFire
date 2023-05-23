@@ -91,7 +91,7 @@ class GameOver extends rune.scene.Scene {
         if (gamepad.stickLeftJustDown || gamepad.justPressed(13)) {
             this.down();
         }
-        if (gamepad.justPressed(0)) {
+        if (gamepad.justPressed(1)) {
             this.select();
         }
     }

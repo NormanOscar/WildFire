@@ -167,7 +167,7 @@ class NewHighscore extends rune.scene.Scene {
             }
         }
     
-        if (this.keyboard.justPressed("SPACE") || this.gamepads.get(0).justPressed(0)) {
+        if (this.keyboard.justPressed("SPACE") || this.gamepads.get(0).justPressed(1)) {
             if (this.menuSelected == 3) {
                 var name = this.menuItems[0].text + this.menuItems[1].text + this.menuItems[2].text;
                 console.log(name);

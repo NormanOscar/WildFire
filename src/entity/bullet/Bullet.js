@@ -22,9 +22,6 @@ class Bullet extends rune.display.Graphic {
         super.init();
 
         this.changeDirection();
-
-        this.hitbox.debugColor = 'pink';
-        this.hitbox.debug = false;
     }
 
     update(step) {
@@ -35,9 +32,6 @@ class Bullet extends rune.display.Graphic {
         this.id == 0 ? this.checkEnemyCollision() : this.checkFireCollision();
 
         if (!this.m_disposed) {
-            /* this.area.stage.map.back.hitTestAndSeparate(this, function() {
-                this.dispose();
-            }); */
             
             // If bullet hit edge of map, delete bullet
             if (this.x < 32 || (this.x + this.width) > 960 || this.y < 32 || (this.y + this.height) > 640) {
@@ -52,6 +46,7 @@ class Bullet extends rune.display.Graphic {
     }
 
     changeDirection() {
+        // Change direction of bullet based on player direction
         switch (this.direction) {
             case 'right':
                 this.rotation = 0;
@@ -92,8 +87,6 @@ class Bullet extends rune.display.Graphic {
                         this.area.totalFires--;
                         fire.deathSound.play();
                     }
-                    /* this.hitTest(fire, function () {
-                    }, this); */
                 }
             }
         }
@@ -109,8 +102,6 @@ class Bullet extends rune.display.Graphic {
                     this.area.m_totalScore += 10;
                     enemy.deathSound.play();    
                 }
-                /* this.hitTest(enemy, function () {
-                }, this); */
             }
         }
     }

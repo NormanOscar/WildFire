@@ -26,11 +26,12 @@ npx google-closure-compiler \
 --js "./../../src/scene/menu/ControlBtn.js" \
 --js "./../../src/scene/menu/HowToPlay.js" \
 --js "./../../src/scene/highscore/HighscoreList.js" \
---js "./../../src/scene/gameOver/GameOver.js" \
---js "./../../src/scene/gameOver/CharWheelArrow.js" \
---js "./../../src/scene/gameOver/CharWheel.js" \
+--js "./../../src/scene/gameOver/charWheel/CharWheelArrow.js" \
+--js "./../../src/scene/gameOver/charWheel/SaveBtn.js" \
+--js "./../../src/scene/gameOver/charWheel/CharWheel.js" \
 --js "./../../src/scene/gameOver/NewHighscore.js" \
 --js "./../../src/scene/game/Countdown.js" \
+--js "./../../src/scene/gameOver/GameOver.js" \
 --js "./../../src/scene/game/Game.js" \
 --js "./../../src/scene/menu/Menu.js" \
 --js "./../../src/system/Main.js" \

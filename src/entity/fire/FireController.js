@@ -18,7 +18,7 @@ class FireController {
     
     initActiveFireTimer() {
         this.activeFireTimer = this.area.timers.create({
-            duration: 8000,
+            duration: 4000,
             repeat: Infinity,
             onTick: this.createActiveFire,
             scope: this
@@ -30,14 +30,13 @@ class FireController {
             if (activeFire.tileArr.length <= 0) {
                 activeFire.init();
                 activeFire.status = 'active';
-                return;
             }
         }
 
         if (this.spawnPointsIndex <= 3) {
             var fires = new Fires(this.getFireSpawnPoints(this.spawnPointsIndex).x,this.getFireSpawnPoints(this.spawnPointsIndex).y, this.area);
             this.activeFires.push(fires);
-            this.spawnPointsIndex++
+            this.spawnPointsIndex++;
         }
     }
 

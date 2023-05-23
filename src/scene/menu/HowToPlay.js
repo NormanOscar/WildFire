@@ -234,7 +234,7 @@
     }
 
     m_initBackText() {
-        this.backText = new rune.text.BitmapField('Press A to go back', rune.text.BitmapFormat.FONT_MEDIUM);
+        this.backText = new rune.text.BitmapField('Press B to go back', rune.text.BitmapFormat.FONT_MEDIUM);
         this.backText.width = this.backText.textWidth;
         this.backText.x = this.cameras.getCameraAt(0).centerX - this.backText.width / 2;
         this.backText.y = this.cameras.getCameraAt(0).height - 20;

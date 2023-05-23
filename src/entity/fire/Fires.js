@@ -26,6 +26,7 @@ class Fires {
 
         this.status = 'active';
         this.area = scene;
+        this.fireController = this.area.fireController;
         this.spawnTimer = null;
         this.fireSpawnRate = 1000;
         
@@ -35,9 +36,7 @@ class Fires {
             accelerationY: -0.025,
             maxVelocityY: -1.25,
             minRotation:  -2,
-            maxRotation:   2,
-            maxLifeSpan:   500,
-            minLifeSpan:   250,
+            maxRotation:   2
         });
 
         this.init();
@@ -84,6 +83,7 @@ class Fires {
         if (this.tileArr.length <= 0) {
             this.status = 'innactive';
             this.area.timers.remove(this.spawnTimer);
+            this.area.fireController.nrOfActiveFires--;
         }
     }
 
@@ -97,7 +97,7 @@ class Fires {
                 var tileY = this.tileArr[this.tileArr.length -1].y + fireDirection.y;
                 var mapIndex = this.area.stage.map.back.getTileIndexOf(tileX, tileY);
         
-                if (this.area.stage.map.back.getTileValueAt(mapIndex) == 23) {
+                if (this.area.stage.map.back.getTileValueAt(mapIndex) == 23 || this.area.stage.map.back.getTileValueAt(mapIndex) == 24) {
                     var fire = new Fire(tileX, tileY);
                     this.area.totalFires++;
                     this.tileArr.push(fire);

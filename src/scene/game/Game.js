@@ -47,7 +47,7 @@ class Game extends rune.scene.Scene {
         this.scoreCounter = null;
 
         this.m_cams = new Array();
-        this.camera_is_splitted = false;
+        this.m_camera_is_splitted = false;
 
         this.dificultyTimer = null;
         this.dificulty = 1;
@@ -110,19 +110,19 @@ class Game extends rune.scene.Scene {
     }
 
     checkScore() {
-        if (this.m_totalScore >= 1000 && this.m_totalScore < 2000) {
+        if (this.m_totalScore >= 500 && this.m_totalScore < 1000) {
             console.log("Dificulty changed to 2");
             this.dificulty++;
             this.chageDificulty();
-        } else if (this.m_totalScore >= 2000 && this.m_totalScore < 3000) {
+        } else if (this.m_totalScore >= 1000 && this.m_totalScore < 1500) {
             console.log("Dificulty changed to 3");
             this.dificulty++;
             this.chageDificulty();
-        } else if (this.m_totalScore >= 3000 && this.m_totalScore < 4000) {
+        } else if (this.m_totalScore >= 1500 && this.m_totalScore < 2000) {
             console.log("Dificulty changed to 4");
             this.dificulty++;
             this.chageDificulty();
-        } else {
+        } else if (this.m_totalScore >= 2000){
             console.log("Dificulty changed to 5");
             this.dificulty++;
             this.chageDificulty();
@@ -435,6 +435,11 @@ class Game extends rune.scene.Scene {
 
     gameOver() {
         this.gameEnded = true;
+        if (this.m_camera_is_splitted) {
+            this.splittedMinimap.frame.dispose();
+            this.splittedMinimap.dispose();
+            this.splittedScoreCounter.dispose();
+        }
         if (this.application.highscores.test(this.m_totalScore, this.m_nrOfPlayers - 1) != -1) {
             /* if (this.application.highscores.get(0, this.m_nrOfPlayers - 1).score < this.m_totalScore) {
                 this.newHighscore = true;
