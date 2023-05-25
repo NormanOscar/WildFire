@@ -63,6 +63,7 @@ wildfire.data.Requests.prototype.m_construct = function() {
 	this.add("save_btn", "./../asset/png/buttons/save_btn.png");
 	this.add("singleplayer_btn", "./../asset/png/buttons/singleplayer_btn.png");
 	this.add("enemy", "./../asset/png/enemy/enemy.png");
+	this.add("enemy1", "./../asset/png/enemy/enemy1.png");
 	this.add("fire", "./../asset/png/fire/fire.png");
 	this.add("font", "./../asset/png/fonts/font.png");
 	this.add("house0", "./../asset/png/houses/house0.png");

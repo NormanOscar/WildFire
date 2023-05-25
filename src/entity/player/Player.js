@@ -1,7 +1,6 @@
 /**
  * Creates a new player object.
  *
- * @constructor
  * @extends rune.display.Sprite
  *
  * @class
@@ -158,7 +157,13 @@ class Player extends rune.display.Sprite {
      * @returns {undefined}
      */
     checkHouseCollision() {
-        this.hitTestAndSeparateContentOf(this.area.houses);
+        for (const house of this.area.houses) {
+            if (this.hitTest(house)) {
+                house.playerBehind = true;
+            } else {
+                house.playerBehind = false;
+            }
+        }
     }
 
     /**
@@ -168,7 +173,7 @@ class Player extends rune.display.Sprite {
      */
     checkFireCollision() {
         if (this.status != 'dead') {
-            for (const fires of this.area.fireController.activeFires) {
+            for (const fires of this.area.fireController.burningFires) {
                 if (fires) {
                     this.hitTestContentOf(fires.tileArr, function () {
                         const player = arguments[0];

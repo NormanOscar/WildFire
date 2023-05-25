@@ -1,9 +1,9 @@
 class FireController {
     constructor(area) {
-        this.activeFires = new Array(4);
+        this.burningFires = new Array(4);
         this.area = area;
 
-        this.activeFireTimer = null;
+        this.burningFireTimer = null;
         this.init();
     }
 
@@ -13,7 +13,7 @@ class FireController {
     }
     
     initActiveFireTimer() {
-        this.activeFireTimer = this.area.timers.create({
+        this.burningFireTimer = this.area.timers.create({
             duration: 5000,
             repeat: Infinity,
             onTick: this.createActiveFire,
@@ -23,8 +23,8 @@ class FireController {
 
     createActiveFire() {
         let allAreBurning = true;
-        for (const activeFire of this.activeFires) {
-            if (!activeFire) {
+        for (const burningFire of this.burningFires) {
+            if (!burningFire) {
                 allAreBurning = false;
                 break;
             }
@@ -32,9 +32,9 @@ class FireController {
         if (!allAreBurning) {
             var r = Math.floor(Math.random() * 4);
 
-            if (!this.activeFires[r]) {
+            if (!this.burningFires[r]) {
                 var fire = new Fire(this.getFireSpawnPoints(r).x,this.getFireSpawnPoints(r).y, this.area);
-                this.activeFires[r] = fire;
+                this.burningFires[r] = fire;
             } else {
                 this.createActiveFire();
             }
@@ -48,16 +48,16 @@ class FireController {
      */
     checkActiveFires() {
         if (this.area.allPlayersDead) {
-            for (let i = 0; i < this.activeFires.length; i++) {
-                if (this.activeFires[i]) {
-                    this.area.timers.remove(this.activeFires[i].spawnTimer);
+            for (let i = 0; i < this.burningFires.length; i++) {
+                if (this.burningFires[i]) {
+                    this.area.timers.remove(this.burningFires[i].spawnTimer);
                 }
             }
         }
 
-        for (let i = 0; i < this.activeFires.length; i++) {
-            if (this.activeFires[i] && this.activeFires[i].tileArr.length <= 0) {
-                this.activeFires[i] = null;
+        for (let i = 0; i < this.burningFires.length; i++) {
+            if (this.burningFires[i] && this.burningFires[i].tileArr.length <= 0) {
+                this.burningFires[i] = null;
                 this.nrOfActiveFires--;
             }
         }

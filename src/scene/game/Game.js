@@ -1,7 +1,6 @@
 /**
  * Creates a new object.
  *
- * @constructor
  * @extends rune.scene.Scene
  *
  * @class
@@ -417,15 +416,15 @@ class Game extends rune.scene.Scene {
         var coordinates = [
             {
                 x: 128,
-                y: 128
+                y: 96
             },
             {
-                x: 288,
+                x: 224,
                 y: 384
             },
             {
-                x: 608,
-                y: 128
+                x: 640,
+                y: 96
             }
         ]
         return coordinates[id];

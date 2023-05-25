@@ -1,6 +1,6 @@
 class Enemy extends rune.display.Sprite {
     constructor(x, y, area, targetPlayer, speed) {
-        super(x, y, 32, 32, "enemy");
+        super(x, y, 32, 32, "enemy1");
         this.startPos = {
             x: x,
             y: y
@@ -52,11 +52,27 @@ class Enemy extends rune.display.Sprite {
         super.update(step);
 
         this.updatePath();
+        this.checkHouseCollision();
 
         this.move();
 
         if (this.area.m_nrOfPlayers == 2) {
             this.changeTarget();
+        }
+    }
+
+    /**
+     * This method is used to check collision between player and houses.
+     * 
+     * @returns {undefined}
+     */
+     checkHouseCollision() {
+        for (const house of this.area.houses) {
+            if (this.hitTest(house)) {
+                house.playerBehind = true;
+            } else {
+                house.playerBehind = false;
+            }
         }
     }
 

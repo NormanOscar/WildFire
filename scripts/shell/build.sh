@@ -1,10 +1,10 @@
 #!/bin/bash
 
 npx google-closure-compiler \
---language_in ECMASCRIPT6_STRICT \
+--language_in ECMASCRIPT6 \
 --language_out ECMASCRIPT5_STRICT \
 --warning_level DEFAULT \
---compilation_level WHITESPACE_ONLY \
+--compilation_level SIMPLE \
 --isolation_mode IIFE \
 --js "./../../lib/rune.js" \
 --js "./../../src/scope/Manifest.js" \

@@ -8,6 +8,8 @@ class Minimap extends rune.display.Artboard {
         this.p1Graphic = null;
         this.type = type;
         this.frame = null;
+        this.houseColors = ['#fa7aff', '#fff37e', '#7affff'];
+        this.houseIndex = 0;
     }
 
     init() {
@@ -33,7 +35,11 @@ class Minimap extends rune.display.Artboard {
             if (tile.allowCollisions != 0) {
                 if (pathTiles.includes(tile.value)) {
                     this.graphics.drawRectFill(tile.x / tile.width * 3, tile.y / tile.height * 3, 3, 3, '#e9dbac');
-                } else {
+                }
+                else if(tile.value >= 25 && tile.value <= 52) {
+                    continue;
+                } 
+                else {
                     this.graphics.drawRectFill(tile.x / tile.width * 3, tile.y / tile.height * 3, 3, 3, '#2fa569');
                 }
             }
@@ -41,21 +47,19 @@ class Minimap extends rune.display.Artboard {
     }
 
     m_printHouses() {
-        var houseColors = [{primary: '#fa7aff', secondary: '#eddda9'}, {primary: '#fff37e', secondary: '#7a553f'}, {primary: '#7affff', secondary: '#eddda9'}];
-        
         for (let i = 0; i < this.area.houses.length; i++) {
-            this.graphics.drawRectFill(this.area.houses[i].x / 32 * 3, this.area.houses[i].y / 32 * 3, this.area.houses[i].width / 32 * 3, this.area.houses[i].height / 32 * 3, houseColors[i].primary);
+            this.graphics.drawRectFill(this.area.houses[i].x / 32 * 3, this.area.houses[i].y / 32 * 3, this.area.houses[i].width / 32 * 3, (this.area.houses[i].height + 96) / 32 * 3, this.houseColors[i]);
         }
     }
 
     m_printEnemies() {
         for (const enemy of this.area.m_enemies) {
-            this.graphics.drawRectFill(enemy.x / 32 * 3, enemy.y / 32 * 3, 3, 3, '#a14f08');
+            this.graphics.drawRectFill(enemy.x / 32 * 3, enemy.y / 32 * 3, 3, 3, '#5da0ea');
         }
     }
 
     m_printFires() {
-        for (const fires of this.area.fireController.activeFires) {
+        for (const fires of this.area.fireController.burningFires) {
             if (fires) {
                 for (const fire of fires.tileArr) {
                     this.graphics.drawRectFill(fire.x / 32 * 3, fire.y / 32 * 3, 3, 3, '#f58c32');

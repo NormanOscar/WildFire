@@ -76,7 +76,7 @@ class Bullet extends rune.display.Graphic {
     }
 
     checkFireCollision() {
-        for (const fires of this.area.fireController.activeFires) {
+        for (const fires of this.area.fireController.burningFires) {
             if (fires && fires.tileArr.length != 0) {
                 this.hitTestContentOf(fires.tileArr, function() {
                     const fire = arguments[1];

@@ -1,7 +1,6 @@
 /**
  * Creates a new object.
  *
- * @constructor
  * @extends rune.scene.Scene
  *
  * @class
