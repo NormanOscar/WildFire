@@ -1,24 +1,20 @@
 class FireController {
-    constructor(scene) {
-        this.activeFires = new Array();
-        this.area = scene;
+    constructor(area) {
+        this.activeFires = new Array(4);
+        this.area = area;
 
         this.activeFireTimer = null;
-        this.spawnPointsIndex = 0;
         this.init();
     }
 
     init() {
-        var fires = new Fires(this.getFireSpawnPoints(this.spawnPointsIndex).x,this.getFireSpawnPoints(this.spawnPointsIndex).y, this.area);
-        this.activeFires.push(fires);
-        this.spawnPointsIndex++;
-
+        this.createActiveFire();
         this.initActiveFireTimer();
     }
     
     initActiveFireTimer() {
         this.activeFireTimer = this.area.timers.create({
-            duration: 4000,
+            duration: 5000,
             repeat: Infinity,
             onTick: this.createActiveFire,
             scope: this
@@ -26,37 +22,44 @@ class FireController {
     }
 
     createActiveFire() {
+        let allAreBurning = true;
         for (const activeFire of this.activeFires) {
-            if (activeFire.tileArr.length <= 0) {
-                activeFire.init();
-                activeFire.status = 'active';
+            if (!activeFire) {
+                allAreBurning = false;
+                break;
             }
         }
+        if (!allAreBurning) {
+            var r = Math.floor(Math.random() * 4);
 
-        if (this.spawnPointsIndex <= 3) {
-            var fires = new Fires(this.getFireSpawnPoints(this.spawnPointsIndex).x,this.getFireSpawnPoints(this.spawnPointsIndex).y, this.area);
-            this.activeFires.push(fires);
-            this.spawnPointsIndex++;
+            if (!this.activeFires[r]) {
+                var fire = new Fire(this.getFireSpawnPoints(r).x,this.getFireSpawnPoints(r).y, this.area);
+                this.activeFires[r] = fire;
+            } else {
+                this.createActiveFire();
+            }
         }
     }
 
     /**
-     * Runs every update in game and checks if the status of the avtice fires
+     * Runs every update in game and checks if the status of the burning fires
      * 
      * @returns {undefined}
      */
     checkActiveFires() {
         if (this.area.allPlayersDead) {
             for (let i = 0; i < this.activeFires.length; i++) {
-                this.area.timers.remove(this.activeFires[i].spawnTimer);
+                if (this.activeFires[i]) {
+                    this.area.timers.remove(this.activeFires[i].spawnTimer);
+                }
             }
         }
 
         for (let i = 0; i < this.activeFires.length; i++) {
-            this.activeFires[i].checkStatus()
-            if (this.activeFires[i].status == 'innactive') {
+            if (this.activeFires[i] && this.activeFires[i].tileArr.length <= 0) {
+                this.activeFires[i] = null;
+                this.nrOfActiveFires--;
             }
-            
         }
     }
 

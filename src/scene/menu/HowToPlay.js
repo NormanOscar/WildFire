@@ -23,6 +23,7 @@
         this.m_rulesPage = null;
 
         this.currentPage = 0;
+        this.pageTimer = null;
     }
 
     /**
@@ -40,19 +41,11 @@
         this.m_initControlsPage();
         this.m_initRulesPage();
 
-        this.timers.create({
+        this.pageTimer = this.timers.create({
             duration: 5000,
             repeat: Infinity,
             onTick: function() {
-                if (this.currentPage == 0) {
-                    this.m_controlsPage.visible = false;
-                    this.m_rulesPage.visible = true;
-                    this.currentPage = 1;
-                } else {
-                    this.m_controlsPage.visible = true;
-                    this.m_rulesPage.visible = false;
-                    this.currentPage = 0;
-                }
+                this.changePage();
             },
             scope: this,
         });
@@ -76,10 +69,50 @@
         this.stage.addChild(m_background);
     }
 
-    m_updateInput() {        
-        if (this.keyboard.justPressed("SPACE") || this.gamepads.justPressed(1)) {
+    m_updateInput() {
+        var m_gamepad = this.gamepads.get(0);
+        if (m_gamepad.connected) {
+            this.m_updateGamepadInput(m_gamepad);
+        } else {
+            this.m_updateKeyboardInput();
+        }
+    }
+
+    m_updateKeyboardInput() {
+        if (this.keyboard.justPressed("a")) {
+            this.changePage();
+        }
+        if (this.keyboard.justPressed("d")) {
+            this.changePage();
+        }
+        if (this.keyboard.justPressed("SPACE")) {
             this.application.scenes.load([new Menu()]);
         }
+    }
+
+    m_updateGamepadInput(gamepad) {
+        if (gamepad.stickLeftJustLeft || gamepad.justPressed(14)) {
+            this.changePage();
+        }
+        if (gamepad.stickLeftJustRight || gamepad.justPressed(15)) {
+            this.changePage();
+        }
+        if (gamepad.justPressed(0)) {
+            this.application.scenes.load([new Menu()]);
+        }
+    }
+
+    changePage() {
+        if (this.currentPage == 0) {
+            this.m_controlsPage.visible = false;
+            this.m_rulesPage.visible = true;
+            this.currentPage = 1;
+        } else {
+            this.m_controlsPage.visible = true;
+            this.m_rulesPage.visible = false;
+            this.currentPage = 0;
+        }
+        this.pageTimer.restart();
     }
 
     m_initControlsPage() {
@@ -170,15 +203,14 @@
     }
     
     m_initP1() {
-        this.createPlayerTitle("Player 1", this.application.width / 4);
+        this.createPlayerTitle("Pistol", this.application.width / 4);
         this.createMainTaskText("Kill the enemies", this.application.width / 4);
         this.createMainRulesText("(Can only shoot enemies)", this.application.width / 4);
         this.createPlayerAnimation(this.application.width / 4 + 10, 72, 27, "shoot");
-        
     }
     
     m_initP2() {
-        this.createPlayerTitle("Player 2", this.application.width / 4 * 3);
+        this.createPlayerTitle("Watergun", this.application.width / 4 * 3);
         this.createMainTaskText("Extinguish the fire", this.application.width / 4 * 3);
         this.createMainRulesText("(Can only shoot fires)", this.application.width / 4 * 3);
         this.createPlayerAnimation(this.application.width / 4 * 3 + 10, 72, 32, "fireman_shoot");

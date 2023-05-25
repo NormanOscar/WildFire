@@ -9,10 +9,10 @@ npx google-closure-compiler \
 --js "./../../lib/rune.js" \
 --js "./../../src/scope/Manifest.js" \
 --js "./../../src/data/resource/Requests.js" \
---js "./../../src/entity/fire/Fire.js" \
+--js "./../../src/entity/fire/FireTile.js" \
 --js "./../../src/entity/particle/Particle.js" \
 --js "./../../src/entity/particle/SecondParticle.js" \
---js "./../../src/entity/fire/Fires.js" \
+--js "./../../src/entity/fire/Fire.js" \
 --js "./../../src/entity/fire/FireController.js" \
 --js "./../../src/entity/bullet/Bullet.js" \
 --js "./../../src/entity/player/Player.js" \

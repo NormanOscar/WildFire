@@ -169,13 +169,14 @@ class Player extends rune.display.Sprite {
     checkFireCollision() {
         if (this.status != 'dead') {
             for (const fires of this.area.fireController.activeFires) {
-                for (const fire of fires.tileArr) {
-                    this.hitTest(fire, function () {
-                        this.area.cameras.getCameraAt(0).targets.remove(this);
-                        this.status = 'dead';
-                        this.deathSound.play();
-                        if (this.area.m_nrOfPlayersAlive != 1) {
-                            this.area.m_nrOfPlayersAlive--;
+                if (fires) {
+                    this.hitTestContentOf(fires.tileArr, function () {
+                        const player = arguments[0];
+                        player.area.cameras.getCameraAt(0).targets.remove(player);
+                        player.status = 'dead';
+                        player.deathSound.play();
+                        if (player.area.m_nrOfPlayersAlive != 1) {
+                            player.area.m_nrOfPlayersAlive--;
                         }
                     }, this);
                 }
@@ -190,16 +191,15 @@ class Player extends rune.display.Sprite {
      */
     checkEnemyCollision() {
         if (this.status != 'dead') {
-            for (const enemy of this.area.m_enemies) {
-                this.hitTest(enemy, function () {
-                    this.area.cameras.getCameraAt(0).targets.remove(this);
-                    this.status = 'dead';
-                    this.deathSound.play();
-                    if (this.area.m_nrOfPlayersAlive != 1) {
-                        this.area.m_nrOfPlayersAlive--;
-                    }
-                }, this);
-            }
+            this.hitTestContentOf(this.area.m_enemies, function () {
+                const player = arguments[0];
+                player.area.cameras.getCameraAt(0).targets.remove(player);
+                player.status = 'dead';
+                player.deathSound.play();
+                if (player.area.m_nrOfPlayersAlive != 1) {
+                    player.area.m_nrOfPlayersAlive--;
+                }
+            }, this);
         }
     }
 

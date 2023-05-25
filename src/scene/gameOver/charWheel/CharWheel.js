@@ -9,7 +9,7 @@ class CharWheel extends rune.text.BitmapField {
 
         this.m_sound = null;
         this.m_charSelectedIndex = 0;
-        this.m_characters= ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+        this.m_characters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
         this.arrowUp = null;
         this.arrowDown = null;

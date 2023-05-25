@@ -27,7 +27,7 @@ class HighscoreList extends rune.ui.VTList {
     }
 
     initHighscores() {
-        for (let i = 0; i < 8; i++) {
+        for (let i = 0; i < 5; i++) {
             const score = this.application.highscores.get(i, this.id);
             if (i == 0 && score == null) {
                 this.is_empty = true;

@@ -77,32 +77,30 @@ class Bullet extends rune.display.Graphic {
 
     checkFireCollision() {
         for (const fires of this.area.fireController.activeFires) {
-            if (fires.tileArr.length != 0) {
-                for (const fire of fires.tileArr) {
-                    if (this.hitTest(fire)) {
-                        this.dispose();
-                        fires.tileArr.splice(fires.tileArr.indexOf(fire), 1);
-                        fire.dispose();
-                        this.area.m_totalScore += 10;
-                        this.area.totalFires--;
-                        fire.deathSound.play();
-                    }
-                }
+            if (fires && fires.tileArr.length != 0) {
+                this.hitTestContentOf(fires.tileArr, function() {
+                    const fire = arguments[1];
+                    this.dispose();
+                    fires.tileArr.splice(fires.tileArr.indexOf(fire), 1);
+                    fire.dispose();
+                    this.area.m_totalScore += 10;
+                    this.area.totalFires--;
+                    fire.deathSound.play();
+                });
             }
         }
     }
 
     checkEnemyCollision() {
         if (this.area.m_enemies.length != 0) {
-            for (const enemy of this.area.m_enemies) {
-                if (this.hitTest(enemy)) {
-                    this.dispose();
-                    this.area.m_enemies.splice(this.area.m_enemies.indexOf(enemy), 1);
-                    enemy.dispose();
-                    this.area.m_totalScore += 10;
-                    enemy.deathSound.play();    
-                }
-            }
+            this.hitTestContentOf(this.area.m_enemies, function() {
+                const enemy = arguments[1];
+                this.dispose();
+                this.area.m_enemies.splice(this.area.m_enemies.indexOf(enemy), 1);
+                enemy.dispose();
+                this.area.m_totalScore += 10;
+                enemy.deathSound.play();
+            });
         }
     }
 

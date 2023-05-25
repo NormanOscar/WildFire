@@ -18,12 +18,10 @@ class Game extends rune.scene.Scene {
      * 
      * @returns {undefined}
      */
-    constructor(nr, menuMusic) {
+    constructor(nr) {
         super();
 
-        if (menuMusic != null) {
-            menuMusic.stop();
-        }
+        this.application.sounds.master.clear();
 
         this.m_nrOfPlayers = nr || 1;
         this.m_players = new Array();
@@ -441,15 +439,9 @@ class Game extends rune.scene.Scene {
             this.splittedScoreCounter.dispose();
         }
         if (this.application.highscores.test(this.m_totalScore, this.m_nrOfPlayers - 1) != -1) {
-            /* if (this.application.highscores.get(0, this.m_nrOfPlayers - 1).score < this.m_totalScore) {
-                this.newHighscore = true;
-            } */
             this.application.scenes.load([new NewHighscore(this.m_totalScore, this.m_nrOfPlayers)]);
-            this.m_music.stop();
-            //this.application.highscores.send(this.m_totalScore, 'Oscar', this.m_nrOfPlayers - 1);
         } else {
             this.application.scenes.load([new GameOver(this.m_totalScore, this.m_nrOfPlayers, this.newHighscore)]);
-            this.m_music.stop();
         }
     }
 

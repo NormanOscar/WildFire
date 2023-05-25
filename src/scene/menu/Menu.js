@@ -172,10 +172,10 @@ class Menu extends rune.scene.Scene {
     m_onMenuSelect(element) {
         switch (element.text) {
             case "Single Player":
-                this.application.scenes.load( [new Game(1, this.m_music)] );
+                this.application.scenes.load( [new Game(1)] );
                 break;   
             case "Co-Op":
-                this.application.scenes.load( [new Game(2, this.m_music)] );
+                this.application.scenes.load( [new Game(2)] );
                 break;
             case "How to play":
                 this.application.scenes.load( [new HowToPlay()] );

@@ -56,8 +56,10 @@ class Minimap extends rune.display.Artboard {
 
     m_printFires() {
         for (const fires of this.area.fireController.activeFires) {
-            for (const fire of fires.tileArr) {
-                this.graphics.drawRectFill(fire.x / 32 * 3, fire.y / 32 * 3, 3, 3, '#f58c32');
+            if (fires) {
+                for (const fire of fires.tileArr) {
+                    this.graphics.drawRectFill(fire.x / 32 * 3, fire.y / 32 * 3, 3, 3, '#f58c32');
+                }
             }
         }
     }
