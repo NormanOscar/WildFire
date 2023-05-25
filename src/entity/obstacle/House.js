@@ -2,6 +2,7 @@ class House extends rune.display.Graphic {
     constructor(x,y, id) {
         super(x,y,128,64,'house' + id);
         this.playerBehind = false;
+        this.enemyBehind = false;
     }
 
     init() {
@@ -12,9 +13,11 @@ class House extends rune.display.Graphic {
 
     update(step) {
         super.update(step);
-        if (this.playerBehind) {
+        if (this.playerBehind || this.enemyBehind) {
+            console.log('entity behind');
             this.alpha = 0.4;
         } else {
+            console.log('no entity behind');
             this.alpha = 1;
         }
     }

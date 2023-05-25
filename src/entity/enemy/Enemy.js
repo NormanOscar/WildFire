@@ -62,16 +62,16 @@ class Enemy extends rune.display.Sprite {
     }
 
     /**
-     * This method is used to check collision between player and houses.
+     * This method is used to check collision between enemy and houses.
      * 
      * @returns {undefined}
      */
      checkHouseCollision() {
         for (const house of this.area.houses) {
             if (this.hitTest(house)) {
-                house.playerBehind = true;
+                house.enemyBehind = true;
             } else {
-                house.playerBehind = false;
+                house.enemyBehind = false;
             }
         }
     }

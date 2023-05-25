@@ -159,6 +159,7 @@ class Player extends rune.display.Sprite {
     checkHouseCollision() {
         for (const house of this.area.houses) {
             if (this.hitTest(house)) {
+                console.log('test');
                 house.playerBehind = true;
             } else {
                 house.playerBehind = false;
