@@ -1,27 +1,52 @@
+/**
+ * Creates a FireController object.
+ * 
+ * @param {object} instance The game instance.
+ * 
+ * @class
+ * @classdesc
+ * 
+ * Object handling logistics for new fires.
+ */
 class FireController {
-    constructor(area) {
+    constructor(instance) {
         this.burningFires = new Array(4);
-        this.area = area;
+        this.m_gameInstance = instance;
 
         this.burningFireTimer = null;
         this.init();
     }
 
+    /**
+     * Initializes the object.
+     * 
+     * @returns {undefined}
+     */
     init() {
-        this.createActiveFire();
-        this.initActiveFireTimer();
+        this.createFire();
+        this.initFireTimer();
     }
     
-    initActiveFireTimer() {
-        this.burningFireTimer = this.area.timers.create({
+    /**
+     * Initializes the fire timer.
+     * 
+     * @returns {undefined}
+     */
+    initFireTimer() {
+        this.burningFireTimer = this.m_gameInstance.timers.create({
             duration: 5000,
             repeat: Infinity,
-            onTick: this.createActiveFire,
+            onTick: this.createFire,
             scope: this
         });
     }
 
-    createActiveFire() {
+    /**
+     * Creates a new fire in randomized spot and starts fire after a while when it's been put out.
+     * 
+     * @returns {undefined}
+     */
+    createFire() {
         let allAreBurning = true;
         for (const burningFire of this.burningFires) {
             if (!burningFire) {
@@ -33,24 +58,24 @@ class FireController {
             var r = Math.floor(Math.random() * 4);
 
             if (!this.burningFires[r]) {
-                var fire = new Fire(this.getFireSpawnPoints(r).x,this.getFireSpawnPoints(r).y, this.area);
+                var fire = new Fire(this.getFireSpawnPoint(r).x,this.getFireSpawnPoint(r).y, this.m_gameInstance);
                 this.burningFires[r] = fire;
             } else {
-                this.createActiveFire();
+                this.createFire();
             }
         }
     }
 
     /**
-     * Runs every update in game and checks if the status of the burning fires
+     * Runs every update in game and checks if a fire is alive or not.
      * 
      * @returns {undefined}
      */
-    checkActiveFires() {
-        if (this.area.allPlayersDead) {
+    checkFires() {
+        if (this.m_gameInstance.allPlayersDead) {
             for (let i = 0; i < this.burningFires.length; i++) {
                 if (this.burningFires[i]) {
-                    this.area.timers.remove(this.burningFires[i].spawnTimer);
+                    this.m_gameInstance.timers.remove(this.burningFires[i].spawnTimer);
                 }
             }
         }
@@ -64,13 +89,13 @@ class FireController {
     }
 
     /**
+     * Returns coordinates for spawnpoints.
      * 
-     * 
-     * @param {} 
+     * @param {number} id Id for spawnpoint
      * 
      * @returns {object} Object with coordinates for spawnpoint
      */
-    getFireSpawnPoints(id) {
+    getFireSpawnPoint(id) {
         var spawnPoints = [
             {
                 x: 64,

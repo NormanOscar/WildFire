@@ -1,5 +1,22 @@
-class Bullet extends rune.display.Graphic {
-    constructor(x, y, id, direction, area, player) {
+/**
+ * Creates a new object.
+ *
+ * @extends rune.display.Sprite
+ * 
+ * @param {number} x The x coordinate of the object.
+ * @param {number} y The y coordinate of the object.
+ * @param {number} id The id for type of bullet.
+ * @param {number} direction The direction the bullet is travelling.
+ * @param {object} instance The game instance.
+ * @param {object} player The player object.
+ *
+ * @class
+ * @classdesc
+ * 
+ * Bullet object.
+ */
+class Bullet extends rune.display.Sprite {
+    constructor(x, y, id, direction, instance, player) {
         super(x, y, 9, 5, "bullet" + id);
         this.id = id;
         this.direction = direction;
@@ -13,38 +30,61 @@ class Bullet extends rune.display.Graphic {
             x: 0,
             y: 0
         };
-        this.area = area;
+        this.m_gameInstance = instance;
 
+        this.houseIDs = [31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46];
         this.m_disposed = false;
     }
 
+    /**
+     * Initializes the object.
+     * 
+     * @returns {undefined}
+     */
     init() {
         super.init();
 
         this.changeDirection();
     }
 
+    /**
+     * This method is automatically executed once per "tick". The method is used for 
+     * calculations such as application logic.
+     *
+     * @param {number} step Fixed time step.
+     *
+     * @returns {undefined}
+     */
     update(step) {
         super.update(step);
 
         this.moveBullet();
         
+        // Check collision depending on bullet type
         this.id == 0 ? this.checkEnemyCollision() : this.checkFireCollision();
 
         if (!this.m_disposed) {
-            
-            // If bullet hit edge of map, delete bullet
-            if (this.x < 32 || (this.x + this.width) > 960 || this.y < 32 || (this.y + this.height) > 640) {
-                this.dispose();
-            }
+            // If bullet hit edge of map or houses, delete the bullet
+            this.m_gameInstance.stage.map.back.hitTestObject(this, function(bullet, mapTile) {
+                if (!this.houseIDs.includes(mapTile.value) && mapTile.allowCollisions != 0) {
+                    bullet.dispose();
+                }
+            });
+
             // If travelled 5 or 3 tiles, delete bullet
-            else if (Math.abs((this.x - this.initPos.x) / 32) >= 5 || Math.abs((this.y - this.initPos.y) / 32) >= 3) {
+            if (Math.abs((this.x - this.initPos.x) / 32) >= 5 || Math.abs((this.y - this.initPos.y) / 32) >= 3) {
+                if (this.m_disposed) return;
                 this.dispose();
             }
         }
         
     }
 
+    /**
+     * Changes the direction and hitbox of the bullet based on the player direction.
+     * 
+     * @returns {undefined}
+     */
     changeDirection() {
         // Change direction of bullet based on player direction
         switch (this.direction) {
@@ -75,35 +115,50 @@ class Bullet extends rune.display.Graphic {
         }
     }
 
+    /**
+     * Checks if the bullet has hit any fire.
+     * 
+     * @returns {undefined}
+     */
     checkFireCollision() {
-        for (const fires of this.area.fireController.burningFires) {
-            if (fires && fires.tileArr.length != 0) {
-                this.hitTestContentOf(fires.tileArr, function() {
-                    const fire = arguments[1];
+        for (const burningFire of this.m_gameInstance.fireController.burningFires) {
+            if (burningFire && burningFire.tileArr.length != 0) {
+                this.hitTestContentOf(burningFire.tileArr, function() {
+                    const fireTile = arguments[1];
                     this.dispose();
-                    fires.tileArr.splice(fires.tileArr.indexOf(fire), 1);
-                    fire.dispose();
-                    this.area.m_totalScore += 10;
-                    this.area.totalFires--;
-                    fire.deathSound.play();
+                    burningFire.tileArr.splice(burningFire.tileArr.indexOf(fireTile), 1);
+                    fireTile.dispose();
+                    this.m_gameInstance.m_totalScore += 10;
+                    this.m_gameInstance.totalFireTiles--;
+                    fireTile.deathSound.play();
                 });
             }
         }
     }
 
+    /**
+     * Checks if the bullet has hit any enemies.
+     * 
+     * @returns {undefined}
+     */
     checkEnemyCollision() {
-        if (this.area.m_enemies.length != 0) {
-            this.hitTestContentOf(this.area.m_enemies, function() {
+        if (this.m_gameInstance.m_enemies.length != 0) {
+            this.hitTestContentOf(this.m_gameInstance.m_enemies, function() {
                 const enemy = arguments[1];
                 this.dispose();
-                this.area.m_enemies.splice(this.area.m_enemies.indexOf(enemy), 1);
+                this.m_gameInstance.m_enemies.splice(this.m_gameInstance.m_enemies.indexOf(enemy), 1);
                 enemy.dispose();
-                this.area.m_totalScore += 10;
+                this.m_gameInstance.m_totalScore += 10;
                 enemy.deathSound.play();
             });
         }
     }
 
+    /**
+     * Moves the bullet.
+     * 
+     * @returns {undefined}
+     */
     moveBullet() {
         var x = this.x += this.coordinates.x;
         var y = this.y += this.coordinates.y;
@@ -111,9 +166,7 @@ class Bullet extends rune.display.Graphic {
     }
 
     /**
-     * This method is automatically called once just before the scene ends. Use 
-     * the method to reset references and remove objects that no longer need to 
-     * exist when the scene is destroyed. The process is performed in order to 
+     * This method removes bullet when it's out of bounds or when it hits enemy, fire or houses. The process is performed in order to 
      * avoid memory leaks.
      *
      * @returns {undefined}

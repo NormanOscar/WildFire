@@ -17,9 +17,10 @@ npx google-closure-compiler \
 --js "./../../src/entity/bullet/Bullet.js" \
 --js "./../../src/entity/player/Player.js" \
 --js "./../../src/entity/enemy/Enemy.js" \
---js "./../../src/entity/obstacle/House.js" \
+--js "./../../src/entity/obstacle/Roofs.js" \
 --js "./../../src/ui/Minimap.js" \
 --js "./../../src/ui/Score.js" \
+--js "./../../src/ui/DifficultyText.js" \
 --js "./../../src/ui/MainHUD.js" \
 --js "./../../src/ui/SplittedHUD.js" \
 --js "./../../src/ui/MenuBtn.js" \

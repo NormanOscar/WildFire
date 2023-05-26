@@ -1,5 +1,17 @@
+/**
+ * Creates a Fire object.
+ * 
+ * @param {number} x The x coordinate of the object.
+ * @param {number} y The y coordinate of the object.
+ * @param {object} instance The game instance.
+ * 
+ * @class
+ * @classdesc
+ * 
+ * A burning fire object.
+ */
 class Fire {
-    constructor(x, y, scene) {
+    constructor(x, y, instance) {
         this.tileArr = new Array();
         this.m_fireDirections = [
             {
@@ -24,10 +36,9 @@ class Fire {
             y: y
         }
 
-        this.area = scene;
-        this.fireController = this.area.fireController;
+        this.m_gameInstance = instance;
         this.spawnTimer = null;
-        this.fireSpawnRate = 1000;
+        this.fireTileSpawnRate = 1000;
         
         this.emitter = new rune.particle.Emitter(0, 0, 32, 10, {
             particles: [Particle, SecondParticle],
@@ -37,25 +48,48 @@ class Fire {
             minRotation:  -2,
             maxRotation:   2
         });
+        this.forestIDs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
 
         this.init();
     }
     
+    /**
+     * Initializes the object.
+     * 
+     * @returns {undefined}
+     */
     init() {
         var fireTile = new FireTile(this.startCoordinates.x, this.startCoordinates.y);
-        this.area.totalFires++;
+        this.m_gameInstance.totalFires++;
         this.tileArr.push(fireTile);
-        this.area.stage.addChild(fireTile);
+        this.m_gameInstance.stage.addChild(fireTile);
+        this.m_gameInstance.stage.addChild(this.emitter);
         
-        this.spawnTimer = this.area.timers.create({
-            duration: this.fireSpawnRate,
+        this.initSpawnTimer();
+        this.initParticleTimer();
+    }
+    
+    /**
+     * Initializes the spawn timer for the fire.
+     * 
+     * @returns {undefined}
+     */
+    initSpawnTimer() {
+        this.spawnTimer = this.m_gameInstance.timers.create({
+            duration: this.fireTileSpawnRate,
             repeat: Infinity,
             onTick: this.createFireTile,
             scope: this
         }, true);
-        
-        this.area.stage.addChild(this.emitter);
-        this.particleTimer = this.area.timers.create({
+    }
+
+    /**
+     * Initializes the particle timer for the fire.
+     * 
+     * @returns {undefined}
+     */
+    initParticleTimer() {
+        this.particleTimer = this.m_gameInstance.timers.create({
             duration: 1500,
             repeat: Infinity,
             onTick: function() {
@@ -67,7 +101,12 @@ class Fire {
             scope: this
         });
     }
-    
+
+    /**
+     * Emits smoke from the fire.
+     * 
+     * @returns {undefined}
+     */
     emitSmoke() {
         if (this.tileArr.length > 0) {
             var r = Math.floor(Math.random() * this.tileArr.length);
@@ -78,6 +117,11 @@ class Fire {
         }
     }
 
+    /**
+     * Creates a new fire tile on a tile that isn't the forest.
+     * 
+     * @returns {undefined}
+     */
     createFireTile() {
         var r = Math.floor(Math.random() * this.m_fireDirections.length);
         var fireDirection = this.m_fireDirections[r];
@@ -85,13 +129,13 @@ class Fire {
         if (this.tileArr.length != 0) {
             var tileX = this.tileArr[this.tileArr.length -1].x + fireDirection.x;
             var tileY = this.tileArr[this.tileArr.length -1].y + fireDirection.y;
-            var mapIndex = this.area.stage.map.back.getTileIndexOf(tileX, tileY);
+            var mapIndex = this.m_gameInstance.stage.map.back.getTileIndexOf(tileX, tileY);
     
-            if (this.area.stage.map.back.getTileValueAt(mapIndex) == 23 || this.area.stage.map.back.getTileValueAt(mapIndex) == 24) {
+            if (!this.forestIDs.includes(this.m_gameInstance.stage.map.back.getTileValueAt(mapIndex))) {
                 var fireTile = new FireTile(tileX, tileY);
-                this.area.totalFires++;
+                this.m_gameInstance.totalFireTiles++;
                 this.tileArr.push(fireTile);
-                this.area.stage.addChild(fireTile);
+                this.m_gameInstance.stage.addChild(fireTile);
             }
         }
     }

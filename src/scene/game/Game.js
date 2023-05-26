@@ -2,6 +2,8 @@
  * Creates a new object.
  *
  * @extends rune.scene.Scene
+ * 
+ * @param {number} nr Number of players
  *
  * @class
  * @classdesc
@@ -9,49 +11,47 @@
  * Game scene.
  */
 class Game extends rune.scene.Scene {
-
-    /**
-     * Calls the constructor method of the super class.
-     * 
-     * @param {number} nr Number of players
-     * 
-     * @returns {undefined}
-     */
     constructor(nr) {
         super();
 
         this.application.sounds.master.clear();
 
-        this.m_nrOfPlayers = nr || 1;
+        this.m_nrOfPlayers = nr;
         this.m_players = new Array();
+        this.allPlayersDead = false;
+
         this.m_enemies = new Array();
-        this.scoreTimer = null;
-        this.m_totalScore = 0;
+        
         this.m_nrOfOpenGates = 2;
+        
         this.enemySpawnRate = 1500;
         this.enemySpeed = 1.5;
-
+        
         this.m_music = null;
-        this.fireController = null;
         this.houses = new Array();
-        this.totalFires = 0;
-        this.m_nrOfPlayersAlive = nr || 1;
+        
+        this.fireController = null;
+        this.totalFireTiles = 0;
+        
         this.mainHUD = null;
         this.p1HUD = null;
         this.p2HUD = null;
         this.splittedMinimap = null;
         this.splittedMinimapFrame = null;
+
+        this.scoreTimer = null;
+        this.splittedScoreCounter = null;
         this.scoreCounter = null;
+        this.m_totalScore = 0;
 
         this.m_cams = new Array();
         this.m_camera_is_splitted = false;
 
-        this.dificultyTimer = null;
-        this.dificulty = 1;
-
-        this.allPlayersDead = false;
-
-        this.newHighscore = false;
+        this.difficultyTimer = null;
+        this.difficulty = 1;
+        this.mainDifficultyText = null;
+        this.splittedDifficultyText = null;
+        
         this.gameStarted = false;
         this.gameEnded = false;
     }
@@ -72,6 +72,8 @@ class Game extends rune.scene.Scene {
         this.initMainHUD();
         
         this.initCountdown();
+
+        // Initializes countdown timer.
         this.countdownTimer = this.timers.create({
             duration: 3000,
             onComplete: this.startGame,
@@ -79,11 +81,21 @@ class Game extends rune.scene.Scene {
         });
     }
 
+    /**
+     * Created countdown.
+     * 
+     * @returns {undefined}
+     */
     initCountdown() {
         var countdown = new Countdown();
         this.cameras.getCameraAt(0).addChild(countdown);
     }
     
+    /**
+     * Starts the game.
+     * 
+     * @returns {undefined}
+     */
     startGame() {
         this.gameStarted = true;
         
@@ -94,12 +106,14 @@ class Game extends rune.scene.Scene {
         this.initScoreTimer();
         this.initEnemySpawnTimer();
 
-        this.initDificultyTimer();
+        this.initDifficultyText();
+        this.initDifficultyTimer();
     }
 
-    initDificultyTimer() {
-        this.dificultyTimer = this.timers.create({
-            duration: 10000,
+    
+    initDifficultyTimer() {
+        this.difficultyTimer = this.timers.create({
+            duration: 1000,
             repeat: Infinity,
             onTick: this.checkScore,
             scope: this,
@@ -107,33 +121,59 @@ class Game extends rune.scene.Scene {
     }
 
     checkScore() {
-        if (this.m_totalScore >= 500 && this.m_totalScore < 1000) {
-            console.log("Dificulty changed to 2");
-            this.dificulty++;
-            this.chageDificulty();
-        } else if (this.m_totalScore >= 1000 && this.m_totalScore < 1500) {
-            console.log("Dificulty changed to 3");
-            this.dificulty++;
-            this.chageDificulty();
-        } else if (this.m_totalScore >= 1500 && this.m_totalScore < 2000) {
-            console.log("Dificulty changed to 4");
-            this.dificulty++;
-            this.chageDificulty();
-        } else if (this.m_totalScore >= 2000){
-            console.log("Dificulty changed to 5");
-            this.dificulty++;
-            this.chageDificulty();
+        if (this.m_totalScore >= 50 && this.m_totalScore < 1000 && this.difficulty == 1) {
+            this.difficulty++;
+            this.chageDifficulty();
+        } else if (this.m_totalScore >= 1000 && this.m_totalScore < 1500 && this.difficulty == 2) {
+            this.difficulty++;
+            this.chageDifficulty();
+        } else if (this.m_totalScore >= 1500 && this.m_totalScore < 2000 && this.difficulty == 3) {
+            this.difficulty++;
+            this.chageDifficulty();
+        } else if (this.m_totalScore >= 2500 && this.m_totalScore < 3000 && this.difficulty == 4) {
+            this.difficulty++;
+            this.chageDifficulty();
+        } else if (this.m_totalScore >= 3500 && this.m_totalScore < 4000 && this.difficulty == 5) {
+            this.difficulty++;
+            this.chageDifficulty();
         }
     }
 
-    chageDificulty() {
-        if (this.dificulty <= 3) this.m_nrOfOpenGates++;
+    chageDifficulty() {
+        if (this.difficulty <= 3) {
+            this.m_nrOfOpenGates++;
+            this.showDifficultyText();
+        }
 
         this.enemySpawnRate -= 100;
         this.enemySpeed += 0.1;
-        for (const activeFire of this.fireController.activeFires) {
-            activeFire.fireSpawnRate -= 100;
+        for (const fire of this.fireController.burningFires) {
+            if (fire) {
+                fire.fireSpawnRate -= 100;
+            }
         }
+    }
+
+    initDifficultyText() {
+        this.mainDifficultyText = new DifficultyText();
+        this.cameras.getCameraAt(0).addChild(this.mainDifficultyText);
+
+        if (this.m_nrOfPlayers == 2) {
+            this.splittedDifficultyText = new DifficultyText();
+            this.application.screen.addChild(this.splittedDifficultyText);
+        }
+    }
+    
+    showDifficultyText() {
+        this.m_camera_is_splitted ? this.splittedDifficultyText.visible = true : this.mainDifficultyText.visible = true;
+
+        this.timers.create({
+            duration: 1500,
+            onComplete: function () {
+                this.m_camera_is_splitted ? this.splittedDifficultyText.visible = false : this.mainDifficultyText.visible = false;
+            },
+            scope: this,
+        });
     }
 
     /**
@@ -189,7 +229,7 @@ class Game extends rune.scene.Scene {
      */
     initPlayers() {
         if (this.m_nrOfPlayers == 1) {
-            var player = new Player(448, 320, 0, this);
+            var player = new Player(480, 320, 0, this);
             this.m_players.push(player);
             this.m_cams[0].targets.add(player);
             this.stage.addChild(player);
@@ -219,15 +259,15 @@ class Game extends rune.scene.Scene {
             duration: 1000,
             repeat: Infinity,
             onTick: function () {
-                if (this.totalFires < 20) {
+                if (this.totalFireTiles < 20) {
                     this.m_totalScore += 5;
-                } else if (this.totalFires >= 20 & this.totalFires < 40) {
+                } else if (this.totalFireTiles >= 20 & this.totalFireTiles < 40) {
                     this.m_totalScore += 4;
-                } else if (this.totalFires >= 40 & this.totalFires < 60) {
+                } else if (this.totalFireTiles >= 40 & this.totalFireTiles < 60) {
                     this.m_totalScore += 3;
-                } else if (this.totalFires >= 60 & this.totalFires < 80) {
+                } else if (this.totalFireTiles >= 60 & this.totalFireTiles < 80) {
                     this.m_totalScore += 2;
-                } else if (this.totalFires >= 80 & this.totalFires < 100) {
+                } else if (this.totalFireTiles >= 80 & this.totalFireTiles < 100) {
                     this.m_totalScore += 1;
                 }
             },
@@ -242,7 +282,7 @@ class Game extends rune.scene.Scene {
      */
     initHouses() {
         for (let i = 0; i < 3; i++) {
-            var house = new House(this.getHouseCoordinates(i).x, this.getHouseCoordinates(i).y, i);
+            var house = new Roofs(this.getHouseCoordinates(i).x, this.getHouseCoordinates(i).y, i);
             this.stage.addChild(house);
             this.houses.push(house);
         }
@@ -308,7 +348,11 @@ class Game extends rune.scene.Scene {
                 this.calcCamera();
             }
     
-            this.fireController.checkActiveFires();
+            this.fireController.checkFires();
+
+            if (this.m_camera_is_splitted) {
+                this.splittedScoreCounter.text = 'Score: ' + this.m_totalScore.toString();
+            }
     
             // Check if all players are dead.
             for (const player of this.m_players) {
@@ -420,7 +464,7 @@ class Game extends rune.scene.Scene {
             },
             {
                 x: 224,
-                y: 384
+                y: 352
             },
             {
                 x: 640,
@@ -437,10 +481,12 @@ class Game extends rune.scene.Scene {
             this.splittedMinimap.dispose();
             this.splittedScoreCounter.dispose();
         }
+        if (this.m_nrOfPlayers == 2) this.splittedDifficultyText.dispose();
+
         if (this.application.highscores.test(this.m_totalScore, this.m_nrOfPlayers - 1) != -1) {
             this.application.scenes.load([new NewHighscore(this.m_totalScore, this.m_nrOfPlayers)]);
         } else {
-            this.application.scenes.load([new GameOver(this.m_totalScore, this.m_nrOfPlayers, this.newHighscore)]);
+            this.application.scenes.load([new GameOver(this.m_totalScore, this.m_nrOfPlayers)]);
         }
     }
 

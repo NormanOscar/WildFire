@@ -12,8 +12,8 @@ class ControlBtn extends rune.display.Sprite {
     }
 
     animate() {
-        this.animation.create("moving", this.animationFrames, this.animationFrameRate, true);
-        this.animation.play("moving");
+        this.animation.create("idle", this.animationFrames, this.animationFrameRate, true);
+        this.animation.play("idle");
     }
 
     update(step) {

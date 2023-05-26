@@ -1,14 +1,37 @@
+/**
+ * Creates a Particle object.
+ *
+ * @extends rune.display.Graphic
+ *
+ * @class
+ * @classdesc
+ * 
+ * Particle object.
+ */
 class SecondParticle extends rune.particle.Particle {
     constructor() {
         super(0, 0, 8, 8, 'secondParticle');
     }
 
-    init() {
+    /**
+     * Initializes the object.
+     * 
+     * @returns {undefined}
+     */
+     init() {
         super.init();
         this.scaleX = 1;
         this.scaleY = 1;
     }
 
+    /**
+     * This method is automatically executed once per "tick". The method is used for 
+     * calculations such as application logic.
+     *
+     * @param {number} step Fixed time step.
+     *
+     * @returns {undefined}
+     */
     update(step) {
         super.update(step);
         var cX = this.centerX;
@@ -20,6 +43,12 @@ class SecondParticle extends rune.particle.Particle {
         this.centerY = cY;
     }
 
+    /**
+     * Disposes the object. The process is performed in order to 
+     * avoid memory leaks.
+     * 
+     * @returns {undefined}
+     */
     dispose() {
         super.dispose();
     }

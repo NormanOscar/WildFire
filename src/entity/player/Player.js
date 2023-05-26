@@ -2,6 +2,11 @@
  * Creates a new player object.
  *
  * @extends rune.display.Sprite
+ * 
+ * @param {number} x The x coordinate of the object.
+ * @param {number} y The y coordinate of the object.
+ * @param {number} playerID The player ID.
+ * @param {object} instance The game instance object.
  *
  * @class
  * @classdesc
@@ -9,22 +14,12 @@
  * Player sprite.
  */
 class Player extends rune.display.Sprite {
-
-    /**
-     * Constructor
-     * 
-     * @param {number} x - The x position of the player.
-     * @param {number} y - The y position of the player.
-     * @param {number} playerID - The player ID.
-     * @param {rune.scene.Scene} area - The game scene.
-     */
-    constructor(x, y, playerID, area) {
+    constructor(x, y, playerID, instance) {
         super(x, y, 32, 32, "player" + playerID);
         this.playerID = playerID;
         this.coPlayerID = playerID == 0 ? 1 : 0;
 
         this.speed = 5;
-        this.m_animation = null;
         this.m_gamepad = null;
         this.bullets = new Array();
         this.direction = 'down';
@@ -43,13 +38,13 @@ class Player extends rune.display.Sprite {
                 y: null
             }
         ]
-        this.shootID = 0;
-        this.area = area;
+        this.shotID = 0;
+        this.m_gameInstance = instance;
     }
     
     /**
      * This method is automatically executed once after the sprite is instantiated.
-     * This methid is used to initialize the sprite.
+     * This method is used to initialize the sprite.
      *
      * @returns {undefined}
      */
@@ -86,7 +81,6 @@ class Player extends rune.display.Sprite {
      * @returns {undefined}
      */
     setHitbox() {
-        this.hitbox.debug = false;
         this.hitbox.set(6, 4, 19, 24);
     }
 
@@ -100,14 +94,15 @@ class Player extends rune.display.Sprite {
      */
     update(step) {
         super.update(step);
-        if (this.area.gameStarted) {
+        if (this.m_gameInstance.gameStarted) {
             this.updateInput();
             this.stage.map.back.hitTestAndSeparate(this);
     
             this.checkHouseCollision();
-            this.checkFireCollision();
+            this.checkFireTileCollision();
             this.checkEnemyCollision();
     
+            // Check if player is dead
             if (this.status == 'dead') {
                 this.animation.gotoAndPlay('dead');
                 this.can_move = false;
@@ -115,8 +110,9 @@ class Player extends rune.display.Sprite {
                 this.can_move = true;
             }
     
-            if (this.area.m_nrOfPlayers == 2) {
-                if (this.area.m_players[0].status == 'dead' || this.area.m_players[1].status == 'dead') {
+            // Check if coplayer is dead, if so then player can revive
+            if (this.m_gameInstance.m_nrOfPlayers == 2) {
+                if (this.m_gameInstance.m_players[0].status == 'dead' || this.m_gameInstance.m_players[1].status == 'dead') {
                     this.checkRevive();
                 }
             }
@@ -130,23 +126,17 @@ class Player extends rune.display.Sprite {
      */
     checkRevive() {
         if (this.playerID == 0) {
-            if (this.hitTest(this.area.m_players[1]) && (this.gamepads.get(this.playerID).justPressed(2) || this.keyboard.justPressed(this.getKeyboardControls(this.playerID).revive))) {
-                if (this.area.m_nrOfPlayersAlive != 2) {
-                    this.area.m_nrOfPlayersAlive++;
-                }
-                this.area.m_players[1].can_move = true;
-                this.area.m_players[1].status = 'alive';
-                this.area.cameras.getCameraAt(0).targets.add(this.area.m_players[1]);
+            if (this.hitTest(this.m_gameInstance.m_players[1]) && (this.gamepads.get(this.playerID).justPressed(2) || this.keyboard.justPressed(this.getKeyboardControls(this.playerID).revive))) {
+                this.m_gameInstance.m_players[1].can_move = true;
+                this.m_gameInstance.m_players[1].status = 'alive';
+                this.m_gameInstance.cameras.getCameraAt(0).targets.add(this.m_gameInstance.m_players[1]);
             }
             
         } else {
-            if (this.hitTest(this.area.m_players[0]) && (this.gamepads.get(this.playerID).justPressed(2) || this.keyboard.justPressed(this.getKeyboardControls(this.playerID).revive))) {
-                if (this.area.m_nrOfPlayersAlive != 2) {
-                    this.area.m_nrOfPlayersAlive++;
-                }
-                this.area.m_players[0].can_move = true;
-                this.area.m_players[0].status = 'alive';
-                this.area.cameras.getCameraAt(0).targets.add(this.area.m_players[0]);
+            if (this.hitTest(this.m_gameInstance.m_players[0]) && (this.gamepads.get(this.playerID).justPressed(2) || this.keyboard.justPressed(this.getKeyboardControls(this.playerID).revive))) {
+                this.m_gameInstance.m_players[0].can_move = true;
+                this.m_gameInstance.m_players[0].status = 'alive';
+                this.m_gameInstance.cameras.getCameraAt(0).targets.add(this.m_gameInstance.m_players[0]);
             }
         }
     }
@@ -157,9 +147,8 @@ class Player extends rune.display.Sprite {
      * @returns {undefined}
      */
     checkHouseCollision() {
-        for (const house of this.area.houses) {
+        for (const house of this.m_gameInstance.houses) {
             if (this.hitTest(house)) {
-                console.log('test');
                 house.playerBehind = true;
             } else {
                 house.playerBehind = false;
@@ -172,18 +161,15 @@ class Player extends rune.display.Sprite {
      * 
      * @returns {undefined}
      */
-    checkFireCollision() {
+    checkFireTileCollision() {
         if (this.status != 'dead') {
-            for (const fires of this.area.fireController.burningFires) {
-                if (fires) {
-                    this.hitTestContentOf(fires.tileArr, function () {
+            for (const fire of this.m_gameInstance.fireController.burningFires) {
+                if (fire) {
+                    this.hitTestContentOf(fire.tileArr, function () {
                         const player = arguments[0];
-                        player.area.cameras.getCameraAt(0).targets.remove(player);
+                        player.m_gameInstance.cameras.getCameraAt(0).targets.remove(player);
                         player.status = 'dead';
                         player.deathSound.play();
-                        if (player.area.m_nrOfPlayersAlive != 1) {
-                            player.area.m_nrOfPlayersAlive--;
-                        }
                     }, this);
                 }
             }
@@ -197,14 +183,11 @@ class Player extends rune.display.Sprite {
      */
     checkEnemyCollision() {
         if (this.status != 'dead') {
-            this.hitTestContentOf(this.area.m_enemies, function () {
+            this.hitTestContentOf(this.m_gameInstance.m_enemies, function () {
                 const player = arguments[0];
-                player.area.cameras.getCameraAt(0).targets.remove(player);
+                player.m_gameInstance.cameras.getCameraAt(0).targets.remove(player);
                 player.status = 'dead';
                 player.deathSound.play();
-                if (player.area.m_nrOfPlayersAlive != 1) {
-                    player.area.m_nrOfPlayersAlive--;
-                }
             }, this);
         }
     }
@@ -261,7 +244,7 @@ class Player extends rune.display.Sprite {
             this.shoot();
             this.shootSound.play();
         }
-        if (this.area.m_nrOfPlayers == 1 || this.area.m_players[this.coPlayerID].status == 'dead') {
+        if (this.m_gameInstance.m_nrOfPlayers == 1 || this.m_gameInstance.m_players[this.coPlayerID].status == 'dead') {
             if (m_gamepad.justPressed(0)) {
                 this.shootSecond();
                 this.shootSecondSound.play();
@@ -275,7 +258,7 @@ class Player extends rune.display.Sprite {
      * @returns {undefined}
      */
     updateKeyboard() {
-        if (this.area.m_nrOfPlayers == 1 || this.area.m_players[this.coPlayerID].status == 'dead') {
+        if (this.m_gameInstance.m_nrOfPlayers == 1 || this.m_gameInstance.m_players[this.coPlayerID].status == 'dead') {
             if (this.keyboard.justPressed(this.getKeyboardControls(this.playerID).shootSecond)) {
                 this.shootSecond();
                 this.shootSecondSound.play();
@@ -343,10 +326,10 @@ class Player extends rune.display.Sprite {
      * @returns {undefined}
      */
     shoot() {
-        this.shootID == 0 ? this.shootID = 1 : this.shootID = 0;
+        this.shotID == 0 ? this.shotID = 1 : this.shotID = 0;
 
         this.changeBulletDirection();
-        var bullet = new Bullet(this.bulletCoordinates[this.shootID].x, this.bulletCoordinates[this.shootID].y, this.playerID, this.direction, this.area, this);
+        var bullet = new Bullet(this.bulletCoordinates[this.shotID].x, this.bulletCoordinates[this.shotID].y, this.playerID, this.direction, this.m_gameInstance, this);
 
         this.stage.addChild(bullet);
         this.bullets.push(bullet);
@@ -358,10 +341,10 @@ class Player extends rune.display.Sprite {
      * @returns {undefined}
      */
     shootSecond() {
-        this.shootID == 0 ? this.shootID = 1 : this.shootID = 0;
+        this.shotID == 0 ? this.shotID = 1 : this.shotID = 0;
 
         this.changeBulletDirection();
-        var bullet = new Bullet(this.bulletCoordinates[this.shootID].x, this.bulletCoordinates[this.shootID].y, this.coPlayerID, this.direction, this.area, this);
+        var bullet = new Bullet(this.bulletCoordinates[this.shotID].x, this.bulletCoordinates[this.shotID].y, this.coPlayerID, this.direction, this.m_gameInstance, this);
 
         this.stage.addChild(bullet);
         this.bullets.push(bullet);
@@ -422,7 +405,7 @@ class Player extends rune.display.Sprite {
      * 
      * @param {type} id The id of the player.
      * 
-     * @returns {Array} The keyboard controls of the player.
+     * @returns {object} The keyboard controls of the player.
      */
     getKeyboardControls(id){
         var controls = [

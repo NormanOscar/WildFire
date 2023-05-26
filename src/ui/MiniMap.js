@@ -58,11 +58,11 @@ class Minimap extends rune.display.Artboard {
         }
     }
 
-    m_printFires() {
-        for (const fires of this.area.fireController.burningFires) {
-            if (fires) {
-                for (const fire of fires.tileArr) {
-                    this.graphics.drawRectFill(fire.x / 32 * 3, fire.y / 32 * 3, 3, 3, '#f58c32');
+    m_printFireTiles() {
+        for (const fire of this.area.fireController.burningFires) {
+            if (fire) {
+                for (const fireTile of fire.tileArr) {
+                    this.graphics.drawRectFill(fireTile.x / 32 * 3, fireTile.y / 32 * 3, 3, 3, '#f58c32');
                 }
             }
         }
@@ -83,7 +83,7 @@ class Minimap extends rune.display.Artboard {
             this.m_printPlayers();
     
             if (this.area.gameStarted) {
-                this.m_printFires();
+                this.m_printFireTiles();
                 this.m_printEnemies();
             }
         }

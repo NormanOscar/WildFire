@@ -1,11 +1,10 @@
 class GameOver extends rune.scene.Scene {
-    constructor(score, nr, newHighscore) {
+    constructor(score, nr) {
         super();
         this.score = score || 1000;
         this.m_nrOfPlayers = nr || 1;
         this.menuSelected = 0;
         this.menuBtns = [];
-        this.newHighscore = newHighscore;
     }
 
     init() {
