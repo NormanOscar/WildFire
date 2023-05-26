@@ -121,7 +121,7 @@ class Game extends rune.scene.Scene {
     }
 
     checkScore() {
-        if (this.m_totalScore >= 50 && this.m_totalScore < 1000 && this.difficulty == 1) {
+        if (this.m_totalScore >= 500 && this.m_totalScore < 1000 && this.difficulty == 1) {
             this.difficulty++;
             this.chageDifficulty();
         } else if (this.m_totalScore >= 1000 && this.m_totalScore < 1500 && this.difficulty == 2) {
@@ -130,7 +130,7 @@ class Game extends rune.scene.Scene {
         } else if (this.m_totalScore >= 1500 && this.m_totalScore < 2000 && this.difficulty == 3) {
             this.difficulty++;
             this.chageDifficulty();
-        } else if (this.m_totalScore >= 2500 && this.m_totalScore < 3000 && this.difficulty == 4) {
+        } else if (this.m_totalScore >= 2000 && this.m_totalScore < 3500 && this.difficulty == 4) {
             this.difficulty++;
             this.chageDifficulty();
         } else if (this.m_totalScore >= 3500 && this.m_totalScore < 4000 && this.difficulty == 5) {
@@ -140,7 +140,7 @@ class Game extends rune.scene.Scene {
     }
 
     chageDifficulty() {
-        if (this.difficulty <= 3) {
+        if (this.difficulty == 2 || this.difficulty == 4) {
             this.m_nrOfOpenGates++;
             this.showDifficultyText();
         }

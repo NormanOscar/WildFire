@@ -1,6 +1,6 @@
 class DifficultyText extends rune.text.BitmapField {
     constructor() {
-        super("Difficulty increased", rune.text.BitmapFormat.FONT_MEDIUM);
+        super("A new gate has opened", rune.text.BitmapFormat.FONT_MEDIUM);
     }
 
     init() {
