@@ -9,6 +9,11 @@
  * Countdown object, counts down before game starts.
  */
 class Countdown extends rune.display.Sprite {
+    /**
+     * Calls the constructor method of the super class.
+     * 
+     * @returns {undefined}
+     */
     constructor() {
         super(0, 0, 140, 32, "countdown");
     }

@@ -1,14 +1,19 @@
 /**
  * Creates a FireController object.
  * 
- * @param {object} instance The game instance.
- * 
  * @class
  * @classdesc
  * 
  * Object handling logistics for new fires.
  */
 class FireController {
+    /**
+     * Calls the constructor method.
+     * 
+     * @param {object} instance The game instance.
+     * 
+     * @returns {undefined}
+     */
     constructor(instance) {
         this.burningFires = new Array(4);
         this.m_gameInstance = instance;

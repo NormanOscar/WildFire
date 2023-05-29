@@ -1,0 +1,78 @@
+./../../src/entity/bullet/Bullet.js:18:0: WARNING - [JSC_MISPLACED_ANNOTATION] Misplaced function annotation. This JSDoc is not attached to a function node. Are you missing parentheses?
+   18| class Bullet extends rune.display.Sprite {
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   19|     constructor(x, y, id, direction, instance, player) {
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+  178|     }
+       ^^^^^
+  179| }
+       ^
+
+./../../src/entity/enemy/Enemy.js:17:0: WARNING - [JSC_MISPLACED_ANNOTATION] Misplaced function annotation. This JSDoc is not attached to a function node. Are you missing parentheses?
+   17| class Enemy extends rune.display.Sprite {
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   18|     constructor(x, y, instance, targetPlayer, speed) {
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+  168|     }
+       ^^^^^
+  169| }
+       ^
+
+./../../src/entity/fire/Fire.js:13:0: WARNING - [JSC_MISPLACED_ANNOTATION] Misplaced function annotation. This JSDoc is not attached to a function node. Are you missing parentheses?
+   13| class Fire {
+       ^^^^^^^^^^^^
+   14|     constructor(x, y, instance) {
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+  141|     }
+       ^^^^^
+  142| }
+       ^
+
+./../../src/entity/fire/FireController.js:11:0: WARNING - [JSC_MISPLACED_ANNOTATION] Misplaced function annotation. This JSDoc is not attached to a function node. Are you missing parentheses?
+   11| class FireController {
+       ^^^^^^^^^^^^^^^^^^^^^^
+   12|     constructor(instance) {
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+  118|     }
+       ^^^^^
+  119| }
+       ^
+
+./../../src/entity/fire/FireTile.js:14:0: WARNING - [JSC_MISPLACED_ANNOTATION] Misplaced function annotation. This JSDoc is not attached to a function node. Are you missing parentheses?
+  14| class FireTile extends rune.display.Sprite {
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  15|     constructor(x, y) {
+      ^^^^^^^^^^^^^^^^^^^^^^^
+...
+  81|     }
+      ^^^^^
+  82| }
+      ^
+
+./../../src/entity/obstacle/Roofs.js:15:0: WARNING - [JSC_MISPLACED_ANNOTATION] Misplaced function annotation. This JSDoc is not attached to a function node. Are you missing parentheses?
+  15| class Roofs extends rune.display.Graphic {
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  16|     constructor(x,y, id) {
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+  61|     }
+      ^^^^^
+  62| }
+      ^
+
+./../../src/entity/player/Player.js:16:0: WARNING - [JSC_MISPLACED_ANNOTATION] Misplaced function annotation. This JSDoc is not attached to a function node. Are you missing parentheses?
+   16| class Player extends rune.display.Sprite {
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   17|     constructor(x, y, playerID, instance) {
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+  432|     }
+       ^^^^^
+  433| }
+       ^
+
+0 error(s), 7 warning(s)

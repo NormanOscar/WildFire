@@ -9,6 +9,11 @@
  * Particle object.
  */
 class Particle extends rune.particle.Particle {
+    /**
+     * Calls the constructor method of the super class.
+     * 
+     * @returns {undefined}
+     */
     constructor() {
         super(0, 0, 8, 8, 'particle');
     }

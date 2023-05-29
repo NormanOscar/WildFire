@@ -6,23 +6,24 @@
  * @class
  * @classdesc
  * 
- * Game scene.
+ * Menu scene.
  */
 class Menu extends rune.scene.Scene {
 
     /**
      * Calls the constructor method of the super class.
+     * 
+     * @returns {undefined}
      */
     constructor() {
         super();
 
-        this.m_menu = null;
         this.m_sound = null;
         this.m_music = null;
         this.menuSelected = 0;
         this.menuBtns = [];
         this.singleHsList = null;
-        this.multiHsList = null;
+        this.coOpHsList = null;
         this.currentPage = 0;
     }
 
@@ -40,7 +41,7 @@ class Menu extends rune.scene.Scene {
         this.m_initBackground();
         this.m_initMenu();
         this.m_initSingleHs();
-        this.m_initMultiHs();
+        this.m_initCoOpHs();
 
         this.timers.create({
             duration: 2500,
@@ -48,11 +49,11 @@ class Menu extends rune.scene.Scene {
             onTick: function() {
                 if (this.currentPage == 0) {
                     this.singleHsList.visible = false;
-                    this.multiHsList.visible = true;
+                    this.coOpHsList.visible = true;
                     this.currentPage = 1;
                 } else {
                     this.singleHsList.visible = true;
-                    this.multiHsList.visible = false;
+                    this.coOpHsList.visible = false;
                     this.currentPage = 0;
                 }
             },
@@ -73,10 +74,21 @@ class Menu extends rune.scene.Scene {
         this.m_updateInput();
     }
 
+    /**
+     * Initializes sound effects for menu.
+     * 
+     * @returns {undefined}
+     */
     m_initSound() {
         this.m_sound = this.application.sounds.sound.get("menu_select", true);
         this.m_sound.volume = 0.2;
     }
+
+    /**
+     * Initializes menu music.
+     * 
+     * @returns {undefined}
+     */
     m_initMusic() {
         this.m_music = this.application.sounds.master.get("menu_music", true);
         this.m_music.volume = 0.1;
@@ -84,11 +96,21 @@ class Menu extends rune.scene.Scene {
         this.m_music.play();
     }
 
+    /**
+     * Creates and prints background image.
+     * 
+     * @returns {undefined}
+     */
     m_initBackground() {
         var m_background = new rune.display.Sprite(0, 0, 400, 225, "menu_background");
         this.stage.addChild(m_background);
     }
 
+    /**
+     * Updates input from keyboard and gamepad.
+     * 
+     * @returns {undefined}
+     */
     m_updateInput() {
         var m_gamepad = this.gamepads.get(0);
         if (m_gamepad.connected) {
@@ -98,6 +120,13 @@ class Menu extends rune.scene.Scene {
         }
     }
 
+    /**
+     * Update input from gamepad.
+     * 
+     * @param {gamepad} gamepad Gamepad object.
+     * 
+     * @returns {undefined}
+     */
     m_updateGamepadInput(gamepad) {
         if (gamepad.stickLeftJustUp || gamepad.justPressed(12)) {
             this.up();
@@ -110,6 +139,11 @@ class Menu extends rune.scene.Scene {
         }
     }
 
+    /**
+     * Update input from keyboard.
+     * 
+     * @returns {undefined}
+     */
     m_updateKeyboardInput() {
         if (this.keyboard.justPressed("w")) {
             this.up();
@@ -121,7 +155,12 @@ class Menu extends rune.scene.Scene {
             this.select();
         }
     }
-    
+
+    /**
+     * Moves selection up.
+     * 
+     * @returns {undefined}
+     */
     up() {
         this.menuBtns[this.menuSelected].selected = false;
         this.menuSelected == 0 ? this.menuSelected = 2 : this.menuSelected--;
@@ -129,6 +168,11 @@ class Menu extends rune.scene.Scene {
         this.m_sound.play();
     }
     
+    /**
+     * Moves selection down.
+     * 
+     * @returns {undefined}
+     */
     down() {
         this.menuBtns[this.menuSelected].selected = false;
         this.menuSelected == this.menuBtns.length - 1 ? this.menuSelected = 0 : this.menuSelected++;
@@ -136,6 +180,11 @@ class Menu extends rune.scene.Scene {
         this.m_sound.play();
     }
     
+    /**
+     * Selects current menu item and loads corresponding scene.
+     * 
+     * @returns {undefined}
+     */
     select() {
         if (this.menuSelected == 0) {
             this.application.scenes.load( [new Game(1, this.m_music)] );
@@ -146,6 +195,11 @@ class Menu extends rune.scene.Scene {
         }
     }
 
+    /**
+     * Creates menu buttons.
+     * 
+     * @returns {undefined}
+     */
     m_initMenu() {
         this.singleplayerBtn = new MenuBtn("singleplayer_btn");
         this.singleplayerBtn.centerX = this.application.screen.width / 4 - 10;
@@ -167,30 +221,25 @@ class Menu extends rune.scene.Scene {
         this.menuBtns.push(this.howToPlayBtn);
     }
 
-
-    m_onMenuSelect(element) {
-        switch (element.text) {
-            case "Single Player":
-                this.application.scenes.load( [new Game(1)] );
-                break;   
-            case "Co-Op":
-                this.application.scenes.load( [new Game(2)] );
-                break;
-            case "How to play":
-                this.application.scenes.load( [new HowToPlay()] );
-                break;
-        }
-    }
-
+    /**
+     * Creates highscore lists for single player.
+     * 
+     * @returns {undefined}
+     */
     m_initSingleHs() {
-        this.singleHsList = new HighscoreList(this, 'Singleplayer', 'single');
+        this.singleHsList = new HighscoreList('Singleplayer', 'single');
         this.stage.addChild(this.singleHsList);
-        
     }
-    m_initMultiHs() {
-        this.multiHsList = new HighscoreList(this, 'Co-Op', 'co-op');
-        this.multiHsList.visible = false;
-        this.stage.addChild(this.multiHsList);
+
+    /**
+     * Creates highscore lists for co-op.
+     * 
+     * @returns {undefined}
+     */
+    m_initCoOpHs() {
+        this.coOpHsList = new HighscoreList('Co-Op', 'co-op');
+        this.coOpHsList.visible = false;
+        this.stage.addChild(this.coOpHsList);
     }
     
     /**

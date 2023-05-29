@@ -3,14 +3,19 @@
  *
  * @extends rune.scene.Scene
  * 
- * @param {number} nr Number of players
- *
  * @class
  * @classdesc
  * 
  * Game scene.
  */
 class Game extends rune.scene.Scene {
+    /**
+     * Calls the constructor method of the super class.
+     * 
+     * @param {nr} nr The number of players.
+     * 
+     * @returns {undefined}
+     */
     constructor(nr) {
         super();
 
@@ -28,7 +33,7 @@ class Game extends rune.scene.Scene {
         this.enemySpeed = 1.5;
         
         this.m_music = null;
-        this.houses = new Array();
+        this.roofs = new Array();
         
         this.fireController = null;
         this.totalFireTiles = 0;
@@ -64,11 +69,12 @@ class Game extends rune.scene.Scene {
      */
     init() {
         super.init();
+        this.stage.sort = this.sortObjects;
         this.stage.map.load('map');
         this.cameras.removeCameras(true);
         this.initCameras();
         this.initPlayers();
-        this.initHouses();
+        this.initRoofs();
         this.initMainHUD();
         
         this.initCountdown();
@@ -110,7 +116,11 @@ class Game extends rune.scene.Scene {
         this.initDifficultyTimer();
     }
 
-    
+    /**
+     * Initializes timer to increase difficulty.
+     * 
+     * @returns {undefined}
+     */
     initDifficultyTimer() {
         this.difficultyTimer = this.timers.create({
             duration: 1000,
@@ -120,6 +130,11 @@ class Game extends rune.scene.Scene {
         });
     }
 
+    /**
+     * Increases difficulty based on score.
+     * 
+     * @returns {undefined}
+     */
     checkScore() {
         if (this.m_totalScore >= 500 && this.m_totalScore < 1000 && this.difficulty == 1) {
             this.difficulty++;
@@ -139,6 +154,11 @@ class Game extends rune.scene.Scene {
         }
     }
 
+    /**
+     * Changes difficulty.
+     * 
+     * @returns {undefined}
+     */
     chageDifficulty() {
         if (this.difficulty == 2 || this.difficulty == 4) {
             this.m_nrOfOpenGates++;
@@ -154,16 +174,26 @@ class Game extends rune.scene.Scene {
         }
     }
 
+    /**
+     * Creates popup text for increased difficulty.
+     * 
+     * @returns {undefined}
+     */
     initDifficultyText() {
-        this.mainDifficultyText = new DifficultyText();
+        this.mainDifficultyText = new PopUpText();
         this.cameras.getCameraAt(0).addChild(this.mainDifficultyText);
 
         if (this.m_nrOfPlayers == 2) {
-            this.splittedDifficultyText = new DifficultyText();
+            this.splittedDifficultyText = new PopUpText();
             this.application.screen.addChild(this.splittedDifficultyText);
         }
     }
     
+    /**
+     * Shows popup text for increased difficulty.
+     * 
+     * @returns {undefined}
+     */
     showDifficultyText() {
         this.m_camera_is_splitted ? this.splittedDifficultyText.visible = true : this.mainDifficultyText.visible = true;
 
@@ -182,41 +212,69 @@ class Game extends rune.scene.Scene {
      * @returns {undefined}
      */
     initCameras() {
+        // Camera for both players
         this.m_cams[0] = this.cameras.createCamera(0, 0, this.application.screen.width, this.application.screen.height);
         this.cameras.addCamera(this.m_cams[0]);
         this.cameras.getCameraAt(0).bounderies = new rune.geom.Rectangle(0, 0, 992, 672);
 
+        // Camera for player 1
         this.m_cams[1] = this.cameras.createCamera(0, 0, this.application.screen.width / 2, this.application.screen.height);
         this.m_cams[1].visible = false;
         this.cameras.addCamera(this.m_cams[1]);
         this.cameras.getCameraAt(1).bounderies = new rune.geom.Rectangle(0, 0, 992, 672);
 
+        // Camera for player 2
         this.m_cams[2] = this.cameras.createCamera(0 + this.application.screen.width / 2, 0, this.application.screen.width / 2, this.application.screen.height);
         this.m_cams[2].visible = false;
         this.cameras.addCamera(this.m_cams[2]);
         this.cameras.getCameraAt(2).bounderies = new rune.geom.Rectangle(0, 0, 992, 672);
     }
 
+    /**
+     * Creates the main HUD for camera 1.
+     * 
+     * @returns {undefined}
+     */
     initMainHUD() {
         this.mainHUD = new MainHUD(this, this.application.screen.width, this.application.screen.height);
         this.cameras.getCameraAt(0).addChild(this.mainHUD);
     }
 
+    /**
+     * Creates HUD for player 1 on camera 2.
+     * 
+     * @returns {undefined}
+     */
     initP1HUD() {
-        this.p1HUD = new SplittedHUD(this, this.application.screen.width / 2, this.application.screen.height, 1);
+        this.p1HUD = new SplittedHUD(this.application.screen.width / 2, this.application.screen.height, 1);
         this.cameras.getCameraAt(1).addChild(this.p1HUD);
     }
     
+    /**
+     * Creates HUD for player 2 on camera 3.
+     * 
+     * @returns {undefined}
+     */
     initP2HUD() {
-        this.p2HUD = new SplittedHUD(this, this.application.screen.width / 2, this.application.screen.height, 2);
+        this.p2HUD = new SplittedHUD(this.application.screen.width / 2, this.application.screen.height, 2);
         this.cameras.getCameraAt(2).addChild(this.p2HUD);
     }
 
+    /**
+     * Creates minimap for when cameras are splitted.
+     * 
+     * @returns {undefined}
+     */
     initSplittedMiniMap() {
         this.splittedMinimap = new Minimap(this, this.application.screen.centerX - 46.5, 2, 'splitted');
         this.application.screen.addChild(this.splittedMinimap);
     }
 
+    /**
+     * Creates score counter for when cameras are splitted.
+     * 
+     * @returns {undefined}
+     */
     initSplittedScoreCounter() {
         this.splittedScoreCounter = new Score('Score: ' + this.m_totalScore.toString());
         this.application.screen.addChild(this.splittedScoreCounter);
@@ -234,6 +292,7 @@ class Game extends rune.scene.Scene {
             this.m_cams[0].targets.add(player);
             this.stage.addChild(player);
         }
+        // If co-op mode is selected, create two players
         else if (this.m_nrOfPlayers == 2) {
             var player1 = new Player(448, 320, 0, this);
             this.m_players.push(player1);
@@ -259,15 +318,16 @@ class Game extends rune.scene.Scene {
             duration: 1000,
             repeat: Infinity,
             onTick: function () {
-                if (this.totalFireTiles < 20) {
+                // Add score based on how many fire tiles are on the screen
+                if (this.totalFireTiles < 15) {
                     this.m_totalScore += 5;
-                } else if (this.totalFireTiles >= 20 & this.totalFireTiles < 40) {
+                } else if (this.totalFireTiles >= 15 & this.totalFireTiles < 30) {
                     this.m_totalScore += 4;
-                } else if (this.totalFireTiles >= 40 & this.totalFireTiles < 60) {
+                } else if (this.totalFireTiles >= 30 & this.totalFireTiles < 45) {
                     this.m_totalScore += 3;
-                } else if (this.totalFireTiles >= 60 & this.totalFireTiles < 80) {
+                } else if (this.totalFireTiles >= 45 & this.totalFireTiles < 60) {
                     this.m_totalScore += 2;
-                } else if (this.totalFireTiles >= 80 & this.totalFireTiles < 100) {
+                } else if (this.totalFireTiles >= 60 & this.totalFireTiles < 75) {
                     this.m_totalScore += 1;
                 }
             },
@@ -276,15 +336,30 @@ class Game extends rune.scene.Scene {
     }
 
     /**
-     * This method is used to create houses.
+     * Sort objects based on their y-position.
+     * 
+     * @param {object} a Object a on the stage
+     * @param {*} b Object b on the stage
      * 
      * @returns {undefined}
      */
-    initHouses() {
+    sortObjects(a, b) {
+        if (a instanceof FireTile) {
+            return;
+        }
+        return a.hitbox.bottom - b.hitbox.bottom;
+    }
+
+    /**
+     * This method is used to create the roofs of the houses.
+     * 
+     * @returns {undefined}
+     */
+    initRoofs() {
         for (let i = 0; i < 3; i++) {
-            var house = new Roofs(this.getHouseCoordinates(i).x, this.getHouseCoordinates(i).y, i);
-            this.stage.addChild(house);
-            this.houses.push(house);
+            var roof = new Roofs(this.getHouseCoordinates(i).x, this.getHouseCoordinates(i).y, i, this);
+            this.stage.addChild(roof);
+            this.roofs.push(roof);
         }
     }
 
@@ -387,10 +462,12 @@ class Game extends rune.scene.Scene {
         if (!this.m_camera_is_splitted && this.m_players[0].status != 'dead' && this.m_players[1].status != 'dead') {
             // If the players are too far apart, show split screen cameras
             if (Math.abs(playerOnePos.x - playerTwoPos.x) > this.application.screen.width - 50 || Math.abs(playerOnePos.y - playerTwoPos.y) > this.application.screen.height - 50) {
+                // Change visibility of cameras
                 this.cameras.getCameraAt(0).visible = false;
                 this.cameras.getCameraAt(1).visible = true;
                 this.cameras.getCameraAt(2).visible = true;
 
+                // Change HUD
                 this.mainHUD.dispose();
                 this.initP1HUD();
                 this.initP2HUD();
@@ -404,10 +481,12 @@ class Game extends rune.scene.Scene {
         if (this.m_camera_is_splitted) {
             // If users are close to each other, show the main camera
             if (Math.abs(playerOnePos.x - playerTwoPos.x) < this.application.screen.width - 50 && Math.abs(playerOnePos.y - playerTwoPos.y) < this.application.screen.height - 50) {
+                // Change visibility of cameras
                 this.cameras.getCameraAt(0).visible = true;
                 this.cameras.getCameraAt(1).visible = false;
                 this.cameras.getCameraAt(2).visible = false;
 
+                // Change HUD
                 this.p1HUD.dispose();
                 this.p2HUD.dispose();
                 this.splittedMinimap.frame.dispose();
@@ -474,6 +553,11 @@ class Game extends rune.scene.Scene {
         return coordinates[id];
     }
 
+    /**
+     * Ends the game and loads the game over scene or the new highscore scene.
+     * 
+     * @returns {undefined}
+     */
     gameOver() {
         this.gameEnded = true;
         if (this.m_camera_is_splitted) {

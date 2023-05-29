@@ -1,16 +1,21 @@
 /**
  * Creates a Fire object.
  * 
- * @param {number} x The x coordinate of the object.
- * @param {number} y The y coordinate of the object.
- * @param {object} instance The game instance.
- * 
  * @class
  * @classdesc
  * 
  * A burning fire object.
  */
 class Fire {
+    /**
+     * Calls the constructor method.
+     * 
+     * @param {number} x The x coordinate of the object.
+     * @param {number} y The y coordinate of the object.
+     * @param {object} instance The game instance.
+     * 
+     * @returns {undefined}
+     */
     constructor(x, y, instance) {
         this.tileArr = new Array();
         this.m_fireDirections = [

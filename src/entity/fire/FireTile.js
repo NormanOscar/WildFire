@@ -3,15 +3,20 @@
  *
  * @extends rune.display.Sprite
  * 
- * @param {number} x The x coordinate of the object.
- * @param {number} y The y coordinate of the object.
- *
  * @class
  * @classdesc
  * 
  * FireTile object.
  */
 class FireTile extends rune.display.Sprite {
+    /**
+     * Calls the constructor method of the super class.
+     * 
+     * @param {number} x The x coordinate of the object.
+     * @param {number} y The y coordinate of the object.
+     * 
+     * @returns {undefined}
+     */
     constructor(x, y) {
         super(x, y, 32, 32, "fireTile");
         this.deathSound = null;

@@ -3,17 +3,22 @@
  *
  * @extends rune.display.Sprite
  * 
- * @param {number} x The x coordinate of the object.
- * @param {number} y The y coordinate of the object.
- * @param {number} playerID The player ID.
- * @param {object} instance The game instance object.
- *
  * @class
  * @classdesc
  * 
  * Player sprite.
  */
 class Player extends rune.display.Sprite {
+    /**
+     * Calls the constructor method of the super class.
+     * 
+     * @param {number} x The x coordinate of the object.
+     * @param {number} y The y coordinate of the object.
+     * @param {number} playerID The player ID.
+     * @param {object} instance The game instance object.
+     * 
+     * @returns {undefined}
+     */
     constructor(x, y, playerID, instance) {
         super(x, y, 32, 32, "player" + playerID);
         this.playerID = playerID;
@@ -81,7 +86,7 @@ class Player extends rune.display.Sprite {
      * @returns {undefined}
      */
     setHitbox() {
-        this.hitbox.set(6, 4, 19, 24);
+        this.hitbox.set(6, 4, 19, 26);
     }
 
     /**
@@ -98,7 +103,6 @@ class Player extends rune.display.Sprite {
             this.updateInput();
             this.stage.map.back.hitTestAndSeparate(this);
     
-            this.checkHouseCollision();
             this.checkFireTileCollision();
             this.checkEnemyCollision();
     
@@ -137,21 +141,6 @@ class Player extends rune.display.Sprite {
                 this.m_gameInstance.m_players[0].can_move = true;
                 this.m_gameInstance.m_players[0].status = 'alive';
                 this.m_gameInstance.cameras.getCameraAt(0).targets.add(this.m_gameInstance.m_players[0]);
-            }
-        }
-    }
-
-    /**
-     * This method is used to check collision between player and houses.
-     * 
-     * @returns {undefined}
-     */
-    checkHouseCollision() {
-        for (const house of this.m_gameInstance.houses) {
-            if (this.hitTest(house)) {
-                house.playerBehind = true;
-            } else {
-                house.playerBehind = false;
             }
         }
     }

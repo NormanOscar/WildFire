@@ -1,45 +1,71 @@
+/**
+ * Creates a new object.
+ *
+ * @extends rune.scene.Scene
+ * 
+ * @class
+ * @classdesc
+ * 
+ * GameOver scene.
+ */
 class GameOver extends rune.scene.Scene {
+    /**
+     * Calls the constructor method of the super class.
+     * 
+     * @param {number} score The score of the game.
+     * @param {number} nr The number of players.
+     * 
+     * @returns {undefined}
+     */
     constructor(score, nr) {
         super();
-        this.score = score || 1000;
-        this.m_nrOfPlayers = nr || 1;
+        this.score = score;
+        this.m_nrOfPlayers = nr;
         this.menuSelected = 0;
         this.menuBtns = [];
     }
 
+    /**
+     * Initializes the object.
+     * 
+     * @returns {undefined}
+     */
     init() {
         super.init();
 
         this.m_initBackground();
         this.m_initSound();
 
-        if (this.newHighscore) {
-            this.initNewHighscore();
-        }
-
         this.m_initScore();
 
         this.m_initMenu();
     }
 
+    /**
+     * Creates the sound effect.
+     * 
+     * @returns {undefined}
+     */
     m_initSound() {
         this.m_sound = this.application.sounds.sound.get("menu_select", true);
         this.m_sound.volume = 0.2;
     }
 
+    /**
+     * Initializes the background image.
+     * 
+     * @returns {undefined}
+     */
     m_initBackground() {
         var m_background = new rune.display.Sprite(0, 0, 400, 225, "gameover_background");
         this.stage.addChild(m_background);
     }
 
-    initNewHighscore() {
-        var m_newHighscore = new rune.text.BitmapField('New Highscore!', rune.text.BitmapFormat.FONT_MEDIUM);
-        m_newHighscore.width = m_newHighscore.textWidth;
-        this.stage.addChild(m_newHighscore);
-        m_newHighscore.centerX = this.application.screen.centerX;
-        m_newHighscore.y = this.application.screen.centerY - 40;
-    }
-
+    /**
+     * Initializes and prints the score.
+     * 
+     * @returns {undefined}
+     */
     m_initScore() {
         var m_scoreTitle = new rune.text.BitmapField('Score:', rune.text.BitmapFormat.FONT_MEDIUM);
         m_scoreTitle.width = m_scoreTitle.textWidth;
@@ -54,6 +80,11 @@ class GameOver extends rune.scene.Scene {
         m_scoreText.centerY = this.newHighscore ? this.application.screen.centerY + 20 : this.application.screen.centerY - 25;
     }
 
+    /**
+     * Initializes the menu buttons.
+     * 
+     * @returns {undefined}
+     */
     m_initMenu() {
         this.playAgainBtn = new MenuBtn("play_again_btn");
         this.playAgainBtn.centerX = this.application.screen.centerX;
@@ -69,11 +100,24 @@ class GameOver extends rune.scene.Scene {
         this.menuBtns.push(this.mainMenuBtn);
     }
 
+    /**
+     * This method is automatically executed once per "tick". The method is used for 
+     * calculations such as application logic.
+     *
+     * @param {number} step Fixed time step.
+     *
+     * @returns {undefined}
+     */
     update(step) {
         super.update(step);
         this.m_updateInput();
     }
 
+    /**
+     * Updates the input.
+     * 
+     * @returns {undefined}
+     */
     m_updateInput() {
         var m_gamepad = this.gamepads.get(0);
         if (m_gamepad.connected) {
@@ -83,6 +127,13 @@ class GameOver extends rune.scene.Scene {
         }
     }
 
+    /**
+     * Updates the gamepad input.
+     * 
+     * @param {object} gamepad The gamepad object.
+     * 
+     * @returns {undefined}
+     */
     m_updateGamepadInput(gamepad) {
         if (gamepad.stickLeftJustUp || gamepad.justPressed(12)) {
             this.up();
@@ -95,6 +146,11 @@ class GameOver extends rune.scene.Scene {
         }
     }
 
+    /**
+     * Updates the keyboard input.
+     * 
+     * @returns {undefined}
+     */
     m_updateKeyboardInput() {
         if (this.keyboard.justPressed("w")) {
             this.up();
@@ -107,6 +163,11 @@ class GameOver extends rune.scene.Scene {
         }
     }
 
+    /**
+     * Moves the selection up in the menu.
+     * 
+     * @returns {undefined}
+     */
     up() {
         this.menuBtns[this.menuSelected].selected = false;
         this.menuSelected == 0 ? this.menuSelected++ : this.menuSelected--;
@@ -114,6 +175,11 @@ class GameOver extends rune.scene.Scene {
         this.m_sound.play();
     }
     
+    /**
+     * Moves the selection down in the menu.
+     * 
+     * @returns {undefined}
+     */
     down() {
         this.menuBtns[this.menuSelected].selected = false;
         this.menuSelected == 1 ? this.menuSelected-- : this.menuSelected++;
@@ -121,6 +187,11 @@ class GameOver extends rune.scene.Scene {
         this.m_sound.play();
     }
     
+    /**
+     * Selects the current menu item and loads the appropriate scene.
+     * 
+     * @returns {undefined}
+     */
     select() {
         if (this.menuSelected == 0) {
             this.application.scenes.load( [new Game(this.m_nrOfPlayers)] );
@@ -129,6 +200,10 @@ class GameOver extends rune.scene.Scene {
         }
     }
 
+    /**
+     * Removes the game over scene. The process is performed in order to 
+     * avoid memory leaks.
+     */
     dispose() {
         super.dispose();
     }

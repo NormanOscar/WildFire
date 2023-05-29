@@ -3,19 +3,24 @@
  *
  * @extends rune.display.Sprite
  * 
- * @param {number} x The x coordinate of the object.
- * @param {number} y The y coordinate of the object.
- * @param {number} id The id for type of bullet.
- * @param {number} direction The direction the bullet is travelling.
- * @param {object} instance The game instance.
- * @param {object} player The player object.
- *
  * @class
  * @classdesc
  * 
  * Bullet object.
  */
 class Bullet extends rune.display.Sprite {
+    /**
+     * Calls the constructor method of the super class.
+     * 
+     * @param {number} x The x coordinate of the object.
+     * @param {number} y The y coordinate of the object.
+     * @param {number} id The id for type of bullet.
+     * @param {number} direction The direction the bullet is travelling.
+     * @param {object} instance The game instance.
+     * @param {object} player The player object.
+     * 
+     * @returns {undefined}
+     */
     constructor(x, y, id, direction, instance, player) {
         super(x, y, 9, 5, "bullet" + id);
         this.id = id;

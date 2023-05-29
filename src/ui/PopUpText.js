@@ -1,21 +1,21 @@
 /**
- * Creates a Particle object.
+ * Creates a new object.
  *
- * @extends rune.display.Graphic
+ * @extends rune.text.BitmapField
  *
  * @class
  * @classdesc
  * 
- * Particle object.
+ * Pop up text that appears for a few seconds.
  */
-class SecondParticle extends rune.particle.Particle {
+class PopUpText extends rune.text.BitmapField {
     /**
      * Calls the constructor method of the super class.
      * 
      * @returns {undefined}
      */
     constructor() {
-        super(0, 0, 8, 8, 'secondParticle');
+        super("A new gate has opened", rune.text.BitmapFormat.FONT_MEDIUM);
     }
 
     /**
@@ -23,10 +23,12 @@ class SecondParticle extends rune.particle.Particle {
      * 
      * @returns {undefined}
      */
-     init() {
+    init() {
         super.init();
-        this.scaleX = 1;
-        this.scaleY = 1;
+        this.width = this.textWidth;
+        this.centerX = this.application.screen.centerX;
+        this.centerY = this.application.screen.centerY;
+        this.visible = false;
     }
 
     /**
@@ -39,17 +41,10 @@ class SecondParticle extends rune.particle.Particle {
      */
     update(step) {
         super.update(step);
-        var cX = this.centerX;
-        var cY = this.centerY;
-
-        this.scaleX += 0.02;
-        this.scaleY += 0.02;
-        this.centerX = cX;
-        this.centerY = cY;
     }
 
     /**
-     * Disposes the object. The process is performed in order to 
+     * Removes the object from the stage. The process is performed in order to 
      * avoid memory leaks.
      * 
      * @returns {undefined}

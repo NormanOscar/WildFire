@@ -3,18 +3,24 @@
  *
  * @extends rune.display.Graphic
  * 
- * @param {number} x The x coordinate of the object.
- * @param {number} y The y coordinate of the object.
- * @param {number} id The id of the house.
- *
  * @class
  * @classdesc
  * 
  * Roof of a house.
  */
 class Roofs extends rune.display.Graphic {
-    constructor(x,y, id) {
+    /**
+     * Calls the constructor method of the super class.
+     * 
+     * @param {number} x The x coordinate of the object.
+     * @param {number} y The y coordinate of the object.
+     * @param {number} id The id of the house.
+     * 
+     * @returns {undefined}
+     */
+    constructor(x,y, id, instance) {
         super(x,y,128,96,'house' + id);
+        this.m_gameInstance = instance;
         this.playerBehind = false;
         this.enemyBehind = false;
     }
@@ -36,7 +42,7 @@ class Roofs extends rune.display.Graphic {
      * @returns {undefined}
      */
     setHitbox() {
-        this.hitbox.set(15,25, 98, 69);
+        this.hitbox.set(15,25, 98, 72);
     }
 
     /**
@@ -49,8 +55,8 @@ class Roofs extends rune.display.Graphic {
      */
     update(step) {
         super.update(step);
-        if (this.playerBehind || this.enemyBehind) {
-            this.alpha = 0.4;
+        if (this.hitTestContentOf(this.m_gameInstance.m_players) || this.hitTestContentOf(this.m_gameInstance.m_enemies)) {
+            this.alpha = 0.3;
         } else {
             this.alpha = 1;
         }

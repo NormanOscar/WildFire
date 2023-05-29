@@ -3,18 +3,23 @@
  *
  * @extends rune.scene.Scene
  * 
- * @param {number} x The x coordinate of the object.
- * @param {number} y The y coordinate of the object.
- * @param {object} instance The game instance.
- * @param {object} player The targetplayer object.
- * @param {number} speed The speed of the enemy.
- *
  * @class
  * @classdesc
  * 
  * Enemy object.
  */
 class Enemy extends rune.display.Sprite {
+    /**
+     * Calls the constructor method of the super class.
+     * 
+     * @param {number} x The x coordinate of the object.
+     * @param {number} y The y coordinate of the object.
+     * @param {object} instance The game instance.
+     * @param {object} targetPlayer The targetplayer object.
+     * @param {number} speed The speed of the enemy.
+     * 
+     * @returns {undefined}
+     */
     constructor(x, y, instance, targetPlayer, speed) {
         super(x, y, 32, 32, "enemy1");
         
@@ -89,27 +94,11 @@ class Enemy extends rune.display.Sprite {
         super.update(step);
 
         this.updatePath();
-        this.checkHouseCollision();
 
         this.move();
 
         if (this.m_gameInstance.m_nrOfPlayers == 2) {
             this.changeTarget();
-        }
-    }
-
-    /**
-     * This method is used to check collision between enemy and houses.
-     * 
-     * @returns {undefined}
-     */
-     checkHouseCollision() {
-        for (const house of this.m_gameInstance.houses) {
-            if (this.hitTest(house)) {
-                house.enemyBehind = true;
-            } else {
-                house.enemyBehind = false;
-            }
         }
     }
 
