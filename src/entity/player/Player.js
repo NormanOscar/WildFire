@@ -129,6 +129,11 @@ class Player extends rune.display.Sprite {
         }
     }
 
+    /**
+     * Initializes popuptexts for unlocking the second weapon when coplayer dies.
+     * 
+     * @returns {undefined}
+     */
     initWeaponsText() {
         this.mainWeaponsText = new PopUpText('Player ' + (this.coPlayerID + 1) + ' can now shoot second');
         this.m_gameInstance.cameras.getCameraAt(0).addChild(this.mainWeaponsText);
@@ -137,6 +142,11 @@ class Player extends rune.display.Sprite {
         this.application.screen.addChild(this.splittedWeaponsText);
     }
 
+    /**
+     * Shows popuptexts for unlocking the second weapon when coplayer dies.
+     * 
+     * @returns {undefined}
+     */
     showWeaponsText() {
         this.m_gameInstance.m_camera_is_splitted ? this.splittedWeaponsText.visible = true : this.mainWeaponsText.visible = true;
 

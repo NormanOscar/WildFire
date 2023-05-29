@@ -570,7 +570,7 @@ class Game extends rune.scene.Scene {
         if (this.application.highscores.test(this.m_totalScore, this.m_nrOfPlayers - 1) != -1) {
             var topOfTheList = false;
             if (this.m_totalScore > this.application.highscores.get(0, this.m_nrOfPlayers - 1).score) {
-                var topOfTheList = true;
+                topOfTheList = true;
             }
             console.log(topOfTheList);
             this.application.scenes.load([new NewHighscore(this.m_totalScore, this.m_nrOfPlayers, topOfTheList)]);
