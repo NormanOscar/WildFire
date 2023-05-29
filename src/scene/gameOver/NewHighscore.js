@@ -17,7 +17,7 @@ class NewHighscore extends rune.scene.Scene {
      * 
      * @returns {undefined}
      */
-    constructor(score, nrOfPlayers) {
+    constructor(score, nrOfPlayers, topOfTheList) {
         super();
         this.menuItems = [];
         this.menuSelected = 0;
@@ -30,6 +30,7 @@ class NewHighscore extends rune.scene.Scene {
         this.scoreTitle = null;
         this.scoreText = null;
         this.namePickerTitle = null;
+        this.topOfTheList = topOfTheList;
     }
 
     /**
@@ -82,7 +83,10 @@ class NewHighscore extends rune.scene.Scene {
      * @returns {undefined}
      */
     initTitle() {
-        this.title = new rune.display.Sprite(0, 0, 272, 26, "newHighscore_title");
+        console.log(this.topOfTheList);
+        const titleTexture = this.topOfTheList ? "newHighscore" : "newHighscore_topFive";
+        const titleWidth = this.topOfTheList ? 272 : 162;
+        this.title = new rune.display.Sprite(0, 0, titleWidth, 26, titleTexture);
         this.title.centerX = this.application.screen.centerX;
         this.title.y = this.m_nrOfPlayers == 1 ? 20 : 10;
         this.title.animation.create("idle", [0, 1, 2, 3], 6, true);

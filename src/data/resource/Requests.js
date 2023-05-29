@@ -81,7 +81,8 @@ wildfire.data.Requests.prototype.m_construct = function() {
 	this.add("charFrame_player1", "./../asset/png/newHighScoreScreen/charFrame_player1.png");
 	this.add("charFrame_player2", "./../asset/png/newHighScoreScreen/charFrame_player2.png");
 	this.add("charWheel_arrow", "./../asset/png/newHighScoreScreen/charWheel_arrow.png");
-	this.add("newHighscore_title", "./../asset/png/newHighScoreScreen/newHighscore_title.png");
+	this.add("newHighscore", "./../asset/png/newHighScoreScreen/newHighscore.png");
+	this.add("newHighscore_topFive", "./../asset/png/newHighScoreScreen/newHighscore_topFive.png");
 	this.add("particle", "./../asset/png/particles/particle.png");
 	this.add("secondParticle", "./../asset/png/particles/secondParticle.png");
 	this.add("player0", "./../asset/png/players/player0.png");

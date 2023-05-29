@@ -143,7 +143,6 @@ class Player extends rune.display.Sprite {
         this.m_gameInstance.timers.create({
             duration: 1500,
             onComplete: function () {
-                console.log('test');
                 this.m_gameInstance.m_camera_is_splitted ? this.splittedWeaponsText.visible = false : this.mainWeaponsText.visible = false;
             },
             scope: this,
@@ -185,8 +184,10 @@ class Player extends rune.display.Sprite {
                         const player = arguments[0];
                         player.m_gameInstance.cameras.getCameraAt(0).targets.remove(player);
                         player.status = 'dead';
-                        if (this.m_gameInstance.m_players[this.coPlayerID].status != 'dead') {
-                            this.showWeaponsText();
+                        if (this.m_gameInstance.m_nrOfPlayers == 2) {
+                            if (this.m_gameInstance.m_players[this.coPlayerID].status != 'dead') {
+                                this.showWeaponsText();
+                            }
                         }
                         player.deathSound.play();
                     }, this);
@@ -206,8 +207,10 @@ class Player extends rune.display.Sprite {
                 const player = arguments[0];
                 player.m_gameInstance.cameras.getCameraAt(0).targets.remove(player);
                 player.status = 'dead';
-                if (this.m_gameInstance.m_players[this.coPlayerID].status != 'dead') {
-                    this.showWeaponsText();
+                if (this.m_gameInstance.m_nrOfPlayers == 2) {
+                    if (this.m_gameInstance.m_players[this.coPlayerID].status != 'dead') {
+                        this.showWeaponsText();
+                    }
                 }
                 player.deathSound.play();
             }, this);

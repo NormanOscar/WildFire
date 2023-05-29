@@ -327,7 +327,7 @@ class Game extends rune.scene.Scene {
                     this.m_totalScore += 3;
                 } else if (this.totalFireTiles >= 45 & this.totalFireTiles < 60) {
                     this.m_totalScore += 2;
-                } else if (this.totalFireTiles >= 60 & this.totalFireTiles < 75) {
+                } else if (this.totalFireTiles >= 60) {
                     this.m_totalScore += 1;
                 }
             },
@@ -339,7 +339,7 @@ class Game extends rune.scene.Scene {
      * Sort objects based on their y-position.
      * 
      * @param {object} a Object a on the stage
-     * @param {*} b Object b on the stage
+     * @param {object} b Object b on the stage
      * 
      * @returns {undefined}
      */
@@ -568,7 +568,12 @@ class Game extends rune.scene.Scene {
         if (this.m_nrOfPlayers == 2) this.splittedDifficultyText.dispose();
 
         if (this.application.highscores.test(this.m_totalScore, this.m_nrOfPlayers - 1) != -1) {
-            this.application.scenes.load([new NewHighscore(this.m_totalScore, this.m_nrOfPlayers)]);
+            var topOfTheList = false;
+            if (this.m_totalScore > this.application.highscores.get(0, this.m_nrOfPlayers - 1).score) {
+                var topOfTheList = true;
+            }
+            console.log(topOfTheList);
+            this.application.scenes.load([new NewHighscore(this.m_totalScore, this.m_nrOfPlayers, topOfTheList)]);
         } else {
             this.application.scenes.load([new GameOver(this.m_totalScore, this.m_nrOfPlayers)]);
         }
