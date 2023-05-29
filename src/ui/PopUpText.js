@@ -14,8 +14,8 @@ class PopUpText extends rune.text.BitmapField {
      * 
      * @returns {undefined}
      */
-    constructor() {
-        super("A new gate has opened", rune.text.BitmapFormat.FONT_MEDIUM);
+    constructor(text) {
+        super(text, rune.text.BitmapFormat.FONT_MEDIUM);
     }
 
     /**

@@ -180,11 +180,11 @@ class Game extends rune.scene.Scene {
      * @returns {undefined}
      */
     initDifficultyText() {
-        this.mainDifficultyText = new PopUpText();
+        this.mainDifficultyText = new PopUpText("A new gate has opened");
         this.cameras.getCameraAt(0).addChild(this.mainDifficultyText);
 
         if (this.m_nrOfPlayers == 2) {
-            this.splittedDifficultyText = new PopUpText();
+            this.splittedDifficultyText = new PopUpText("A new gate has opened");
             this.application.screen.addChild(this.splittedDifficultyText);
         }
     }

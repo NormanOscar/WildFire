@@ -45,6 +45,8 @@ class Player extends rune.display.Sprite {
         ]
         this.shotID = 0;
         this.m_gameInstance = instance;
+        this.MainWeaponsText = null;
+        this.SplittedWeaponsText = null;
     }
     
     /**
@@ -58,6 +60,10 @@ class Player extends rune.display.Sprite {
         this.setSounds();
         this.animateCharacter();
         this.setHitbox();
+
+        if (this.m_gameInstance.m_nrOfPlayers == 2) {
+            this.initWeaponsText();
+        }
     }
 
     /**
@@ -86,7 +92,7 @@ class Player extends rune.display.Sprite {
      * @returns {undefined}
      */
     setHitbox() {
-        this.hitbox.set(6, 4, 19, 26);
+        this.hitbox.set(6, 4, 19, 28);
     }
 
     /**
@@ -116,11 +122,32 @@ class Player extends rune.display.Sprite {
     
             // Check if coplayer is dead, if so then player can revive
             if (this.m_gameInstance.m_nrOfPlayers == 2) {
-                if (this.m_gameInstance.m_players[0].status == 'dead' || this.m_gameInstance.m_players[1].status == 'dead') {
+                if (this.m_gameInstance.m_players[this.coPlayerID].status == 'dead') {
                     this.checkRevive();
                 }
             }
         }
+    }
+
+    initWeaponsText() {
+        this.mainWeaponsText = new PopUpText('Player ' + (this.coPlayerID + 1) + ' can now shoot second');
+        this.m_gameInstance.cameras.getCameraAt(0).addChild(this.mainWeaponsText);
+
+        this.splittedWeaponsText = new PopUpText('Player ' + (this.playerID + 1) + ' can now shoot second');
+        this.application.screen.addChild(this.splittedWeaponsText);
+    }
+
+    showWeaponsText() {
+        this.m_gameInstance.m_camera_is_splitted ? this.splittedWeaponsText.visible = true : this.mainWeaponsText.visible = true;
+
+        this.m_gameInstance.timers.create({
+            duration: 1500,
+            onComplete: function () {
+                console.log('test');
+                this.m_gameInstance.m_camera_is_splitted ? this.splittedWeaponsText.visible = false : this.mainWeaponsText.visible = false;
+            },
+            scope: this,
+        });
     }
 
     /**
@@ -158,6 +185,9 @@ class Player extends rune.display.Sprite {
                         const player = arguments[0];
                         player.m_gameInstance.cameras.getCameraAt(0).targets.remove(player);
                         player.status = 'dead';
+                        if (this.m_gameInstance.m_players[this.coPlayerID].status != 'dead') {
+                            this.showWeaponsText();
+                        }
                         player.deathSound.play();
                     }, this);
                 }
@@ -176,6 +206,9 @@ class Player extends rune.display.Sprite {
                 const player = arguments[0];
                 player.m_gameInstance.cameras.getCameraAt(0).targets.remove(player);
                 player.status = 'dead';
+                if (this.m_gameInstance.m_players[this.coPlayerID].status != 'dead') {
+                    this.showWeaponsText();
+                }
                 player.deathSound.play();
             }, this);
         }
