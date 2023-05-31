@@ -42,6 +42,7 @@ class Menu extends rune.scene.Scene {
         this.m_initMenu();
         this.m_initSingleHs();
         this.m_initCoOpHs();
+        this.m_initCredits();
 
         this.timers.create({
             duration: 2500,
@@ -240,6 +241,25 @@ class Menu extends rune.scene.Scene {
         this.coOpHsList = new HighscoreList('Co-Op', 'co-op');
         this.coOpHsList.visible = false;
         this.stage.addChild(this.coOpHsList);
+    }
+
+    /**
+     * Creates credits text of creators name and prints it.
+     * 
+     * @returns {undefined}
+     */
+    m_initCredits() {
+        const credits = new rune.text.BitmapField("Created by:", rune.text.BitmapFormat.FONT_MEDIUM);
+        credits.width = credits.textWidth;
+        credits.centerX = this.application.screen.centerX;
+        credits.centerY = this.application.screen.height - 20;
+        this.stage.addChild(credits);
+
+        const creditsName = new rune.text.BitmapField("Oscar Norman", rune.text.BitmapFormat.FONT_MEDIUM);
+        creditsName.width = creditsName.textWidth;
+        creditsName.centerX = this.application.screen.centerX;
+        creditsName.centerY = (credits.y + credits.height) + 5;
+        this.stage.addChild(creditsName);
     }
     
     /**

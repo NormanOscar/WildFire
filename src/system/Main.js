@@ -30,7 +30,7 @@ wildfire.system.Main = function() {
         useGamepads:true,
         useKeyboard:true,
         framerate: 30,
-        debug: true,
+        debug: false,
         numHighscoreTables: 2
     });
 };

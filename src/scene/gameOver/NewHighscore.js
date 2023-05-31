@@ -23,8 +23,8 @@ class NewHighscore extends rune.scene.Scene {
         this.menuSelected = 0;
         this.playerTwoMenuItems = [];
         this.playerTwoMenuSelected = 0;
-        this.score = score || 100;
-        this.m_nrOfPlayers = nrOfPlayers || 2;
+        this.score = score;
+        this.m_nrOfPlayers = nrOfPlayers;
         this.m_sound = null;
         this.title = null;
         this.scoreTitle = null;

@@ -108,8 +108,8 @@ class Enemy extends rune.display.Sprite {
      * @returns {undefined}
      */
     move() {
-        if (this.path != null && this.path.m_nodes.length > 1) {
-            var nextTile = this.path.m_nodes[1];
+        if (this.path != null && this.path.length > 1) {
+            var nextTile = this.path.getAt(1);
             var distanceX = nextTile.x - this.centerX;
             var distanceY = nextTile.y - this.centerY;
 
@@ -125,7 +125,7 @@ class Enemy extends rune.display.Sprite {
                 this.centerX -= distanceX * fraction;
                 this.centerY -= distanceY * fraction;
             }
-            this.path.m_nodes.shift();
+            this.path.removeAt(0);
         }
     }
 

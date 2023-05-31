@@ -401,6 +401,7 @@ class Game extends rune.scene.Scene {
         if (this.m_players[targetIndex].status != 'dead') {
             var enemy = new Enemy(this.getEnemySpawnPoints(r).x, this.getEnemySpawnPoints(r).y, this, this.m_players[targetIndex], this.enemySpeed);
             this.stage.addChild(enemy);
+            // Gets fastest path to player
             enemy.path = this.stage.map.back.getPath(enemy.centerX, enemy.centerY, enemy.targetPlayer.centerX, enemy.targetPlayer.centerY, true);
             this.m_enemies.push(enemy);
         }

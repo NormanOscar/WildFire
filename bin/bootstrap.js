@@ -5,7 +5,7 @@ function createWindow () {
         width: 1280,
         height: 720,
         useContentSize: true,
-        resizable: false,
+        resizable: true,
         webPreferences: {
             nodeIntegration: false
         }
