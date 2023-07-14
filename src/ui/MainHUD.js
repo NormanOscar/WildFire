@@ -22,6 +22,7 @@ class MainHUD extends rune.display.DisplayObjectContainer {
         super(0, 0, width, height);
         this.m_scoreCounter = null;
         this.m_miniMap = null;
+        this.frame = null;
         this.m_gameInstance = instance;
     }
 
@@ -69,8 +70,8 @@ class MainHUD extends rune.display.DisplayObjectContainer {
      * @returns {undefined}
      */
     m_initFrame() {
-        var frame = new rune.display.Graphic(0, 0, this.width, this.height, "main_frame");
-        this.addChild(frame);
+        this.frame = new rune.display.Graphic(0, 0, this.width, this.height, "main_frame");
+        this.addChild(this.frame);
     }
 
     /**

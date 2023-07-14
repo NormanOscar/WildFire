@@ -21,7 +21,7 @@ class Enemy extends rune.display.Sprite {
      * @returns {undefined}
      */
     constructor(x, y, instance, targetPlayer, speed) {
-        super(x, y, 32, 32, "enemy1");
+        super(x, y, 32, 32, "enemy");
         
         this.targetPlayer = targetPlayer;
         this.path = null;

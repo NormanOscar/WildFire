@@ -61,4 +61,14 @@ class Roofs extends rune.display.Graphic {
             this.alpha = 1;
         }
     }
+
+    /**
+     * This method removes roofs when scene changes. The process is performed in order to 
+     * avoid memory leaks.
+     *
+     * @returns {undefined}
+     */
+    dispose() {
+        super.dispose();
+    }
 }

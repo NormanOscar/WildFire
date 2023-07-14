@@ -470,6 +470,7 @@ class Game extends rune.scene.Scene {
 
                 // Change HUD
                 this.mainHUD.dispose();
+                this.mainHUD = null;
                 this.initP1HUD();
                 this.initP2HUD();
                 this.initSplittedMiniMap();
@@ -489,7 +490,9 @@ class Game extends rune.scene.Scene {
 
                 // Change HUD
                 this.p1HUD.dispose();
+                this.p1HUD = null;
                 this.p2HUD.dispose();
+                this.p2HUD = null;
                 this.splittedMinimap.frame.dispose();
                 this.splittedMinimap.dispose();
                 this.splittedScoreCounter.dispose();
@@ -573,10 +576,93 @@ class Game extends rune.scene.Scene {
             if (this.m_totalScore > this.application.highscores.get(0, this.m_nrOfPlayers - 1).score) {
                 topOfTheList = true;
             }
-            console.log(topOfTheList);
             this.application.scenes.load([new NewHighscore(this.m_totalScore, this.m_nrOfPlayers, topOfTheList)]);
         } else {
             this.application.scenes.load([new GameOver(this.m_totalScore, this.m_nrOfPlayers)]);
+        }
+    }
+
+    /**
+     * This method is used to remove all active objects from the scene.
+     * 
+     * @returns {undefined}
+     */
+    removeActiveObjects() {
+        for (var i = 0; i < this.m_players.length; i++) {
+            if (this.m_players[i].bullets != null) {
+                for (const bullet of this.m_players[i].bullets) {
+                    bullet.dispose();
+                }
+            }
+            this.m_players[i].dispose();
+            this.m_players[i] = null;
+        }
+        for (var i = 0; i < this.m_enemies.length; i++) {
+            this.m_enemies[i].dispose();
+            this.m_enemies[i] = null;
+        }
+        for (var i = 0; i < this.roofs.length; i++) {
+            this.roofs[i].dispose();
+            this.roofs[i] = null;
+        }
+        for (var i = 0; i < this.fireController.burningFires.length; i++) {
+            if (this.fireController.burningFires[i] == null) {
+                continue;
+            }
+            for (var j = 0; j < this.fireController.burningFires[i].tileArr.length; j++) {
+                this.fireController.burningFires[i].tileArr[j].dispose();
+                this.fireController.burningFires[i].tileArr[j] = null;
+            }
+            this.fireController.burningFires[i] = null;
+        }
+        this.fireController = null;
+
+        if (this.mainHUD != null) {
+            this.mainHUD.m_scoreCounter.dispose();
+            this.mainHUD.m_scoreCounter = null;
+            this.mainHUD.m_miniMap.dispose();
+            this.mainHUD.m_miniMap = null;
+            this.mainHUD.frame.dispose();
+            this.mainHUD.frame = null;
+            this.mainHUD.dispose();
+            this.mainHUD = null;
+        }
+
+        if (this.p1HUD != null) {
+            this.p1HUD.frame.dispose();
+            this.p1HUD.frame = null;
+            this.p1HUD.m_playerText.dispose();
+            this.p1HUD.m_playerText = null;
+            this.p1HUD.dispose();
+            this.p1HUD = null;
+        }
+        if (this.p2HUD != null) {
+            this.p2HUD.frame.dispose();
+            this.p2HUD.frame = null;
+            this.p2HUD.m_playerText.dispose();
+            this.p2HUD.m_playerText = null;
+            this.p2HUD.dispose();
+            this.p2HUD = null;
+        }
+        if (this.splittedMinimap != null) {
+            this.splittedMinimap.dispose();
+            this.splittedMinimap = null;
+        }
+        if (this.splittetMiniMapFrame != null) {
+            this.splittetMiniMapFrame.dispose();
+            this.splittetMiniMapFrame = null;
+        }
+        if (this.splittedScoreCounter != null) {
+            this.splittedScoreCounter.dispose();
+            this.splittedScoreCounter = null;
+        }
+        if (this.mainDifficultyText != null) {
+            this.mainDifficultyText.dispose();
+            this.mainDifficultyText = null;
+        }
+        if (this.splitDifficultyText != null) {
+            this.splitDifficultyText.dispose();
+            this.splitDifficultyText = null;
         }
     }
 
@@ -589,6 +675,7 @@ class Game extends rune.scene.Scene {
      * @returns {undefined}
      */
     dispose() {
+        this.removeActiveObjects();
         super.dispose();
     }
 };

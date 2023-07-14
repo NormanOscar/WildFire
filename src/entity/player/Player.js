@@ -465,4 +465,14 @@ class Player extends rune.display.Sprite {
         ]
         return controls[id];
     }
+
+    /**
+     * This method removes player from scenes. The process is performed in order to 
+     * avoid memory leaks.
+     *
+     * @returns {undefined}
+     */
+    dispose() {
+        super.dispose();
+    }
 }

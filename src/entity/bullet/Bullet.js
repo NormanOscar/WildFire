@@ -177,7 +177,8 @@ class Bullet extends rune.display.Sprite {
      * @returns {undefined}
      */
     dispose() {
-        this.player.bullets.splice(this.player.bullets.indexOf(this), 1);
+        var bulletToDispose = this.player.bullets.splice(this.player.bullets.indexOf(this), 1);
+        bulletToDispose = null;
         this.m_disposed = true;
         super.dispose();
     }

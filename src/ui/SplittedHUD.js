@@ -21,6 +21,8 @@ class SplittedHUD extends rune.display.DisplayObjectContainer {
     constructor(width, height, playerID) {
         super(0, 0, width, height);
         this.playerID = playerID;
+        this.frame = null;
+        this.m_playerText = null;
     }
 
     /**
@@ -41,9 +43,9 @@ class SplittedHUD extends rune.display.DisplayObjectContainer {
      * @returns {undefined}
      */
     m_initFrame() {
-        var frame = new rune.display.Graphic(0, 0, this.width, this.height, "player" + this.playerID + "_frame");
+        this.frame = new rune.display.Graphic(0, 0, this.width, this.height, "player" + this.playerID + "_frame");
 
-        this.addChild(frame);
+        this.addChild(this.frame);
     }
 
     /**
