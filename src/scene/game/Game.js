@@ -588,23 +588,28 @@ class Game extends rune.scene.Scene {
      * @returns {undefined}
      */
     removeActiveObjects() {
+        // Remove players bullets if any are existant
         for (var i = 0; i < this.m_players.length; i++) {
             if (this.m_players[i].bullets != null) {
                 for (const bullet of this.m_players[i].bullets) {
                     bullet.dispose();
                 }
             }
+            // Remove player
             this.m_players[i].dispose();
             this.m_players[i] = null;
         }
+        // Remove enemies
         for (var i = 0; i < this.m_enemies.length; i++) {
             this.m_enemies[i].dispose();
             this.m_enemies[i] = null;
         }
+        // Remove roofs
         for (var i = 0; i < this.roofs.length; i++) {
             this.roofs[i].dispose();
             this.roofs[i] = null;
         }
+        // Remove fire tiles
         for (var i = 0; i < this.fireController.burningFires.length; i++) {
             if (this.fireController.burningFires[i] == null) {
                 continue;
@@ -615,8 +620,10 @@ class Game extends rune.scene.Scene {
             }
             this.fireController.burningFires[i] = null;
         }
+        // Remove fire controller
         this.fireController = null;
 
+        // Remove main HUD
         if (this.mainHUD != null) {
             this.mainHUD.m_scoreCounter.dispose();
             this.mainHUD.m_scoreCounter = null;
@@ -628,6 +635,7 @@ class Game extends rune.scene.Scene {
             this.mainHUD = null;
         }
 
+        // Remove splitted HUD
         if (this.p1HUD != null) {
             this.p1HUD.frame.dispose();
             this.p1HUD.frame = null;
@@ -636,6 +644,8 @@ class Game extends rune.scene.Scene {
             this.p1HUD.dispose();
             this.p1HUD = null;
         }
+
+        // Remove splitted HUD
         if (this.p2HUD != null) {
             this.p2HUD.frame.dispose();
             this.p2HUD.frame = null;
@@ -644,22 +654,27 @@ class Game extends rune.scene.Scene {
             this.p2HUD.dispose();
             this.p2HUD = null;
         }
+        // Remove splitted minimap
         if (this.splittedMinimap != null) {
             this.splittedMinimap.dispose();
             this.splittedMinimap = null;
         }
+        // Remove splitted minimap frame
         if (this.splittetMiniMapFrame != null) {
             this.splittetMiniMapFrame.dispose();
             this.splittetMiniMapFrame = null;
         }
+        // Remove splitted score counter
         if (this.splittedScoreCounter != null) {
             this.splittedScoreCounter.dispose();
             this.splittedScoreCounter = null;
         }
+        // Remove popup text
         if (this.mainDifficultyText != null) {
             this.mainDifficultyText.dispose();
             this.mainDifficultyText = null;
         }
+        // Remove splitted popup text
         if (this.splitDifficultyText != null) {
             this.splitDifficultyText.dispose();
             this.splitDifficultyText = null;
